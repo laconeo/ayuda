@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contador Regresivo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    #counter {
+      font-size: 3em;
+    }
+    button {
+      font-size: 1.5em;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Contador Regresivo</h1>
+  <div id="counter">20:00</div>
+  <button id="startButton">Iniciar</button>
+  <div id="startCount">Veces Iniciado: 0</div>
+
+  <script>
+    let count = 0;
+    let running = false;
+    let interval;
+
+    const startButton = document.getElementById('startButton');
+    const counterDisplay = document.getElementById('counter');
+
+    function startStop() {
+      if (!running) {
+        count++;
+        updateStartCount();
+        startButton.textContent = 'Detener';
+        startTimer();
+      } else {
+        clearInterval(interval);
+        running = false;
+        startButton.textContent = 'Iniciar';
+      }
+    }
+
+    function startTimer() {
+      let seconds = 2 * 60;
+      interval = setInterval(() => {
+        seconds--;
+        if (seconds < 0) {
+          clearInterval(interval);
+          running = false;
+          startButton.textContent = 'Iniciar';
+          alertTimeOver();
+          return;
+        }
+        displayTimeLeft(seconds);
+      }, 1000);
+      running = true;
+    }
+
+    function displayTimeLeft(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainderSeconds = seconds % 60;
+      const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+      counterDisplay.textContent = display;
+
+      // Actualizar el título de la página con el tiempo restante
+      document.title = display + " | Contador Regresivo";
+
+      // Comunicarse con el Service Worker
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          action: 'updateTitle',
+          title: display
+        });
+      }
+    }
+
+    function updateStartCount() {
+      document.getElementById('startCount').textContent = `Veces Iniciado: ${count}`;
+    }
+
+    function alertTimeOver() {
+      // Cambiar título de la pestaña si está en segundo plano
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          document.title = "¡Tiempo terminado!";
+          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+              action: 'updateTitle',
+              title: "¡Tiempo terminado!"
+            });
+          }
+        }
+      });
+
+      // Reproducir sonido
+      const audio = new Audio('beep.mp3');
+      audio.play();
+
+      // Mostrar alerta
+      alert("¡Tiempo terminado!");
+    }
+
+    startButton.addEventListener('click', startStop);
+
+    // Registrar el Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => {
+          console.log('Service Worker registrado correctamente!', reg);
+        }).catch(err => {
+          console.error('Error al registrar el Service Worker:', err);
+        });
+    }
+  </script>
+</body>
+</html>
