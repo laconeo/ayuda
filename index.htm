@@ -26,14 +26,14 @@
 <body>
   <h1>Contador Regresivo</h1>
   <div id="counter">20:00</div>
-  <button id="startButton">Iniciar</button>
+  <button id="startButton" btn btn-primary btn-lg>Iniciar</button>
   <div id="startCount">Veces Iniciado: 0</div>
 
   <script>
     let count = 0;
     let running = false;
     let interval;
-
+    let minutes = 20;
     const startButton = document.getElementById('startButton');
     const counterDisplay = document.getElementById('counter');
 
@@ -51,7 +51,7 @@
     }
 
     function startTimer() {
-      let seconds = 2 * 60;
+      let seconds = minutes * 60;
       interval = setInterval(() => {
         seconds--;
         if (seconds < 0) {
@@ -73,7 +73,7 @@
       counterDisplay.textContent = display;
 
       // Actualizar el título de la página con el tiempo restante
-      document.title = display + " | Contador Regresivo";
+      document.title = display + " | Cuenta regresiva";
 
       // Comunicarse con el Service Worker
       if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
