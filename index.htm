@@ -69,7 +69,7 @@
             flex-grow: 1;
         }
         .row-spacing {
-            margin-bottom: 15px; /* Espacio entre filas */
+            margin-bottom: 15px;
         }
         .horizontal-row {
             display: flex;
@@ -89,20 +89,29 @@
                 max-width: 100%;
             }
         }
-        /* Estilo para cuando la pestaña está inactiva */
         .tab-inactive .tab-active-only {
             opacity: 0.7;
+        }
+        #alarm-sound {
+            display: none;
         }
     </style>
 
     <!-- Start of familysearch Zendesk Widget script -->
 <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=07be9dfc-df19-4e45-8b1f-0ebe3ac4a5c9"> </script>
 <!-- End of familysearch Zendesk Widget script -->
-    
+
+    <style>
+        .feria_del_libro {
+            background-color: #F4D03F;
+background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
+
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
-    <div class="header text-center">
+    <div class="header text-center feria_del_libro">
         <h1><i class="fas fa-book-open me-2"></i>Feria del Libro - Soporte</h1>
         <p class="lead">Recursos de ayuda y atención al público</p>
     </div>
@@ -118,8 +127,7 @@
                         <div class="card-content">
                             <p>Por favor complete el siguiente formulario para registrar su solicitud de atención:</p>
                             <div class="ratio ratio-16x9">
-                                
-                               <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4wcHjKPvAhYxnoGwGvsQCJlSCD2Uld8JVPrVDqxnOj3I4FQ/viewform?embedded=true" width="100%" height="300" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4wcHjKPvAhYxnoGwGvsQCJlSCD2Uld8JVPrVDqxnOj3I4FQ/viewform?embedded=true" width="300" height="300" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
                             </div>
                         </div>
                     </div>
@@ -145,9 +153,9 @@
                                 La alarma sonará cada 20 minutos para recordar los cambios de turno.
                             </div>
                         </div>
-                        <audio id="alarm-sound" loop>
+                        <!-- Audio oculto -->
+                        <audio id="alarm-sound" preload="auto">
                             <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
-                            <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.wav" type="audio/wav">
                         </audio>
                     </div>
                 </div>
@@ -208,7 +216,7 @@
             </div>
         </div>
 
-        <!-- Tercera fila (horarios - ocupa todo el ancho) -->
+        <!-- Tercera fila (horarios) -->
         <div class="row row-spacing">
             <div class="col-12">
                 <div class="section-card">
@@ -216,7 +224,7 @@
                     <div class="section-body">
                         <p>Consulte los horarios de atención y los coordinadores asignados:</p>
                         <div class="excel-container">
-                            <iframe src="https://docs.google.com/spreadsheets/d/1h_i8P1Jc6SJiUgv6iy6iek9Ofs9mRR2spuFn0OCX2K0/edit?gid=0#gid=0;headers=false"></iframe>
+                            <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-.../pubhtml?widget=true&amp;headers=false"></iframe>
                         </div>
                         <div class="alert alert-warning mt-3">
                             <i class="fas fa-exclamation-triangle me-2"></i>
@@ -230,7 +238,7 @@
 
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3 mt-4">
-        <p class="mb-0">Stand de FamilySearch en la 49 Feria del Libro 2025</p>
+        <p class="mb-0">Ayuda al Usuario stand de FamilySearch en la 49 Feria del Libro</p>
     </footer>
 
     <!-- Bootstrap JS y dependencias -->
@@ -238,9 +246,9 @@
     
     <script>
         // Variables globales
-        let alarmInterval;
         let alarmActive = false;
-        let lastAlarmTime = 0;
+        let nextAlarmTime = 0;
+        let alarmTimeout;
         const alarmSound = document.getElementById('alarm-sound');
         const toggleButton = document.getElementById('toggle-alarm');
         const alarmStatus = document.getElementById('alarm-status');
@@ -250,26 +258,26 @@
         // Configurar el audio para sonar fuerte
         alarmSound.volume = 1.0; // Volumen máximo
         
-        // Función para verificar si la pestaña está activa
-        let tabActive = true;
+        // Verificar estado de la pestaña
+        let tabActive = !document.hidden;
+        updateTabStatus();
+        
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                tabActive = false;
-                tabStatus.textContent = "Pestaña inactiva";
-                tabStatus.className = "badge bg-warning text-dark ms-2";
-                document.body.classList.add('tab-inactive');
-            } else {
-                tabActive = true;
+            tabActive = !document.hidden;
+            updateTabStatus();
+        });
+
+        function updateTabStatus() {
+            if (tabActive) {
                 tabStatus.textContent = "Pestaña activa";
                 tabStatus.className = "badge bg-info ms-2";
                 document.body.classList.remove('tab-inactive');
-                // Si la alarma estaba sonando, detenerla al volver
-                if (alarmSound.currentTime > 0 && !alarmSound.paused) {
-                    alarmSound.pause();
-                    alarmSound.currentTime = 0;
-                }
+            } else {
+                tabStatus.textContent = "Pestaña inactiva";
+                tabStatus.className = "badge bg-warning text-dark ms-2";
+                document.body.classList.add('tab-inactive');
             }
-        });
+        }
 
         // Reloj
         function updateClock() {
@@ -278,25 +286,40 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('reloj').textContent = `${hours}:${minutes}:${seconds}`;
-            
-            // Verificar si es hora de sonar la alarma
-            if (alarmActive) {
-                const currentTime = now.getTime();
-                if (currentTime - lastAlarmTime >= 20 * 60 * 1000) { // 20 minutos
-                    playAlarm();
-                    lastAlarmTime = currentTime;
-                }
-            }
         }
         
         setInterval(updateClock, 1000);
         updateClock();
         
+        // Función para programar la próxima alarma
+        function scheduleNextAlarm() {
+            if (!alarmActive) return;
+            
+            const now = new Date();
+            const twentyMinutes = 20 * 60 * 1000; // 20 minutos en milisegundos
+            
+            // Calcular el próximo tiempo de alarma
+            nextAlarmTime = now.getTime() + twentyMinutes;
+            
+            // Limpiar timeout anterior si existe
+            if (alarmTimeout) clearTimeout(alarmTimeout);
+            
+            // Programar la próxima alarma
+            alarmTimeout = setTimeout(() => {
+                playAlarm();
+                scheduleNextAlarm(); // Programar la siguiente alarma
+            }, twentyMinutes);
+            
+            console.log(`Alarma programada para: ${new Date(nextAlarmTime).toLocaleTimeString()}`);
+        }
+        
         // Función para tocar la alarma
         function playAlarm() {
-            // Reproducir en bucle hasta que el usuario la detenga
-            alarmSound.loop = true;
-            alarmSound.play().catch(e => console.log("Error al reproducir alarma:", e));
+            console.log("¡Alarma sonando!");
+            
+            // Reproducir sonido
+            alarmSound.currentTime = 0; // Reiniciar audio
+            alarmSound.play().catch(e => console.error("Error al reproducir alarma:", e));
             
             // Efecto visual
             relojSection.classList.add('alarm-active');
@@ -305,6 +328,18 @@
             if (!tabActive) {
                 showNotification();
             }
+            
+            // Detener alarma después de 5 segundos
+            setTimeout(() => {
+                stopAlarm();
+            }, 5000);
+        }
+        
+        // Función para detener la alarma
+        function stopAlarm() {
+            alarmSound.pause();
+            alarmSound.currentTime = 0;
+            relojSection.classList.remove('alarm-active');
         }
         
         // Función para mostrar notificación
@@ -333,27 +368,25 @@
             if (alarmActive) {
                 // Desactivar alarma
                 alarmActive = false;
-                alarmSound.pause();
-                alarmSound.currentTime = 0;
-                clearInterval(alarmInterval);
+                stopAlarm();
+                clearTimeout(alarmTimeout);
                 toggleButton.innerHTML = '<i class="fas fa-bell me-2"></i>Activar Alarma (20 min)';
                 toggleButton.className = 'btn btn-primary';
                 alarmStatus.textContent = 'Alarma inactiva';
                 alarmStatus.className = 'badge bg-secondary';
-                relojSection.classList.remove('alarm-active');
             } else {
                 // Activar alarma
                 alarmActive = true;
-                lastAlarmTime = new Date().getTime();
                 toggleButton.innerHTML = '<i class="fas fa-bell-slash me-2"></i>Desactivar Alarma';
                 toggleButton.className = 'btn btn-danger';
                 alarmStatus.textContent = 'Alarma activa (sonará cada 20 min)';
                 alarmStatus.className = 'badge bg-success';
-                relojSection.classList.add('alarm-active');
+                
+                // Programar la primera alarma
+                scheduleNextAlarm();
                 
                 // Solicitar permisos para notificaciones
-                if (!("Notification" in window)) return;
-                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                     Notification.requestPermission();
                 }
             }
@@ -364,11 +397,20 @@
         
         // Detener alarma al hacer clic en la sección
         relojSection.addEventListener('click', function() {
-            if (alarmSound.currentTime > 0 && !alarmSound.paused) {
+            if (!alarmSound.paused) {
+                stopAlarm();
+            }
+        });
+        
+        // Precargar el sonido de alarma
+        window.addEventListener('load', () => {
+            // Esta línea fuerza la precarga del audio
+            alarmSound.volume = 0;
+            alarmSound.play().then(() => {
                 alarmSound.pause();
                 alarmSound.currentTime = 0;
-                relojSection.classList.remove('alarm-active');
-            }
+                alarmSound.volume = 1.0;
+            }).catch(e => console.log("Precarga de audio:", e));
         });
     </script>
 </body>
