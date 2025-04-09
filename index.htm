@@ -1,135 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" href="clock-symbol-of-circular-shape-svgrepo-com.svg" sizes="any" type="image/svg+xml">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  
-  <title>Feria del Libro</title>
-
-  
-  <!-- Start of familysearch Zendesk Widget script -->
-<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=07be9dfc-df19-4e45-8b1f-0ebe3ac4a5c9"> </script>
-<!-- End of familysearch Zendesk Widget script -->
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soporte - para el Stand de la feria del libro Feria del Libro</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .section-card {
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .section-title {
+            background-color: #6c757d;
+            color: white;
+            padding: 1rem;
+            margin-bottom: 0;
+        }
+        .section-body {
+            padding: 1.5rem;
+            background-color: white;
+        }
+        .qr-container {
+            text-align: center;
+            padding: 1rem;
+        }
+        .qr-image {
+            max-width: 200px;
+            margin-bottom: 1rem;
+        }
+        .alarm-active {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        .excel-container {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-
-<div class="modal modal-sheet position-static d-block p-4 py-md-5" tabindex="-1" role="dialog" id="modalTour">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-body p-5 text-center">
-        <img src="https://edge.fscdn.org/assets/static/media/familysearch-tree.dc22204d2135c739e39d0af7d519e182.svg">
-        <h2 class="fw-bold mb-0 text-center" >Cuenta Regresiva</h2>
-        <p class="display-1 text-center" id="counter">  20:00</p>
-        
-        <p class="text-center" id="startCount">Veces Iniciado: 0</p>
-     
-        <button id="startButton"  class="btn btn-lg btn-primary mt-5 w-100">Iniciar</button>
-      </div>
+    <!-- Header -->
+    <div class="header text-center">
+        <h1><i class="fas fa-book-open me-2"></i>Feria del Libro - Soporte</h1>
+        <p class="lead">Recursos de ayuda y atención al público</p>
     </div>
-  </div>
-</div>
 
+    <div class="container">
+        <!-- Sección de Formulario de Registro -->
+        <div class="section-card">
+            <h3 class="section-title"><i class="fas fa-clipboard-list me-2"></i>Formulario de Registro de Atención</h3>
+            <div class="section-body">
+                <p>Por favor complete el siguiente formulario para registrar su solicitud de atención:</p>
+                <div class="ratio ratio-16x9">
+                    <!-- Reemplaza con el enlace embebido de tu Google Form -->
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf.../viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                </div>
+            </div>
+        </div>
 
-  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4wcHjKPvAhYxnoGwGvsQCJlSCD2Uld8JVPrVDqxnOj3I4FQ/viewform?embedded=true" width="640" height="959" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
-  
-  <script>
-    let count = 0;
-    let running = false;
-    let interval;
-    let minutes = 20;
-    const startButton = document.getElementById('startButton');
-    const counterDisplay = document.getElementById('counter');
+        <!-- Sección de Reloj de Atención -->
+        <div class="section-card" id="reloj-section">
+            <h3 class="section-title"><i class="fas fa-clock me-2"></i>Reloj de Atención</h3>
+            <div class="section-body text-center">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="display-4 mb-3" id="reloj">00:00:00</div>
+                        <div class="mb-3">
+                            <span id="alarm-status" class="badge bg-secondary">Alarma inactiva</span>
+                        </div>
+                        <button id="toggle-alarm" class="btn btn-primary">
+                            <i class="fas fa-bell me-2"></i>Activar Alarma (20 min)
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            La alarma sonará cada 20 minutos para recordar los cambios de turno.
+                        </div>
+                        <audio id="alarm-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    function startStop() {
-      if (!running) {
-        count++;
-        updateStartCount();
-        startButton.textContent = 'Detener';
-        startTimer();
-      } else {
-        clearInterval(interval);
-        running = false;
-        startButton.textContent = 'Iniciar';
-      }
-    }
+        <!-- Sección de Contacto por WhatsApp -->
+        <div class="section-card">
+            <h3 class="section-title"><i class="fab fa-whatsapp me-2"></i>Contacto por WhatsApp</h3>
+            <div class="section-body">
+                <div class="row">
+                    <div class="col-md-6 qr-container">
+                        <!-- Reemplaza con tu QR real -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wa.me/5491112345678?text=Hola%20Feria%20del%20Libro,%20soy%20[Usuario]" alt="QR de WhatsApp" class="qr-image img-fluid">
+                        <p>Escanee el código QR para chatear con un agente de soporte</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Instrucciones:</h4>
+                        <ol>
+                            <li>Abra la aplicación de WhatsApp en su dispositivo</li>
+                            <li>Escanee el código QR o haga clic en el enlace</li>
+                            <li>El mensaje se abrirá automáticamente con el saludo:</li>
+                        </ol>
+                        <div class="alert alert-success">
+                            <strong>Hola, Feria del Libro. Soy [Usuario]</strong>
+                        </div>
+                        <p>Complete [Usuario] con su nombre para identificarse</p>
+                        <a href="https://wa.me/5491112345678?text=Hola%20Feria%20del%20Libro,%20soy%20[Usuario]" class="btn btn-success">
+                            <i class="fab fa-whatsapp me-2"></i>Abrir WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    function startTimer() {
-      let seconds = minutes * 60;
-      interval = setInterval(() => {
-        seconds--;
-        if (seconds < 0) {
-          clearInterval(interval);
-          running = false;
-          startButton.textContent = 'Iniciar';
-          alertTimeOver();
-          return;
+        <!-- Sección de Horarios y Coordinadores -->
+        <div class="section-card">
+            <h3 class="section-title"><i class="fas fa-calendar-alt me-2"></i>Horarios y Coordinadores</h3>
+            <div class="section-body">
+                <p>Consulte a continuación los horarios de atención y los coordinadores asignados:</p>
+                
+                <!-- Widget embebido de Excel/Google Sheets -->
+                <div class="excel-container">
+                    <!-- Reemplaza con el enlace embebido de tu hoja de cálculo -->
+                    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-.../pubhtml?widget=true&amp;headers=false"></iframe>
+                </div>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Los horarios están sujetos a cambios. Consulte periódicamente para actualizaciones.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-4">
+        <p class="mb-0">Feria del Libro © 2025 - Todos los derechos reservados</p>
+    </footer>
+
+    <!-- Bootstrap JS y dependencias -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Reloj y alarma
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('reloj').textContent = `${hours}:${minutes}:${seconds}`;
         }
-        displayTimeLeft(seconds);
-      }, 1000);
-      running = true;
-    }
-
-    function displayTimeLeft(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const remainderSeconds = seconds % 60;
-      const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
-      counterDisplay.textContent = display;
-
-      // Actualizar el título de la página con el tiempo restante
-      document.title = display + " | Cuenta regresiva";
-
-      // Comunicarse con el Service Worker
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          action: 'updateTitle',
-          title: display
-        });
-      }
-    }
-
-    function updateStartCount() {
-      document.getElementById('startCount').textContent = `Veces Iniciado: ${count}`;
-    }
-
-    function alertTimeOver() {
-      // Cambiar título de la pestaña si está en segundo plano
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          document.title = "¡Tiempo terminado!";
-          if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage({
-              action: 'updateTitle',
-              title: "¡Tiempo terminado!"
-            });
-          }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // Configuración de la alarma
+        let alarmInterval;
+        let alarmActive = false;
+        const alarmSound = document.getElementById('alarm-sound');
+        const toggleButton = document.getElementById('toggle-alarm');
+        const alarmStatus = document.getElementById('alarm-status');
+        const relojSection = document.getElementById('reloj-section');
+        
+        function toggleAlarm() {
+            if (alarmActive) {
+                clearInterval(alarmInterval);
+                alarmActive = false;
+                toggleButton.innerHTML = '<i class="fas fa-bell me-2"></i>Activar Alarma (20 min)';
+                toggleButton.className = 'btn btn-primary';
+                alarmStatus.textContent = 'Alarma inactiva';
+                alarmStatus.className = 'badge bg-secondary';
+                relojSection.classList.remove('alarm-active');
+            } else {
+                startAlarm();
+                alarmActive = true;
+                toggleButton.innerHTML = '<i class="fas fa-bell-slash me-2"></i>Desactivar Alarma';
+                toggleButton.className = 'btn btn-danger';
+                alarmStatus.textContent = 'Alarma activa (sonará cada 20 min)';
+                alarmStatus.className = 'badge bg-success';
+                relojSection.classList.add('alarm-active');
+            }
         }
-      });
-
-      // Reproducir sonido
-      const audio = new Audio('beep.mp3');
-      audio.play();
-
-      // Mostrar alerta
-      alert("¡Tiempo terminado!");
-    }
-
-    startButton.addEventListener('click', startStop);
-
-    // Registrar el Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => {
-          console.log('Service Worker registrado correctamente!', reg);
-        }).catch(err => {
-          console.error('Error al registrar el Service Worker:', err);
-        });
-    }
-  </script>
+        
+        function startAlarm() {
+            // Sonar inmediatamente al activar
+            playAlarm();
+            
+            // Configurar intervalo de 20 minutos (1200000 ms)
+            // Para pruebas puedes usar 20000 ms (20 segundos)
+            alarmInterval = setInterval(playAlarm, 1200000);
+        }
+        
+        function playAlarm() {
+            alarmSound.play();
+            relojSection.classList.add('alarm-active');
+            setTimeout(() => {
+                relojSection.classList.remove('alarm-active');
+            }, 1000);
+        }
+        
+        toggleButton.addEventListener('click', toggleAlarm);
+    </script>
 </body>
 </html>
