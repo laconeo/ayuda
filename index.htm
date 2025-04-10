@@ -100,7 +100,7 @@
     <style>
         .feria_del_libro {
             background-color: #F4D03F;
-background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
+            background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
 
         }
     </style>
@@ -115,20 +115,7 @@ background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
     <div class="container">
         <!-- Primera fila horizontal -->
         <div class="row horizontal-row row-spacing">
-            <!-- Formulario de Registro -->
-            <div class="col-md-6 horizontal-col">
-                <div class="section-card">
-                    <h3 class="section-title"><i class="fas fa-clipboard-list me-2"></i>Registro de Atención</h3>
-                    <div class="section-body">
-                        <div class="card-content">
-                            <p>Por favor complete este formulario cada vez que termine con una atencion:</p>
-                            <div class="ratio ratio-16x9">
-                                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4wcHjKPvAhYxnoGwGvsQCJlSCD2Uld8JVPrVDqxnOj3I4FQ/viewform?embedded=true" width="300" height="300" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    
 
             <!-- Reloj de Atención -->
             <div class="col-md-6 horizontal-col">
@@ -146,7 +133,7 @@ background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
                             </button>
                             <div class="alert alert-info mt-auto tab-active-only">
                                 <i class="fas fa-info-circle me-2"></i>
-                                La alarma sonará cada 20 minutos para recordar los cambios de turno.
+                                Al activar la alarma, sonara cada 20 minutos
                             </div>
                         </div>
                         <!-- Audio oculto -->
@@ -158,12 +145,27 @@ background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
             </div>
         </div>
 
+        <!-- Formulario de Registro -->
+            <div class="col-md-6 horizontal-col">
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-clipboard-list me-2"></i>Registro de Atención</h3>
+                    <div class="section-body">
+                        <div class="card-content">
+                            <p>Completar Informe despues de cada Atención:</p>
+                            <div class="ratio ratio-16x9">
+                              <iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=s-7mYddfqkquPGHo3rCbeTCijPib2B9Pm9cHwaeJHkVUMjVZOUtOTUI1Tk5VN0EwSEFNU0xaOUdaWC4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
         <!-- Segunda fila horizontal -->
         <div class="row horizontal-row row-spacing">
             <!-- WhatsApp Principal -->
             <div class="col-md-6 horizontal-col">
                 <div class="section-card">
-                    <h3 class="section-title"><i class="fab fa-whatsapp me-2"></i>Contacte a un Agente</h3>
+                    <h3 class="section-title"><i class="fab fa-whatsapp me-2"></i>Contacte a un Agente para recibir Ayuda</h3>
                     <div class="section-body">
                         <div class="card-content">
                             <div class="row">
@@ -188,7 +190,7 @@ background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
             <!-- WhatsApp Contingencia -->
             <div class="col-md-6 horizontal-col">
                 <div class="section-card contingency-card">
-                    <h3 class="section-title contingency-title"><i class="fas fa-exclamation-triangle me-2"></i>En caso de emergencia</h3>
+                    <h3 class="section-title contingency-title"><i class="fas fa-exclamation-triangle me-2"></i>Contacte a un miembro del STAFF por Ayuda</h3>
                     <div class="section-body">
                         <div class="card-content">
                          
@@ -200,7 +202,7 @@ background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
                                 <div class="col-12">
                                    <div class="alert alert-warning">
                                         <i class="fas fa-exclamation-circle me-2"></i>
-                                        <strong>Uso exclusivo en caso de falla del contacto principal</strong>
+                                        <strong>Use este recurso solo si un Agente no ha podido ayudarle</strong>
                                     </div>
                                     <a href="https://chat.whatsapp.com/ABC123DEF456" class="btn btn-outline-danger w-100">
                                         <i class="fab fa-whatsapp me-2"></i>Unirse al grupo
@@ -217,7 +219,7 @@ background-image: linear-gradient(132deg, #F4D03F 0%, #16a04b 100%);
 
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3 mt-4 feria_de_libro">
-        <p class="mb-0">Ayuda al Usuario stand de FamilySearch en la 49 Feria del Libro</p>
+        <p class="mb-0">Espacio e recursos para eventos</p>
     </footer>
 
     <!-- Bootstrap JS y dependencias -->
