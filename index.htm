@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soporte Eventos - Hora</title>
+    <title>Soporte - Feria del Libro</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome para iconos -->
@@ -11,30 +11,32 @@
     <style>
         body {
             background-color: #f8f9fa;
-            padding: 20px;
         }
         .header {
             background-color: #343a40;
             color: white;
-            padding: 1rem 0;
-            margin-bottom: 1.5rem;
-            border-radius: 8px;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
         }
-        .card {
-            margin-bottom: 20px;
+        .section-card {
+            margin-bottom: 2rem;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border-radius: 10px;
             overflow: hidden;
             height: 100%;
         }
-        .card-title {
+        .section-title {
             background-color: #6c757d;
             color: white;
-            padding: 0.75rem;
+            padding: 1rem;
             margin-bottom: 0;
         }
-        .card-body {
-            padding: 1.25rem;
+        .section-body {
+            padding: 1.5rem;
+            background-color: white;
+            height: calc(100% - 56px);
+            display: flex;
+            flex-direction: column;
         }
         .qr-container {
             text-align: center;
@@ -52,102 +54,156 @@
             70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
             100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
         }
-        .form-container {
-            height: 100%;
-            min-height: 600px;
+        .excel-container {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
         }
-        .btn-whatsapp {
-            background-color: #25D366;
-            color: white;
+        .contingency-card {
+            border-left: 5px solid #dc3545;
         }
-        .btn-whatsapp-group {
-            background-color: #128C7E;
-            color: white;
+        .contingency-title {
+            background-color: #dc3545 !important;
         }
-        .clock-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            text-align: center;
-            margin: 15px 0;
+        .card-content {
+            flex-grow: 1;
+        }
+        .horizontal-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        .horizontal-col {
+            padding-right: 15px;
+            padding-left: 15px;
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+        @media (max-width: 768px) {
+            .horizontal-col {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header text-center">
-        <h1><i class="fas fa-calendar-alt me-2"></i>Soporte para Eventos</h1>
+        <h1><i class="fas fa-book-open me-2"></i>Feria del Libro - Soporte</h1>
+        <p class="lead">Recursos de ayuda y atención al público</p>
     </div>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Columna izquierda - 3 cards -->
-            <div class="col-md-5">
-                <!-- Card 1: Reloj y alarma -->
-                <div class="card" id="reloj-section">
-                    <h3 class="card-title"><i class="fas fa-clock me-2"></i>Control de Tiempo</h3>
-                    <div class="card-body text-center">
-                        <div class="clock-display" id="reloj">00:00:00</div>
-                        <div class="mb-3">
-                            <span id="alarm-status" class="badge bg-secondary">Alarma inactiva</span>
-                            <span id="tab-status" class="badge bg-info ms-2">Pestaña activa</span>
+    <div class="container">
+        <!-- Primera fila horizontal -->
+        <div class="row horizontal-row">
+            <!-- Formulario de Registro -->
+            <div class="col-md-6 horizontal-col">
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-clipboard-list me-2"></i>Formulario de Registro</h3>
+                    <div class="section-body">
+                        <div class="card-content">
+                            <p>Por favor complete el siguiente formulario para registrar su solicitud de atención:</p>
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf.../viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                            </div>
                         </div>
-                        <button id="toggle-alarm" class="btn btn-primary mb-3">
-                            <i class="fas fa-bell me-2"></i>Activar Alarma (20 min)
-                        </button>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            La alarma sonará cada 20 minutos para control de turnos.
-                        </div>
-                    </div>
-                    <audio id="alarm-sound" preload="auto">
-                        <source src="https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3" type="audio/mpeg">
-                    </audio>
-                </div>
-
-                <!-- Card 2: Contacto WhatsApp -->
-                <div class="card">
-                    <h3 class="card-title"><i class="fab fa-whatsapp me-2"></i>Soporte Rápido</h3>
-                    <div class="card-body">
-                        <div class="qr-container">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wa.me/5491112345678?text=Hola%20Soporte%20Evento,%20necesito%20ayuda%20con%20" 
-                                 alt="QR de WhatsApp" class="qr-image img-fluid">
-                            <p>Contacte a un agente para ayuda inmediata</p>
-                        </div>
-                        <a href="https://wa.me/5491112345678?text=Hola%20Soporte%20Evento,%20necesito%20ayuda%20con%20" 
-                           class="btn btn-whatsapp w-100">
-                            <i class="fab fa-whatsapp me-2"></i>Abrir WhatsApp
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Card 3: Grupo WhatsApp -->
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-users me-2"></i>Soporte STAFF</h3>
-                    <div class="card-body">
-                        <div class="qr-container">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://chat.whatsapp.com/ABC123DEF456" 
-                                 alt="QR de Grupo WhatsApp" class="qr-image img-fluid">
-                            <p>Grupo exclusivo para el equipo de soporte</p>
-                        </div>
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Solo para uso del personal autorizado
-                        </div>
-                        <a href="https://chat.whatsapp.com/ABC123DEF456" class="btn btn-whatsapp-group w-100">
-                            <i class="fab fa-whatsapp me-2"></i>Unirse al grupo
-                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Columna derecha - Formulario -->
-            <div class="col-md-7">
-                <div class="card">
-                    <h3 class="card-title"><i class="fas fa-clipboard-list me-2"></i>Registro de Atenciones</h3>
-                    <div class="card-body">
-                        <div class="form-container ratio ratio-16x9">
-                            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4wcHjKPvAhYxnoGwGvsQCJlSCD2Uld8JVPrVDqxnOj3I4FQ/viewform?embedded=true" 
-                                    frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+            <!-- Reloj de Atención -->
+            <div class="col-md-6 horizontal-col">
+                <div class="section-card" id="reloj-section">
+                    <h3 class="section-title"><i class="fas fa-clock me-2"></i>Reloj de Atención</h3>
+                    <div class="section-body">
+                        <div class="card-content text-center">
+                            <div class="display-4 mb-3" id="reloj">00:00:00</div>
+                            <div class="mb-3">
+                                <span id="alarm-status" class="badge bg-secondary">Alarma inactiva</span>
+                            </div>
+                            <button id="toggle-alarm" class="btn btn-primary">
+                                <i class="fas fa-bell me-2"></i>Activar Alarma (20 min)
+                            </button>
+                        </div>
+                        <div class="alert alert-info mt-auto">
+                            <i class="fas fa-info-circle me-2"></i>
+                            La alarma sonará cada 20 minutos para recordar los cambios de turno.
+                        </div>
+                        <audio id="alarm-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segunda fila horizontal -->
+        <div class="row horizontal-row">
+            <!-- WhatsApp Principal -->
+            <div class="col-md-6 horizontal-col">
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fab fa-whatsapp me-2"></i>Contacto por WhatsApp</h3>
+                    <div class="section-body">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col-12 qr-container">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wa.me/5491112345678?text=Hola%20Feria%20del%20Libro,%20soy%20[Usuario]" alt="QR de WhatsApp" class="qr-image img-fluid">
+                                    <p>Escanee el código QR para chatear con un agente</p>
+                                </div>
+                                <div class="col-12">
+                                    <div class="alert alert-success">
+                                        <strong>Hola, Feria del Libro. Soy [Usuario]</strong>
+                                    </div>
+                                    <a href="https://wa.me/5491112345678?text=Hola%20Feria%20del%20Libro,%20soy%20[Usuario]" class="btn btn-success w-100">
+                                        <i class="fab fa-whatsapp me-2"></i>Abrir WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Contingencia -->
+            <div class="col-md-6 horizontal-col">
+                <div class="section-card contingency-card">
+                    <h3 class="section-title contingency-title"><i class="fas fa-exclamation-triangle me-2"></i>Contingencia Tier 2</h3>
+                    <div class="section-body">
+                        <div class="card-content">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <strong>Uso exclusivo en caso de falla del contacto principal</strong>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 qr-container">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://chat.whatsapp.com/ABC123DEF456" alt="QR de WhatsApp Contingencia" class="qr-image img-fluid">
+                                    <p class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i> Grupo de contingencia</p>
+                                </div>
+                                <div class="col-12">
+                                    <a href="https://chat.whatsapp.com/ABC123DEF456" class="btn btn-outline-danger w-100">
+                                        <i class="fab fa-whatsapp me-2"></i>Unirse al grupo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tercera fila (horarios - ocupa todo el ancho) -->
+        <div class="row">
+            <div class="col-12">
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-calendar-alt me-2"></i>Horarios y Coordinadores</h3>
+                    <div class="section-body">
+                        <p>Consulte los horarios de atención y los coordinadores asignados:</p>
+                        <div class="excel-container">
+                            <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-.../pubhtml?widget=true&amp;headers=false"></iframe>
+                        </div>
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Los horarios están sujetos a cambios. Consulte periódicamente para actualizaciones.
                         </div>
                     </div>
                 </div>
@@ -157,191 +213,67 @@
 
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3 mt-4">
-        <p class="mb-0">Sistema de Soporte para Eventos - FamilySearch © <span id="current-year"></span></p>
+        <p class="mb-0">Feria del Libro © 2023 - Todos los derechos reservados</p>
     </footer>
 
     <!-- Bootstrap JS y dependencias -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Variables globales
-        let alarmActive = false;
-        let alarmInterval;
-        let alarmSound;
-        let lastAlarmTime = 0;
-        const toggleButton = document.getElementById('toggle-alarm');
-        const alarmStatus = document.getElementById('alarm-status');
-        const tabStatus = document.getElementById('tab-status');
-        const relojSection = document.getElementById('reloj-section');
-        
-        // Actualizar año en footer
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        
-        // Inicializar el audio
-        function initAudio() {
-            alarmSound = document.getElementById('alarm-sound');
-            alarmSound.volume = 1.0; // Volumen máximo
-            
-            // Precargar el audio
-            const playPromise = alarmSound.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    alarmSound.pause();
-                    alarmSound.currentTime = 0;
-                }).catch(error => {
-                    console.log("Precarga de audio:", error);
-                });
-            }
-        }
-        
-        // Verificar estado de la pestaña
-        let tabActive = !document.hidden;
-        updateTabStatus();
-        
-        document.addEventListener('visibilitychange', () => {
-            tabActive = !document.hidden;
-            updateTabStatus();
-            document.title = `Soporte Eventos - ${document.getElementById('reloj').textContent}`;
-        });
-
-        function updateTabStatus() {
-            if (tabActive) {
-                tabStatus.textContent = "Pestaña activa";
-                tabStatus.className = "badge bg-info ms-2";
-            } else {
-                tabStatus.textContent = "Pestaña inactiva";
-                tabStatus.className = "badge bg-warning text-dark ms-2";
-            }
-        }
-
-        // Reloj y actualización de título
+        // Reloj y alarma
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
-            const timeString = `${hours}:${minutes}:${seconds}`;
-            document.getElementById('reloj').textContent = timeString;
-            document.title = `Soporte Eventos - ${timeString}`;
+            document.getElementById('reloj').textContent = `${hours}:${minutes}:${seconds}`;
         }
         
         setInterval(updateClock, 1000);
         updateClock();
         
-        // Función para tocar la alarma
-        function playAlarm() {
-            console.log("¡Alarma sonando!");
-            
-            try {
-                alarmSound.currentTime = 0;
-                const playPromise = alarmSound.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        // Efecto visual
-                        relojSection.classList.add('alarm-active');
-                        
-                        // Mostrar notificación si la pestaña no está activa
-                        if (!tabActive) {
-                            showNotification();
-                        }
-                        
-                        // Detener alarma después de 3 segundos
-                        setTimeout(() => {
-                            stopAlarm();
-                        }, 3000);
-                    }).catch(error => {
-                        console.error("Error al reproducir alarma:", error);
-                        // Intentar nuevamente con interacción del usuario
-                        document.addEventListener('click', function tryPlayAgain() {
-                            alarmSound.play().then(_ => {
-                                document.removeEventListener('click', tryPlayAgain);
-                            });
-                        }, { once: true });
-                    });
-                }
-            } catch (error) {
-                console.error("Error en playAlarm:", error);
-            }
-        }
+        // Configuración de la alarma
+        let alarmInterval;
+        let alarmActive = false;
+        const alarmSound = document.getElementById('alarm-sound');
+        const toggleButton = document.getElementById('toggle-alarm');
+        const alarmStatus = document.getElementById('alarm-status');
+        const relojSection = document.getElementById('reloj-section');
         
-        // Función para detener la alarma
-        function stopAlarm() {
-            alarmSound.pause();
-            alarmSound.currentTime = 0;
-            relojSection.classList.remove('alarm-active');
-        }
-        
-        // Función para mostrar notificación
-        function showNotification() {
-            if (!("Notification" in window)) return;
-            
-            if (Notification.permission === "granted") {
-                new Notification("¡Alarma de Evento!", {
-                    body: "Han pasado 20 minutos - Control de turnos",
-                    icon: "https://cdn-icons-png.flaticon.com/512/1828/1828508.png"
-                });
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        new Notification("¡Alarma de Evento!", {
-                            body: "Han pasado 20 minutos - Control de turnos",
-                            icon: "https://cdn-icons-png.flaticon.com/512/1828/1828508.png"
-                        });
-                    }
-                });
-            }
-        }
-        
-        // Función para activar/desactivar la alarma
         function toggleAlarm() {
             if (alarmActive) {
-                // Desactivar alarma
-                alarmActive = false;
                 clearInterval(alarmInterval);
-                stopAlarm();
+                alarmActive = false;
                 toggleButton.innerHTML = '<i class="fas fa-bell me-2"></i>Activar Alarma (20 min)';
                 toggleButton.className = 'btn btn-primary';
                 alarmStatus.textContent = 'Alarma inactiva';
                 alarmStatus.className = 'badge bg-secondary';
+                relojSection.classList.remove('alarm-active');
             } else {
-                // Activar alarma
+                startAlarm();
                 alarmActive = true;
                 toggleButton.innerHTML = '<i class="fas fa-bell-slash me-2"></i>Desactivar Alarma';
                 toggleButton.className = 'btn btn-danger';
-                alarmStatus.textContent = 'Alarma activa (20 min)';
+                alarmStatus.textContent = 'Alarma activa (sonará cada 20 min)';
                 alarmStatus.className = 'badge bg-success';
-                
-                // Programar la alarma cada 20 minutos
-                alarmInterval = setInterval(() => {
-                    playAlarm();
-                }, 20 * 60 * 1000); // 20 minutos en milisegundos
-                
-                // Sonar inmediatamente la primera vez
-                playAlarm();
-                
-                // Solicitar permisos para notificaciones
-                if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-                    Notification.requestPermission();
-                }
+                relojSection.classList.add('alarm-active');
             }
         }
         
-        // Event listeners
+        function startAlarm() {
+            playAlarm();
+            alarmInterval = setInterval(playAlarm, 1200000); // 20 minutos
+        }
+        
+        function playAlarm() {
+            alarmSound.play();
+            relojSection.classList.add('alarm-active');
+            setTimeout(() => {
+                relojSection.classList.remove('alarm-active');
+            }, 1000);
+        }
+        
         toggleButton.addEventListener('click', toggleAlarm);
-        
-        // Detener alarma al hacer clic en la sección
-        relojSection.addEventListener('click', function() {
-            if (!alarmSound.paused) {
-                stopAlarm();
-            }
-        });
-        
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            initAudio();
-        });
     </script>
 </body>
 </html>
