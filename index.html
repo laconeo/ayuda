@@ -3,300 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soporte para Eventos - FamilySearch Latinoamérica</title>
+    <title>FamilySearch Eventos - Sitio en Construcción</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --fs-blue: #006cb6;
-            --fs-light-blue: #e6f2fa;
+            --fs-primary: #87B940;
+            --fs-dark: #343a40;
+            --fs-light: #f8f9fa;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            color: var(--fs-dark);
+            background-color: #f8f9fa;
         }
         .fs-bg-primary {
-            background-color: var(--fs-blue);
+            background-color: var(--fs-primary);
             color: white;
         }
-        .fs-bg-light {
-            background-color: var(--fs-light-blue);
+        .btn-primary {
+            background-color: var(--fs-primary);
+            border-color: var(--fs-primary);
+        }
+        .btn-outline-primary {
+            color: var(--fs-primary);
+            border-color: var(--fs-primary);
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--fs-primary);
+            color: white;
         }
         .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.familysearch.org/blog/es/wp-content/uploads/sites/7/2020/03/familysearch-event.jpg');
+            background: linear-gradient(135deg, rgba(135, 185, 64, 0.9), rgba(135, 185, 64, 0.7)), 
+                        url('https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
             background-size: cover;
             background-position: center;
-            min-height: 400px;
-        }
-        .calendar-container {
-            height: 600px;
-        }
-        .resource-card {
-            transition: transform 0.3s ease;
-            height: 100%;
-        }
-        .resource-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .btn-fs {
-            background-color: var(--fs-blue);
-            color: white;
-        }
-        .btn-fs:hover {
-            background-color: #005a9c;
-            color: white;
-        }
-
-            .fs {
-            background-color:#87B940;
-            color:#FFFFFF;
-        }
- .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-                        url('https://resizer.glanacion.com/resizer/v2/ideal-para-las-fotos-el-stand-de-la-ong-CIOEPHLNPZFAPPPAZ5L2YHBPMY.JPG?auth=247fcda2142b46d5473e5759e7ea2f87591a3a9e5f21a62e77c8ed9b84a0b316&width=1200&quality=70&smart=false&height=800');
-            background-size: cover;
-            background-position: center;
-            min-height: 400px;
+            min-height: 80vh;
             display: flex;
             align-items: center;
-            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
             text-align: center;
-            color: white;
             padding: 2rem;
+            width: 100%;
+        }
+        .construction-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+        .btn-xl {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            margin: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #76a437;
+            border-color: #76a437;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--fs-primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            border-radius: 50%;
+            background-color: white;
+        }
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -50px;
+        }
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -50px;
+        }
+        .countdown {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            font-weight: 300;
+        }
+        .social-links {
+            margin-top: 2rem;
+        }
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .social-links a:hover {
+            transform: translateY(-5px);
+            color: rgba(255,255,255,0.8);
         }
     </style>
 </head>
 <body>
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg fs-bg-primary fs">
-        <div class="container">
-            <a class="navbar-brand text-white" href="#">
-                <img src="https://www.familysearch.org/etc/designs/fs/familysearch/clientlibs/images/logo.png" alt="FamilySearch" height="40">
-                Soporte para Eventos
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#calendar">Calendario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#resources">Recursos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#contact">Contacto</a>
-                    </li>
-                </ul>
-            </div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
         </div>
-    </nav>
-
-    <!-- Sección Hero -->
-    <section class="hero-section d-flex align-items-center text-white">
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">Soporte para Eventos FamilySearch</h1>
-            <p class="lead mb-5">Recursos y herramientas para eventos en Latinoamérica</p>
-            <a href="#resources" class="btn btn-light btn-lg px-4 me-2">Ver Recursos</a>
-            <a href="#contact" class="btn btn-outline-light btn-lg px-4">Contactar Soporte</a>
-        </div>
-    </section>
-
-    <!-- Sección Calendario -->
-    <section id="calendar" class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Calendario de Eventos</h2>
-                <p class="lead">Próximos eventos y actividades programadas</p>
+        
+        <div class="hero-content">
+            <div class="construction-icon">
+                <i class="fas fa-tools"></i>
             </div>
-            <div class="calendar-container ratio ratio-16x9">
-                <iframe src="https://calendar.google.com/calendar/u/2?cid=Y18xYTk5YTZkYjUyYzRlYjM1MzRhNWFhYmQ3MTcxYzU0MDM3NGViYWMyMmNkYzlmNTM3NDhmMjFjMDZmOGIxYWMxQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" 
-                        frameborder="0" scrolling="no"></iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección Recursos -->
-    <section id="resources" class="py-5 fs-bg-light">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Recursos para Eventos</h2>
-                <p class="lead">Materiales de apoyo para la organización de eventos</p>
+            <h1 class="display-3 fw-bold mb-4 text-white">Sitio en Construcción</h1>
+            <p class="lead mb-5 text-white">Estamos trabajando en una mejor experiencia para ti</p>
+            
+            <div class="d-flex flex-wrap justify-content-center">
+                <a href="feria.html" class="btn btn-primary btn-xl">
+                    <i class="fas fa-calendar-day me-2"></i> Recursos para Ferias
+                </a>
+                <a href="evento.html" class="btn btn-primary btn-xl">
+                    <i class="fas fa-users me-2"></i> Recursos para Eventos
+                </a>
+                <a href="https://www.familysearch.org/es/fieldops/familysearch-event-support" 
+                   class="btn btn-outline-primary btn-xl" target="_blank">
+                    <i class="fas fa-clipboard-check me-2"></i> Planifica el Soporte
+                </a>
+                <a href="https://www.familysearch.org/es/fieldops/mexico-caribe-centroamerica-y-sudamerica-comuniquese-con-nosotros" 
+                   class="btn btn-outline-primary btn-xl" target="_blank">
+                    <i class="fas fa-envelope me-2"></i> Contáctanos
+                </a>
             </div>
             
-            <div class="row g-4">
-                <!-- Tarjeta 1 -->
-                <div class="col-md-4">
-                    <div class="card resource-card h-100">
-                        <div class="card-body">
-                            <div class="text-center mb-4">
-                                <i class="fas fa-file-pdf fa-3x text-danger"></i>
-                            </div>
-                            <h4 class="card-title">Guía Rápida para Eventos</h4>
-                            <p class="card-text">Documento con los pasos esenciales para planificar y ejecutar eventos exitosos.</p>
-                            <a href="#" class="btn btn-fs">Descargar PDF</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tarjeta 2 -->
-                <div class="col-md-4">
-                    <div class="card resource-card h-100">
-                        <div class="card-body">
-                            <div class="text-center mb-4">
-                                <i class="fas fa-video fa-3x text-primary"></i>
-                            </div>
-                            <h4 class="card-title">Tutoriales en Video</h4>
-                            <p class="card-text">Colección de videos instructivos para el equipo de soporte en eventos.</p>
-                            <a href="#" class="btn btn-fs">Ver Videos</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tarjeta 3 -->
-                <div class="col-md-4">
-                    <div class="card resource-card h-100">
-                        <div class="card-body">
-                            <div class="text-center mb-4">
-                                <i class="fas fa-tools fa-3x text-warning"></i>
-                            </div>
-                            <h4 class="card-title">Kit de Herramientas</h4>
-                            <p class="card-text">Plantillas, checklist y materiales promocionales para tus eventos.</p>
-                            <a href="#" class="btn btn-fs">Acceder</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tarjeta 4 -->
-                <div class="col-md-6">
-                    <div class="card resource-card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title">Preguntas Frecuentes</h4>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">¿Cómo configurar las estaciones de ayuda?</li>
-                                <li class="list-group-item">¿Qué hacer si un visitante no recuerda su cuenta?</li>
-                                <li class="list-group-item">Procedimiento para recuperación de cuentas</li>
-                                <li class="list-group-item">Solución a problemas comunes</li>
-                            </ul>
-                            <div class="mt-3">
-                                <a href="#" class="btn btn-outline-primary">Ver todas las preguntas</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tarjeta 5 -->
-                <div class="col-md-6">
-                    <div class="card resource-card h-100">
-                        <div class="card-body">
-                            <h4 class="card-title">Contacto de Soporte</h4>
-                            <div class="mb-3">
-                                <h5><i class="fas fa-phone-alt me-2"></i> Soporte Telefónico</h5>
-                                <p>Línea directa para eventos en Latinoamérica: <strong>+1 800-123-4567</strong></p>
-                            </div>
-                            <div class="mb-3">
-                                <h5><i class="fab fa-whatsapp me-2"></i> WhatsApp</h5>
-                                <p>Chat de soporte para coordinadores: <strong>+1 801-123-4567</strong></p>
-                            </div>
-                            <div class="text-center">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/18011234567" 
-                                     alt="QR WhatsApp Soporte" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="countdown text-white">
+                <p>Nuevo sitio disponible pronto</p>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
     </section>
-
-    <!-- Sección Contacto -->
-    <section id="contact" class="py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="fw-bold mb-4">Contacta al Equipo de Soporte</h2>
-                    <p>Para asistencia inmediata con la planificación de tu evento o preguntas sobre los recursos disponibles.</p>
-                    
-                    <div class="mt-4">
-                        <h4><i class="fas fa-envelope me-2"></i> Correo Electrónico</h4>
-                        <p>soporte-eventos-la@familysearch.org</p>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <h4><i class="fas fa-clock me-2"></i> Horario de Atención</h4>
-                        <p>Lunes a Viernes: 8:00 am - 5:00 pm (GMT-5)</p>
-                        <p>Sábados: 9:00 am - 1:00 pm (GMT-5)</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Formulario de Contacto</h4>
-                            <form mailto="hernandezfd@familysearch.org">
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Correo Electrónico</label>
-                                    <input type="email" class="form-control" id="email" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="event" class="form-label">Evento</label>
-                                    <input type="text" class="form-control" id="event" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="message" class="form-label">Mensaje</label>
-                                    <textarea class="form-control" id="message" rows="3" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-fs w-100">Enviar Mensaje</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="fs-bg-primary text-white py-4 fs">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Soporte para Eventos FamilySearch</h5>
-                    <p>Recursos y asistencia para eventos en Latinoamérica</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Enlaces Rápidos</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">FamilySearch.org</a></li>
-                        <li><a href="#" class="text-white">Centro de Ayuda</a></li>
-                        <li><a href="#" class="text-white">Blog de Eventos</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Redes Sociales</h5>
-                    <div class="social-links">
-                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-4 bg-light">
-            <div class="text-center">
-                <p class="mb-0">© 2023 FamilySearch International. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Efecto de partículas flotantes
+        document.addEventListener('DOMContentLoaded', function() {
+            const shapesContainer = document.querySelector('.floating-shapes');
+            const colors = ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.15)', 'rgba(255,255,255,0.2)'];
+            
+            // Crear formas flotantes adicionales
+            for (let i = 0; i < 10; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('shape');
+                shape.style.width = `${Math.random() * 100 + 50}px`;
+                shape.style.height = shape.style.width;
+                shape.style.left = `${Math.random() * 100}%`;
+                shape.style.top = `${Math.random() * 100}%`;
+                shape.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                shape.style.opacity = Math.random() * 0.1 + 0.05;
+                
+                // Animación
+                const duration = Math.random() * 20 + 10;
+                shape.style.animation = `float ${duration}s infinite ease-in-out`;
+                shape.style.animationDelay = `${Math.random() * 5}s`;
+                
+                shapesContainer.appendChild(shape);
+            }
+            
+            // Definir keyframes para animación flotante
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes float {
+                    0% { transform: translate(0, 0) rotate(0deg); }
+                    25% { transform: translate(10px, 10px) rotate(5deg); }
+                    50% { transform: translate(20px, 5px) rotate(0deg); }
+                    75% { transform: translate(10px, 15px) rotate(-5deg); }
+                    100% { transform: translate(0, 0) rotate(0deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
 </body>
 </html>
