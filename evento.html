@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AYUDA</title>
+      <link rel="icon" href="normal-icon.png" id="pageFavicon">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome para iconos -->
@@ -91,6 +92,64 @@
             color:#FFFFFF;
         }
     </style>
+
+       <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configuración
+            const INTERVAL_MINUTES = 1;
+            const ALERT_DURATION = 5000; // 5 segundos
+            
+            // Elementos
+            const favicon = document.getElementById('pageFavicon');
+            const originalTitle = document.title;
+            const originalFavicon = favicon.href;
+            
+            // Función para activar alerta
+            function triggerAlert() {
+                // 1. Parpadeo de título
+                let isVisible = true;
+                const titleInterval = setInterval(() => {
+                    document.title = isVisible ? '⚠️ ATENCIÓN REQUERIDA ⚠️' : originalTitle;
+                    isVisible = !isVisible;
+                }, 500);
+                
+                // 2. Parpadeo de favicon
+                const alertFavicon = 'alert-icon.png';
+                let isOriginal = true;
+                const faviconInterval = setInterval(() => {
+                    favicon.href = isOriginal ? alertFavicon : originalFavicon;
+                    isOriginal = !isOriginal;
+                }, 600);
+                
+                // 3. Notificación (si está permitido)
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("Recordatorio", {
+                        body: "Han pasado " + INTERVAL_MINUTES + " minutos",
+                        icon: alertFavicon
+                    });
+                }
+                
+                // Detener después del tiempo configurado
+                setTimeout(() => {
+                    clearInterval(titleInterval);
+                    clearInterval(faviconInterval);
+                    document.title = originalTitle;
+                    favicon.href = originalFavicon;
+                }, ALERT_DURATION);
+            }
+            
+            // Solicitar permiso para notificaciones al cargar
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+            
+            // Iniciar el intervalo (20 minutos)
+            setInterval(triggerAlert, INTERVAL_MINUTES * 60 * 1000);
+            
+            // Opcional: Activar inmediatamente para prueba
+            // triggerAlert();
+        });
+    </script>
 </head>
 <body>
     <!-- Header -->
