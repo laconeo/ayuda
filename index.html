@@ -13,28 +13,49 @@
     <style>
         :root {
             --fs-primary: #87B940;
+            --fs-secondary: #6c757d;
             --fs-dark: #343a40;
             --fs-light: #f8f9fa;
+            --fs-gray: #e9ecef;
         }
         body {
             font-family: 'Poppins', sans-serif;
             color: var(--fs-dark);
-            background-color: #f8f9fa;
+            background-color: white;
         }
         .fs-bg-primary {
             background-color: var(--fs-primary);
             color: white;
         }
+        .fs-bg-secondary {
+            background-color: var(--fs-secondary);
+            color: white;
+        }
+        .fs-bg-gray {
+            background-color: var(--fs-gray);
+        }
         .btn-primary {
             background-color: var(--fs-primary);
             border-color: var(--fs-primary);
+        }
+        .btn-secondary {
+            background-color: var(--fs-secondary);
+            border-color: var(--fs-secondary);
         }
         .btn-outline-primary {
             color: var(--fs-primary);
             border-color: var(--fs-primary);
         }
+        .btn-outline-secondary {
+            color: var(--fs-secondary);
+            border-color: var(--fs-secondary);
+        }
         .btn-outline-primary:hover {
             background-color: var(--fs-primary);
+            color: white;
+        }
+        .btn-outline-secondary:hover {
+            background-color: var(--fs-secondary);
             color: white;
         }
         .hero-section {
@@ -48,26 +69,21 @@
             position: relative;
             overflow: hidden;
         }
-        .hero-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
         .hero-content {
             position: relative;
             z-index: 2;
             text-align: center;
             padding: 2rem;
             width: 100%;
+            background-color: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            margin: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .construction-icon {
             font-size: 4rem;
             margin-bottom: 1.5rem;
-            color: white;
+            color: var(--fs-primary);
             animation: bounce 2s infinite;
         }
         @keyframes bounce {
@@ -89,8 +105,20 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
         .btn-outline-primary:hover {
             background-color: var(--fs-primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .btn-outline-secondary:hover {
+            background-color: var(--fs-secondary);
             color: white;
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
@@ -108,7 +136,7 @@
             position: absolute;
             opacity: 0.1;
             border-radius: 50%;
-            background-color: white;
+            background-color: var(--fs-secondary);
         }
         .shape-1 {
             width: 300px;
@@ -126,63 +154,131 @@
             font-size: 1.5rem;
             margin-top: 2rem;
             font-weight: 300;
+            color: var(--fs-dark);
         }
         .social-links {
             margin-top: 2rem;
         }
         .social-links a {
-            color: white;
+            color: var(--fs-secondary);
             font-size: 1.5rem;
             margin: 0 0.5rem;
             transition: all 0.3s ease;
         }
         .social-links a:hover {
             transform: translateY(-5px);
-            color: rgba(255,255,255,0.8);
+            color: var(--fs-primary);
+        }
+        .feature-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--fs-primary);
+        }
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--fs-primary);
+            margin-bottom: 1rem;
+        }
+        .text-primary {
+            color: var(--fs-primary) !important;
+        }
+        .text-secondary {
+            color: var(--fs-secondary) !important;
         }
     </style>
 </head>
 <body>
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section fs-bg-gray">
         <div class="floating-shapes">
             <div class="shape shape-1"></div>
             <div class="shape shape-2"></div>
         </div>
         
-        <div class="hero-content">
-            <div class="construction-icon">
-                <i class="fas fa-tools"></i>
-            </div>
-            <h1 class="display-3 fw-bold mb-4 text-white">Sitio en Construcción</h1>
-            <p class="lead mb-5 text-white">Estamos trabajando en una mejor experiencia para ti</p>
-            
-            <div class="d-flex flex-wrap justify-content-center">
-                <a href="feria.html" class="btn btn-primary btn-xl">
-                    <i class="fas fa-calendar-day me-2"></i> Recursos para Ferias
-                </a>
-                <a href="evento.html" class="btn btn-primary btn-xl">
-                    <i class="fas fa-users me-2"></i> Recursos para Eventos
-                </a>
-                <a href="https://www.familysearch.org/es/fieldops/familysearch-event-support" 
-                   class="btn btn-outline-primary btn-xl" target="_blank">
-                    <i class="fas fa-clipboard-check me-2"></i> Planifica el Soporte
-                </a>
-                <a href="https://www.familysearch.org/es/fieldops/mexico-caribe-centroamerica-y-sudamerica-comuniquese-con-nosotros" 
-                   class="btn btn-outline-primary btn-xl" target="_blank">
-                    <i class="fas fa-envelope me-2"></i> Contáctanos
-                </a>
-            </div>
-            
-            <div class="countdown text-white">
-                <p>Nuevo sitio disponible pronto</p>
-            </div>
-            
-            <div class="social-links">
-                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+        <div class="container">
+            <div class="hero-content">
+                <div class="construction-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h1 class="display-4 fw-bold mb-4 text-primary">Sitio en Construcción</h1>
+                <p class="lead mb-5 text-secondary">Estamos trabajando en una mejor experiencia para ti</p>
+                
+                <div class="row justify-content-center g-4">
+                    <div class="col-md-5">
+                        <div class="feature-box">
+                            <div class="feature-icon">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <h3 class="text-primary">Recursos para Ferias</h3>
+                            <p class="text-secondary">Materiales especializados para eventos masivos</p>
+                            <a href="feria.html" class="btn btn-primary btn-xl mt-3">
+                                Acceder
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-5">
+                        <div class="feature-box">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3 class="text-primary">Recursos para Eventos</h3>
+                            <p class="text-secondary">Herramientas para eventos locales y comunitarios</p>
+                            <a href="evento.html" class="btn btn-primary btn-xl mt-3">
+                                Acceder
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row justify-content-center mt-4 g-4">
+                    <div class="col-md-5">
+                        <div class="feature-box">
+                            <div class="feature-icon">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <h3 class="text-primary">Planifica el Soporte</h3>
+                            <p class="text-secondary">Organiza el apoyo para tu evento</p>
+                            <a href="https://www.familysearch.org/es/fieldops/familysearch-event-support" 
+                               class="btn btn-outline-secondary btn-xl mt-3" target="_blank">
+                                Planificar
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-5">
+                        <div class="feature-box">
+                            <div class="feature-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h3 class="text-primary">Contáctanos</h3>
+                            <p class="text-secondary">Soporte especializado para Latinoamérica</p>
+                            <a href="https://www.familysearch.org/es/fieldops/mexico-caribe-centroamerica-y-sudamerica-comuniquese-con-nosotros" 
+                               class="btn btn-outline-secondary btn-xl mt-3" target="_blank">
+                                Contactar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="countdown">
+                    <p class="text-secondary">Nuevo sitio disponible pronto</p>
+                </div>
+                
+                <div class="social-links">
+                    <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+                </div>
             </div>
         </div>
     </section>
@@ -193,7 +289,7 @@
         // Efecto de partículas flotantes
         document.addEventListener('DOMContentLoaded', function() {
             const shapesContainer = document.querySelector('.floating-shapes');
-            const colors = ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.15)', 'rgba(255,255,255,0.2)'];
+            const colors = ['rgba(108, 117, 125, 0.1)', 'rgba(108, 117, 125, 0.15)', 'rgba(108, 117, 125, 0.2)'];
             
             // Crear formas flotantes adicionales
             for (let i = 0; i < 10; i++) {
