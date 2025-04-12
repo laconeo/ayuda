@@ -102,7 +102,7 @@ function blinkTitle() {
     const blinkInterval = setInterval(() => {
         document.title = isVisible ? '⚠️ ATENCIÓN ⚠️' : originalTitle;
         isVisible = !isVisible;
-    }, 500);
+    }, 5000);
     
     // Detener después de 5 segundos
     setTimeout(() => {
@@ -112,7 +112,7 @@ function blinkTitle() {
 }
 
 // Activar cada 20 minutos (1,200,000 milisegundos)
-setInterval(blinkTitle, 1 * 60 * 1000);
+setInterval(blinkTitle, 20 * 60 * 1000);
     </script>
 </head>
 <body>
