@@ -95,90 +95,8 @@
 
       
   
-     <script>
-        let intervaloTiempo = 1; // Valor predeterminado en minutos
-        let temporizador;
-        let parpadeo;
-        const favicon = document.createElement('link');
-        favicon.rel = "icon";
-        document.head.appendChild(favicon);
-
-        function iniciarTemporizador() {
-            const inputIntervalo = document.getElementById('intervalo');
-            intervaloTiempo = parseInt(inputIntervalo.value);
-            if (isNaN(intervaloTiempo) || intervaloTiempo <= 0) {
-                alert("Por favor, introduce un número válido mayor que 0.");
-                return;
-            }
-
-            clearInterval(temporizador);
-            clearTimeout(parpadeo);
-
-            const intervaloMilisegundos = intervaloTiempo * 60 * 1000;
-            temporizador = setInterval(() => mostrarAlerta(), intervaloMilisegundos);
-            actualizarTitulo();
-        }
-
-        function actualizarTitulo() {
-            const ahora = new Date();
-            const horaFormateada = ahora.toLocaleTimeString();
-            document.title = `Hora: ${horaFormateada}`;
-        }
-
-        function cambiarFavicon(texto, colorFondo = "black", colorTexto = "white") {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-
-            // Dibujar fondo
-            ctx.fillStyle = colorFondo;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Dibujar texto
-            ctx.font = '36px Arial';
-            ctx.fillStyle = colorTexto;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(texto, canvas.width / 2, canvas.height / 2);
-
-            favicon.href = canvas.toDataURL('image/png');
-        }
-
-        function mostrarAlerta() {
-            const alertaDiv = document.getElementById('alerta');
-            let contadorParpadeo = 0;
-
-            clearInterval(temporizador);
-            document.title = "TIEMPO TERMINADO";
-
-            parpadeo = setInterval(() => {
-                contadorParpadeo++;
-                if (contadorParpadeo >= 10) { // 5 segundos (10 cambios de estado)
-                    clearInterval(parpadeo);
-                    document.title = ""; // Restaurar título vacío antes de reiniciar el reloj
-                    alertaDiv.textContent = "";
-                    cambiarFavicon("", "black", "white"); // Restaurar favicon original
-                    iniciarTemporizador(); // Reiniciar el ciclo
-                    return;
-                }
-
-                const colorFondo = contadorParpadeo % 2 === 0 ? "red" : "white";
-                const colorTexto = contadorParpadeo % 2 === 0 ? "white" : "red";
-                document.title = contadorParpadeo % 2 === 0 ? "TIEMPO TERMINADO" : "";
-
-                cambiarFavicon(contadorParpadeo % 2 === 0 ? "TT" : "", colorFondo, colorTexto);
-
-                alertaDiv.style.backgroundColor = colorFondo;
-                alertaDiv.style.color = colorTexto;
-                alertaDiv.textContent = "TIEMPO TERMINADO";
-            }, 500); // Parpadeo cada 500ms
-        }
-
-        setInterval(actualizarTitulo, 1000); // Actualiza el reloj cada segundo
-    </script>
 </head>
-<body onload="iniciarTemporizador()">
+<body>
     <!-- Header -->
     <div class="header text-center fs">
         <h1><i class="fas fa-book-open me-2"></i>Recursos de ayuda para el Voluntario de un evento</h1>
@@ -361,5 +279,91 @@
         
         toggleButton.addEventListener('click', toggleAlarm);
     </script>
+
+
+
+     <script>
+        let intervaloTiempo = 1; // Valor predeterminado en minutos
+        let temporizador;
+        let parpadeo;
+        const favicon = document.createElement('link');
+        favicon.rel = "icon";
+        document.head.appendChild(favicon);
+
+        function iniciarTemporizador() {
+            const inputIntervalo = document.getElementById('intervalo');
+            intervaloTiempo = parseInt(inputIntervalo.value);
+            if (isNaN(intervaloTiempo) || intervaloTiempo <= 0) {
+                alert("Por favor, introduce un número válido mayor que 0.");
+                return;
+            }
+
+            clearInterval(temporizador);
+            clearTimeout(parpadeo);
+
+            const intervaloMilisegundos = intervaloTiempo * 60 * 1000;
+            temporizador = setInterval(() => mostrarAlerta(), intervaloMilisegundos);
+            actualizarTitulo();
+        }
+
+        function actualizarTitulo() {
+            const ahora = new Date();
+            const horaFormateada = ahora.toLocaleTimeString();
+            document.title = `Hora: ${horaFormateada}`;
+        }
+
+        function cambiarFavicon(texto, colorFondo = "black", colorTexto = "white") {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+
+            // Dibujar fondo
+            ctx.fillStyle = colorFondo;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar texto
+            ctx.font = '36px Arial';
+            ctx.fillStyle = colorTexto;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(texto, canvas.width / 2, canvas.height / 2);
+
+            favicon.href = canvas.toDataURL('image/png');
+        }
+
+        function mostrarAlerta() {
+            const alertaDiv = document.getElementById('alerta');
+            let contadorParpadeo = 0;
+
+            clearInterval(temporizador);
+            document.title = "TIEMPO TERMINADO";
+
+            parpadeo = setInterval(() => {
+                contadorParpadeo++;
+                if (contadorParpadeo >= 10) { // 5 segundos (10 cambios de estado)
+                    clearInterval(parpadeo);
+                    document.title = ""; // Restaurar título vacío antes de reiniciar el reloj
+                    alertaDiv.textContent = "";
+                    cambiarFavicon("", "black", "white"); // Restaurar favicon original
+                    iniciarTemporizador(); // Reiniciar el ciclo
+                    return;
+                }
+
+                const colorFondo = contadorParpadeo % 2 === 0 ? "red" : "white";
+                const colorTexto = contadorParpadeo % 2 === 0 ? "white" : "red";
+                document.title = contadorParpadeo % 2 === 0 ? "TIEMPO TERMINADO" : "";
+
+                cambiarFavicon(contadorParpadeo % 2 === 0 ? "TT" : "", colorFondo, colorTexto);
+
+                alertaDiv.style.backgroundColor = colorFondo;
+                alertaDiv.style.color = colorTexto;
+                alertaDiv.textContent = "TIEMPO TERMINADO";
+            }, 500); // Parpadeo cada 500ms
+        }
+
+        setInterval(actualizarTitulo, 1000); // Actualiza el reloj cada segundo
+    </script>
+    
 </body>
 </html>
