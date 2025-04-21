@@ -283,7 +283,7 @@
 
 
      <script>
-        let intervaloTiempo = 1; // Valor predeterminado en minutos
+        const intervaloTiempo = 1; // Valor predeterminado en minutos
         let temporizador;
         let parpadeo;
         const favicon = document.createElement('link');
@@ -291,7 +291,7 @@
         document.head.appendChild(favicon);
 
         function iniciarTemporizador() {
-            const inputIntervalo = document.getElementById('intervalo');
+            
             intervaloTiempo = parseInt(inputIntervalo.value);
             if (isNaN(intervaloTiempo) || intervaloTiempo <= 0) {
                 alert("Por favor, introduce un número válido mayor que 0.");
