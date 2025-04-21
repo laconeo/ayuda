@@ -283,58 +283,55 @@
 
 
      <script>
-
-         (function() {
-    let intervaloMinutos = 1;//parseInt(prompt("¿Cada cuántos minutos querés la alerta?", "20"));
-    if (isNaN(intervaloMinutos) || intervaloMinutos <= 0) {
-        alert("Ingresaste un valor inválido. Usaré 20 minutos por defecto.");
-        intervaloMinutos = 20;
-    }
-
+(function() {
+    const intervaloMinutos = 1;//parseInt(prompt("¿Cada cuántos minutos querés la alerta?", "20")) || 20;
     const duracionAlertaSegundos = 5;
-    let tiempoRestante = intervaloMinutos * 60;
 
-    const originalTitle = document.title;
-    let alertaActiva = false;
-    let parpadear = false;
-    let blinkInterval;
+    let nextAlerta = Date.now() + intervaloMinutos * 60 * 1000;
+    let mostrandoAlerta = false;
+    let alertaInicio = null;
+    let parpadeo = false;
 
-    function actualizarTituloConHora() {
+    function formatearHora(date) {
+        return date.toLocaleTimeString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    function actualizarTitulo() {
         const ahora = new Date();
-        const hora = ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        document.title = `🕒 ${hora}`;
-    }
 
-    function mostrarAlerta() {
-        let segundos = 0;
-        alertaActiva = true;
-        parpadear = true;
-
-        clearInterval(blinkInterval);
-        blinkInterval = setInterval(() => {
-            document.title = parpadear ? "⏰ TIEMPO TERMINADO" : "";
-            parpadear = !parpadear;
-        }, 500);
-
-        setTimeout(() => {
-            clearInterval(blinkInterval);
-            alertaActiva = false;
-            tiempoRestante = intervaloMinutos * 60;
-            actualizarTituloConHora();
-        }, duracionAlertaSegundos * 1000);
-    }
-
-    setInterval(() => {
-        if (!alertaActiva) {
-            if (tiempoRestante <= 0) {
-                mostrarAlerta();
+        if (mostrandoAlerta) {
+            const tiempoPasado = (Date.now() - alertaInicio) / 1000;
+            if (tiempoPasado < duracionAlertaSegundos) {
+                document.title = parpadeo ? "🚨 TIEMPO TERMINADO 🚨" : "";
+                parpadeo = !parpadeo;
             } else {
-                tiempoRestante--;
-                actualizarTituloConHora();
+                // Fin de alerta, reiniciar reloj
+                mostrandoAlerta = false;
+                nextAlerta = Date.now() + intervaloMinutos * 60 * 1000;
+                document.title = "🕒 " + formatearHora(ahora);
+            }
+        } else {
+            if (Date.now() >= nextAlerta) {
+                // Activar alerta
+                mostrandoAlerta = true;
+                alertaInicio = Date.now();
+                parpadeo = true;
+                document.title = "🚨 TIEMPO TERMINADO 🚨";
+            } else {
+                document.title = "🕒 " + formatearHora(ahora);
             }
         }
-    }, 1000);
+
+        requestAnimationFrame(actualizarTitulo);
+    }
+
+    requestAnimationFrame(actualizarTitulo);
 })();
+
 
     </script>
     
