@@ -94,7 +94,62 @@
     </style>
 
       
-  
+<script>
+(function() {
+  const intervalMinutos = 1;
+  const duracionAlertaSegundos = 10;
+  const intervaloMs = intervalMinutos * 60 * 1000;
+  const alertaMs = duracionAlertaSegundos * 1000;
+
+  let nextAlerta = Date.now() + intervaloMs;
+  let mostrandoAlerta = false;
+  let alertaFin = null;
+
+  function formatearHora() {
+    const ahora = new Date();
+    return ahora.toLocaleTimeString('es-AR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
+
+  function mostrarHora() {
+    document.title = "🕒 " + formatearHora();
+  }
+
+  function mostrarAlerta() {
+    document.title = "⏰ TIEMPO TERMINADO";
+  }
+
+  function ciclo() {
+    const ahora = Date.now();
+
+    if (mostrandoAlerta) {
+      if (ahora >= alertaFin) {
+        mostrandoAlerta = false;
+        nextAlerta = ahora + intervaloMs;
+      } else {
+        mostrarAlerta();
+      }
+    } else {
+      if (ahora >= nextAlerta) {
+        mostrandoAlerta = true;
+        alertaFin = ahora + alertaMs;
+        mostrarAlerta();
+      } else {
+        mostrarHora();
+      }
+    }
+
+    setTimeout(ciclo, 1000); // usa setTimeout para mejor rendimiento en segundo plano
+  }
+
+  // Comenzar el ciclo
+  ciclo();
+})();
+</script>
+
 </head>
 <body>
     <!-- Header -->
@@ -282,58 +337,6 @@
 
 
 
-     <script>
-(function() {
-    const intervaloMinutos = 1;//parseInt(prompt("¿Cada cuántos minutos querés la alerta?", "20")) || 20;
-    const duracionAlertaSegundos = 5;
-
-    let nextAlerta = Date.now() + intervaloMinutos * 60 * 1000;
-    let mostrandoAlerta = false;
-    let alertaInicio = null;
-    let parpadeo = false;
-
-    function formatearHora(date) {
-        return date.toLocaleTimeString('es-AR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-    }
-
-    function actualizarTitulo() {
-        const ahora = new Date();
-
-        if (mostrandoAlerta) {
-            const tiempoPasado = (Date.now() - alertaInicio) / 1000;
-            if (tiempoPasado < duracionAlertaSegundos) {
-                document.title = parpadeo ? "🚨 TIEMPO TERMINADO 🚨" : "";
-                parpadeo = !parpadeo;
-            } else {
-                // Fin de alerta, reiniciar reloj
-                mostrandoAlerta = false;
-                nextAlerta = Date.now() + intervaloMinutos * 60 * 1000;
-                document.title = "🕒 " + formatearHora(ahora);
-            }
-        } else {
-            if (Date.now() >= nextAlerta) {
-                // Activar alerta
-                mostrandoAlerta = true;
-                alertaInicio = Date.now();
-                parpadeo = true;
-                document.title = "🚨 TIEMPO TERMINADO 🚨";
-            } else {
-                document.title = "🕒 " + formatearHora(ahora);
-            }
-        }
-
-        requestAnimationFrame(actualizarTitulo);
-    }
-
-    requestAnimationFrame(actualizarTitulo);
-})();
-
-
-    </script>
     
 </body>
 </html>
