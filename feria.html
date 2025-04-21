@@ -93,26 +93,62 @@
     </style>
 
 
-        <script>
-        // Función para hacer parpadear el título
-function blinkTitle() {
-    let isVisible = true;
-    const originalTitle = document.title;
-    const blinkInterval = setInterval(() => {
-        document.title = isVisible ? '⚠️ ATENCIÓN ⚠️' : originalTitle;
-        isVisible = !isVisible;
-    }, 5000);
-    
-    // Detener después de 5 segundos
-    setTimeout(() => {
-        clearInterval(blinkInterval);
-        document.title = originalTitle;
-    }, 5000);
-}
+    <script>
+(function() {
+  const intervalMinutos = 20;
+  const duracionAlertaSegundos = 10;
+  const intervaloMs = intervalMinutos * 60 * 1000;
+  const alertaMs = duracionAlertaSegundos * 1000;
 
-// Activar cada 20 minutos (1,200,000 milisegundos)
-setInterval(blinkTitle, 20 * 60 * 1000);
-    </script>
+  let nextAlerta = Date.now() + intervaloMs;
+  let mostrandoAlerta = false;
+  let alertaFin = null;
+
+  function formatearHora() {
+    const ahora = new Date();
+    return ahora.toLocaleTimeString('es-AR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
+
+  function mostrarHora() {
+    document.title = "🕒 " + formatearHora();
+  }
+
+  function mostrarAlerta() {
+    document.title = "⏰ TIEMPO TERMINADO";
+  }
+
+  function ciclo() {
+    const ahora = Date.now();
+
+    if (mostrandoAlerta) {
+      if (ahora >= alertaFin) {
+        mostrandoAlerta = false;
+        nextAlerta = ahora + intervaloMs;
+      } else {
+        mostrarAlerta();
+      }
+    } else {
+      if (ahora >= nextAlerta) {
+        mostrandoAlerta = true;
+        alertaFin = ahora + alertaMs;
+        mostrarAlerta();
+      } else {
+        mostrarHora();
+      }
+    }
+
+    setTimeout(ciclo, 1000); // usa setTimeout para mejor rendimiento en segundo plano
+  }
+
+  // Comenzar el ciclo
+  ciclo();
+})();
+</script>
+
 </head>
 <body>
     <!-- Header -->
@@ -145,19 +181,15 @@ setInterval(blinkTitle, 20 * 60 * 1000);
                     <div class="section-body">
                         <div class="card-content text-center">
                             <div class="display-1 mb-3" id="reloj">00:00:00</div>
-                            <div class="mb-3">
-                                <span id="alarm-status" class="badge bg-secondary">Alarma inactiva</span>
-                            </div>
-                            <button id="toggle-alarm" class="btn btn-primary">
-                                <i class="fas fa-bell me-2"></i>Activar Alarma (20 min)
-                            </button>
+                        
+                            
+                            
+                            
                         </div>
-                        <div class="alert alert-info mt-auto">
-                            <i class="fas fa-info-circle me-2"></i>
-                            La alarma sonará cada 20 minutos para recordar los cambios de turno.
-                        </div>
-                        <audio id="alarm-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" preload="auto"></audio>
-                    </div>
+                        
+                        
+
+                                            </div>
                 </div>
             </div>
         </div>
@@ -290,7 +322,7 @@ setInterval(blinkTitle, 20 * 60 * 1000);
         }
         
         function playAlarm() {
-            alarmSound.play();
+           // alarmSound.play();
             relojSection.classList.add('alarm-active');
             setTimeout(() => {
                 relojSection.classList.remove('alarm-active');
