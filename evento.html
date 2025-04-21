@@ -312,7 +312,7 @@
             document.title = `Hora: ${horaFormateada}`;
         }
 
-        function cambiarFavicon(texto, colorFondo = "black", colorTexto = "white") {
+        function cambiarFavicon(texto, colorFondo = "gray", colorTexto = "green") {
             const canvas = document.createElement('canvas');
             canvas.width = 64;
             canvas.height = 64;
@@ -345,13 +345,13 @@
                     clearInterval(parpadeo);
                     document.title = ""; // Restaurar título vacío antes de reiniciar el reloj
                     alertaDiv.textContent = "";
-                    cambiarFavicon("", "black", "white"); // Restaurar favicon original
+                    cambiarFavicon("", "gray", "green"); // Restaurar favicon original
                     iniciarTemporizador(); // Reiniciar el ciclo
                     return;
                 }
 
-                const colorFondo = contadorParpadeo % 2 === 0 ? "red" : "white";
-                const colorTexto = contadorParpadeo % 2 === 0 ? "white" : "red";
+                const colorFondo = contadorParpadeo % 2 === 0 ? "red" : "green";
+                const colorTexto = contadorParpadeo % 2 === 0 ? "green" : "red";
                 document.title = contadorParpadeo % 2 === 0 ? "TIEMPO TERMINADO" : "";
 
                 cambiarFavicon(contadorParpadeo % 2 === 0 ? "TT" : "", colorFondo, colorTexto);
@@ -359,10 +359,12 @@
                 alertaDiv.style.backgroundColor = colorFondo;
                 alertaDiv.style.color = colorTexto;
                 alertaDiv.textContent = "TIEMPO TERMINADO";
-            }, 500); // Parpadeo cada 500ms
+            }, 1000); // Parpadeo cada 500ms
         }
 
         setInterval(actualizarTitulo, 1000); // Actualiza el reloj cada segundo
+
+         actualizarTitulo();
     </script>
     
 </body>
