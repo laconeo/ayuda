@@ -3,323 +3,533 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FamilySearch Eventos - Sitio en Construcción</title>
+    <title>Día de Descubrimiento Familiar - Soporte Profesional para Eventos</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --fs-primary: #87B940;
-            --fs-secondary: #6c757d;
-            --fs-dark: #343a40;
-            --fs-light: #f8f9fa;
-            --fs-gray: #e9ecef;
+            --primary-color: #2c5530;
+            --secondary-color: #4a7c59;
+            --accent-color: #8fbc8f;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-light: #f8fffe;
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--fs-dark);
-            background-color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
         }
-        .fs-bg-primary {
-            background-color: var(--fs-primary);
-            color: white;
-        }
-        .fs-bg-secondary {
-            background-color: var(--fs-secondary);
-            color: white;
-        }
-        .fs-bg-gray {
-            background-color: var(--fs-gray);
-        }
-        .btn-primary {
-            background-color: var(--fs-primary);
-            border-color: var(--fs-primary);
-        }
-        .btn-secondary {
-            background-color: var(--fs-secondary);
-            border-color: var(--fs-secondary);
-        }
-        .btn-outline-primary {
-            color: var(--fs-primary);
-            border-color: var(--fs-primary);
-        }
-        .btn-outline-secondary {
-            color: var(--fs-secondary);
-            border-color: var(--fs-secondary);
-        }
-        .btn-outline-primary:hover {
-            background-color: var(--fs-primary);
-            color: white;
-        }
-        .btn-outline-secondary:hover {
-            background-color: var(--fs-secondary);
-            color: white;
-        }
-        .hero-section {
-            background: linear-gradient(135deg, rgba(135, 185, 64, 0.9), rgba(135, 185, 64, 0.7)), 
-                        url('https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
-            background-size: cover;
-            background-position: center;
-            min-height: 80vh;
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
+            color: white;
             position: relative;
             overflow: hidden;
         }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1577563908411-5077b6dc7624?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
         .hero-content {
             position: relative;
             z-index: 2;
-            text-align: center;
-            padding: 2rem;
-            width: 100%;
-            background-color: rgba(255,255,255,0.9);
-            border-radius: 15px;
-            margin: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 20px;
         }
-        .construction-icon {
-            font-size: 4rem;
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
             margin-bottom: 1.5rem;
-            color: var(--fs-primary);
-            animation: bounce 2s infinite;
+            line-height: 1.2;
         }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+
+        .hero .lead {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
         }
-        .btn-xl {
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            margin: 0.5rem;
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
             font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #76a437;
-            border-color: #76a437;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #5a6268;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .btn-outline-primary:hover {
-            background-color: var(--fs-primary);
+            border-radius: 50px;
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
         }
-        .btn-outline-secondary:hover {
-            background-color: var(--fs-secondary);
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-        .floating-shapes {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-            z-index: 1;
+
+        /* Service Sections */
+        .service-section {
+            padding: 100px 0;
         }
-        .shape {
-            position: absolute;
-            opacity: 0.1;
-            border-radius: 50%;
-            background-color: var(--fs-secondary);
+
+        .service-section:nth-child(even) {
+            background-color: var(--bg-light);
         }
-        .shape-1 {
-            width: 300px;
-            height: 300px;
-            top: -50px;
-            left: -50px;
+
+        .service-content {
+            padding: 20px;
         }
-        .shape-2 {
-            width: 200px;
-            height: 200px;
-            bottom: -50px;
-            right: -50px;
-        }
-        .countdown {
-            font-size: 1.5rem;
-            margin-top: 2rem;
-            font-weight: 300;
-            color: var(--fs-dark);
-        }
-        .social-links {
-            margin-top: 2rem;
-        }
-        .social-links a {
-            color: var(--fs-secondary);
-            font-size: 1.5rem;
-            margin: 0 0.5rem;
-            transition: all 0.3s ease;
-        }
-        .social-links a:hover {
-            transform: translateY(-5px);
-            color: var(--fs-primary);
-        }
-        .feature-box {
-            background-color: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            border-top: 4px solid var(--fs-primary);
-        }
-        .feature-box:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-        .feature-icon {
+
+        .service-content h2 {
             font-size: 2.5rem;
-            color: var(--fs-primary);
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .service-content p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .service-image {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .service-image:hover {
+            transform: scale(1.02);
+        }
+
+        .icon-feature {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 1rem;
         }
-        .text-primary {
-            color: var(--fs-primary) !important;
+
+        .icon-feature i {
+            font-size: 24px;
+            color: var(--primary-color);
         }
-        .text-secondary {
-            color: var(--fs-secondary) !important;
+
+        /* Scroll animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .service-content h2 {
+                font-size: 2rem;
+            }
+            
+            .service-section {
+                padding: 60px 0;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Hero Section -->
-    <section class="hero-section fs-bg-gray">
-        <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-        </div>
-        
+    <section class="hero">
         <div class="container">
-            <div class="hero-content">
-                <div class="construction-icon">
-                    <i class="fas fa-tools"></i>
-                </div>
-                <h1 class="display-4 fw-bold mb-4 text-primary">Sitio en Construcción</h1>
-                <p class="lead mb-5 text-secondary">Estamos trabajando en una mejor experiencia para ti</p>
-                
-                <div class="row justify-content-center g-4">
-                    <div class="col-md-5">
-                        <div class="feature-box">
-                            <div class="feature-icon">
-                                <i class="fas fa-calendar-day"></i>
-                            </div>
-                            <h3 class="text-primary">Stand de la Feria del Libro</h3>
-                            <p class="text-secondary">Recursos para Voluntario del Stand de la Feria del Libro</p>
-                            <a href="feria.html" class="btn btn-primary btn-xl mt-3">
-                                Acceder
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-5">
-                        <div class="feature-box">
-                            <div class="feature-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h3 class="text-primary">Recursos para Eventos</h3>
-                            <p class="text-secondary">Recursos para Voluntarios de Eventos con experiencias</p>
-                            <a href="evento.html" class="btn btn-primary btn-xl mt-3">
-                                Acceder
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row justify-content-center mt-4 g-4">
-                    <div class="col-md-5">
-                        <div class="feature-box">
-                            <div class="feature-icon">
-                                <i class="fas fa-clipboard-check"></i>
-                            </div>
-                            <h3 class="text-primary">Planifica el Soporte</h3>
-                            <p class="text-secondary">Organiza el apoyo para tu evento</p>
-                            <a href="https://www.familysearch.org/es/fieldops/familysearch-event-support" 
-                               class="btn btn-outline-secondary btn-xl mt-3" target="_blank">
-                                Planificar
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-5">
-                        <div class="feature-box">
-                            <div class="feature-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <h3 class="text-primary">Contáctanos</h3>
-                            <p class="text-secondary">Soporte especializado para Latinoamérica</p>
-                            <a href="https://www.familysearch.org/es/fieldops/mexico-caribe-centroamerica-y-sudamerica-comuniquese-con-nosotros" 
-                               class="btn btn-outline-secondary btn-xl mt-3" target="_blank">
-                                Contactar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="countdown">
-                    <p class="text-secondary">Nuevo sitio disponible pronto</p>
-                </div>
-                
-                <div class="social-links">
-
-                    
+            <div class="row align-items-center">
+                <div class="col-lg-8 hero-content">
+                    <h1 class="fade-up">Día de Descubrimiento Familiar</h1>
+                    <p class="lead fade-up">Soporte profesional completo para eventos exitosos de FamilySearch. Garantizamos una experiencia perfecta para todos los participantes.</p>
+                    <a href="#contact" class="cta-button fade-up">
+                        <i class="bi bi-calendar-check"></i>
+                        Solicitar Soporte Ahora
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Soporte de Misioneros -->
+    <section class="service-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 fade-up">
+                    <div class="placeholder-image service-image d-flex align-items-center justify-content-center" style="height: 400px; background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%); border: 2px dashed #a0aec0;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-image" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                            <h5>Imagen de Soporte de Misioneros</h5>
+                            <p class="small">800x400 pixels</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 service-content fade-up">
+                    <div class="icon-feature">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h2>Soporte de Misioneros</h2>
+                    <p>Activación y recuperación de cuentas FamilySearch con asistencia especializada de misioneros experimentados.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">95%</div>
+                                <div class="stat-label">Cuentas Recuperadas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">15 min</div>
+                                <div class="stat-label">Tiempo Promedio</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Desbloqueo de IP -->
+    <section class="service-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 service-content fade-up order-lg-1">
+                    <div class="icon-feature">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h2>Desbloqueo de IP para Eventos</h2>
+                    <p>Gestión proactiva de direcciones IP para garantizar acceso sin interrupciones durante todo el evento.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">100%</div>
+                                <div class="stat-label">Eventos Sin Bloqueos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Monitoreo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 fade-up order-lg-2">
+                    <div class="placeholder-image service-image d-flex align-items-center justify-content-center" style="height: 400px; background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%); border: 2px dashed #a0aec0;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-shield-check" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                            <h5>Desbloqueo de IP</h5>
+                            <p class="small">800x400 pixels</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Capacitación de Voluntarios -->
+    <section class="service-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 fade-up">
+                    <div class="placeholder-image service-image d-flex align-items-center justify-content-center" style="height: 400px; background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%); border: 2px dashed #a0aec0;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-mortarboard" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                            <h5>Capacitación de Voluntarios</h5>
+                            <p class="small">800x400 pixels</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 service-content fade-up">
+                    <div class="icon-feature">
+                        <i class="bi bi-mortarboard"></i>
+                    </div>
+                    <h2>Capacitación de Voluntarios</h2>
+                    <p>Programas de entrenamiento especializados para voluntarios, asegurando un servicio de calidad profesional.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">200+</div>
+                                <div class="stat-label">Voluntarios Capacitados</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">4.8/5</div>
+                                <div class="stat-label">Satisfacción</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Herramientas de Preparación -->
+    <section class="service-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 service-content fade-up order-lg-1">
+                    <div class="icon-feature">
+                        <i class="bi bi-tools"></i>
+                    </div>
+                    <h2>Herramientas para Preparar el Evento</h2>
+                    <p>Suite completa de herramientas y recursos para planificar y organizar eventos exitosos de principio a fin.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">15+</div>
+                                <div class="stat-label">Herramientas Incluidas</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">50%</div>
+                                <div class="stat-label">Menos Tiempo Prep.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 fade-up order-lg-2">
+                    <div class="placeholder-image service-image d-flex align-items-center justify-content-center" style="height: 400px; background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%); border: 2px dashed #a0aec0;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-tools" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                            <h5>Herramientas de Preparación</h5>
+                            <p class="small">800x400 pixels</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Herramientas Durante el Evento -->
+    <section class="service-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 fade-up">
+                    <div class="placeholder-image service-image d-flex align-items-center justify-content-center" style="height: 400px; background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%); border: 2px dashed #a0aec0;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-headset" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                            <h5>Soporte Durante el Evento</h5>
+                            <p class="small">800x400 pixels</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 service-content fade-up">
+                    <div class="icon-feature">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h2>Herramientas Durante el Evento</h2>
+                    <p>Soporte técnico en tiempo real, monitoreo continuo y herramientas de gestión para eventos sin contratiempos.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">2 min</div>
+                                <div class="stat-label">Tiempo Respuesta</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">99.9%</div>
+                                <div class="stat-label">Uptime Garantizado</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Informes -->
+    <section class="service-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 service-content fade-up order-lg-1">
+                    <div class="icon-feature">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h2>Informes Detallados</h2>
+                    <p>Análisis completo post-evento con métricas detalladas, insights accionables y recomendaciones para futuros eventos.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">25+</div>
+                                <div class="stat-label">Métricas Clave</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-number">48h</div>
+                                <div class="stat-label">Entrega Informe</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 fade-up order-lg-2">
+                    <div class="placeholder-image service-image d-flex align-items-center justify-content-center" style="height: 400px; background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%); border: 2px dashed #a0aec0;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-graph-up" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>
+                            <h5>Informes y Analytics</h5>
+                            <p class="small">800x400 pixels</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="hero" style="min-height: 60vh;" id="contact">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 hero-content">
+                    <h2 class="fade-up mb-4">¿Listo para un Evento Exitoso?</h2>
+                    <p class="lead fade-up mb-4">Únete a las organizaciones que confían en nosotros para crear experiencias memorables de descubrimiento familiar.</p>
+                    <a href="mailto:soporte@familysearch-eventos.com" class="cta-button fade-up">
+                        <i class="bi bi-envelope"></i>
+                        Solicitar Información
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background-color: #1a202c; color: #a0aec0; padding: 40px 0; text-align: center;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p style="margin-bottom: 10px; font-size: 0.9rem;">
+                        <i class="bi bi-info-circle" style="margin-right: 8px;"></i>
+                        Este sitio es una construcción local del Departamento de Operaciones de Historia Familiar.
+                    </p>
+                    <p style="margin: 0; font-size: 0.85rem; opacity: 0.8;">
+                        Consultas o comentarios contactar a <strong style="color: #e2e8f0;">Freddy Hernández</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-        // Efecto de partículas flotantes
-        document.addEventListener('DOMContentLoaded', function() {
-            const shapesContainer = document.querySelector('.floating-shapes');
-            const colors = ['rgba(108, 117, 125, 0.1)', 'rgba(108, 117, 125, 0.15)', 'rgba(108, 117, 125, 0.2)'];
-            
-            // Crear formas flotantes adicionales
-            for (let i = 0; i < 10; i++) {
-                const shape = document.createElement('div');
-                shape.classList.add('shape');
-                shape.style.width = `${Math.random() * 100 + 50}px`;
-                shape.style.height = shape.style.width;
-                shape.style.left = `${Math.random() * 100}%`;
-                shape.style.top = `${Math.random() * 100}%`;
-                shape.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                shape.style.opacity = Math.random() * 0.1 + 0.05;
-                
-                // Animación
-                const duration = Math.random() * 20 + 10;
-                shape.style.animation = `float ${duration}s infinite ease-in-out`;
-                shape.style.animationDelay = `${Math.random() * 5}s`;
-                
-                shapesContainer.appendChild(shape);
-            }
-            
-            // Definir keyframes para animación flotante
-            const style = document.createElement('style');
-            style.innerHTML = `
-                @keyframes float {
-                    0% { transform: translate(0, 0) rotate(0deg); }
-                    25% { transform: translate(10px, 10px) rotate(5deg); }
-                    50% { transform: translate(20px, 5px) rotate(0deg); }
-                    75% { transform: translate(10px, 15px) rotate(-5deg); }
-                    100% { transform: translate(0, 0) rotate(0deg); }
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
-            `;
-            document.head.appendChild(style);
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-up elements
+        document.querySelectorAll('.fade-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add some entrance animations with delays
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroElements = document.querySelectorAll('.hero .fade-up');
+            heroElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, 200 * (index + 1));
+            });
         });
     </script>
 </body>
