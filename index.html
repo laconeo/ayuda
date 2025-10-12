@@ -3,410 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Día de Descubrimiento Familiar - Soporte Profesional para Eventos</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>Recursos FamilySearch - Guía para Voluntarios</title>
     <style>
-        :root {
-            --primary-color: #2c5530;
-            --secondary-color: #4a7c59;
-            --accent-color: #8fbc8f;
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --bg-light: #f8fffe;
-        }
-
         * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #7fb539 0%, #5a8a28 100%);
             min-height: 100vh;
+            padding: 20px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            color: white;
-            position: relative;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('https://laconeo.github.io/ayuda/servicemisionary.jpeg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.3;
-            z-index: 1;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            padding: 20px;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-        }
-
-        .hero .lead {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .cta-button {
-            background: linear-gradient(45deg, #ff6b35, #f7931e);
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 50px;
+        
+        .header {
+            background: linear-gradient(135deg, #5a8a28 0%, #4a7220 100%);
             color: white;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
-            color: white;
-        }
-
-        /* Service Sections */
-        .service-section {
-            padding: 100px 0;
-        }
-
-        .service-section:nth-child(even) {
-            background-color: var(--bg-light);
-        }
-
-        .service-content {
-            padding: 20px;
-        }
-
-        .service-content h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-        }
-
-        .service-content p {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-        }
-
-        .stat-item {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 40px 30px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            width: 280px;
+            height: auto;
             margin-bottom: 20px;
         }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--secondary-color);
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.5;
         }
-
-        .service-image {
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
+        
+        .content {
+            padding: 40px 30px;
         }
-
-        .service-image:hover {
-            transform: scale(1.02);
+        
+        .resource-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-
-        .icon-feature {
-            width: 60px;
-            height: 60px;
-            background: var(--accent-color);
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #7fb539;
+        }
+        
+        .resource-card:active {
+            transform: translateY(-2px);
+        }
+        
+        .resource-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #7fb539 0%, #5a8a28 100%);
+            color: white;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
+            text-align: center;
+            line-height: 36px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
-
-        .icon-feature i {
+        
+        .resource-card h2 {
             font-size: 24px;
-            color: var(--primary-color);
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-weight: 600;
         }
-
-        /* Scroll animations */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
+        
+        .resource-card p {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
         }
-
-        .fade-up.visible {
-            opacity: 1;
-            transform: translateY(0);
+        
+        .resource-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #7fb539 0%, #5a8a28 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
+        
+        .resource-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(127, 181, 57, 0.4);
+        }
+        
+        .whatsapp-card {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            border: none;
+            color: white;
+        }
+        
+        .whatsapp-card h2,
+        .whatsapp-card p {
+            color: white;
+        }
+        
+        .whatsapp-card .resource-number {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .whatsapp-link {
+            background: white;
+            color: #25D366;
+        }
+        
+        .whatsapp-link:hover {
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        .footer {
+            background: #f7fafc;
+            padding: 20px 30px;
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
             }
             
-            .service-content h2 {
-                font-size: 2rem;
+            .header {
+                padding: 30px 20px;
             }
             
-            .service-section {
-                padding: 60px 0;
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 14px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .resource-card {
+                padding: 20px;
+            }
+            
+            .resource-card h2 {
+                font-size: 20px;
+            }
+            
+            .resource-card p {
+                font-size: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8 hero-content">
-                    <h1 class="fade-up">Soporte para Eventos y Días de Descubrimiento</h1>
-                    <p class="lead fade-up">Tenemos un equipo de misioneros que pueden ayudarle durante su evento para activar cuentas o recuperarlas. Garantizamos una experiencia perfecta para todos los participantes.</p>
-                    <a href="#contact" class="cta-button fade-up">
-                        <i class="bi bi-calendar-check"></i>
-                        Solicitar Soporte Ahora
-                    </a>
-                </div>
+    <div class="container">
+        <div class="header">
+            <img src="https://i.imgur.com/KZQy8XG.png" alt="FamilySearch Logo" class="logo">
+            <h1>Recursos para Voluntarios</h1>
+            <p>Guía rápida de acceso a herramientas esenciales de FamilySearch</p>
+        </div>
+        
+        <div class="content">
+            <div class="resource-card" onclick="window.open('https://www.familysearch.org/es/tree/guided/connect-to-tree', '_blank')">
+                <div class="resource-number">1</div>
+                <h2>🌳 Crea tu Árbol Genealógico</h2>
+                <p>Comienza tu investigación familiar con una guía paso a paso. Conecta con tus antepasados y descubre tu historia familiar.</p>
+                <a href="https://www.familysearch.org/es/tree/guided/connect-to-tree" target="_blank" class="resource-link" onclick="event.stopPropagation()">Iniciar Árbol</a>
+            </div>
+            
+            <div class="resource-card" onclick="window.open('https://www.familysearch.org/es/tree-designs/global/', '_blank')">
+                <div class="resource-number">2</div>
+                <h2>📸 Recuerdos y Diseños</h2>
+                <p>Explora y descarga diseños personalizados de tu árbol genealógico. Preserva historias familiares con fotos y documentos.</p>
+                <a href="https://www.familysearch.org/es/tree-designs/global/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Ver Recuerdos</a>
+            </div>
+            
+            <div class="resource-card" onclick="window.open('https://forms.gle/CCAPxehi9BTtWvrh7', '_blank')">
+                <div class="resource-number">3</div>
+                <h2>📋 Formulario de Reporte</h2>
+                <p>Comparte tu experiencia como voluntario. Reporta actividades, incidencias o sugerencias para mejorar el servicio.</p>
+                <a href="https://forms.gle/CCAPxehi9BTtWvrh7" target="_blank" class="resource-link" onclick="event.stopPropagation()">Enviar Reporte</a>
+            </div>
+            
+            <div class="resource-card whatsapp-card" onclick="window.open('https://chat.whatsapp.com/GiJaDENItTH6AMz3514QQu', '_blank')">
+                <div class="resource-number">4</div>
+                <h2>💬 Soporte y Ayuda</h2>
+                <p>Únete al grupo de WhatsApp para recibir ayuda con activación y recuperación de cuentas. Conecta con otros voluntarios.</p>
+                <a href="https://chat.whatsapp.com/GiJaDENItTH6AMz3514QQu" target="_blank" class="whatsapp-link" onclick="event.stopPropagation()">Unirse al Grupo</a>
             </div>
         </div>
-    </section>
-
-    <!-- Soporte de Misioneros -->
-    <section class="service-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 fade-up">
-                    <img src="https://laconeo.github.io/ayuda/hero-evento-ayuda.jpeg" alt="Soporte de Misioneros" class="img-fluid service-image">
-                </div>
-                <div class="col-lg-6 service-content fade-up">
-                    <div class="icon-feature">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <h2>Soporte de Misioneros</h2>
-                    <p>Desde el Centro Virtual de FamilySearch tenemos la misión de apoyar a todos los miembros para que puedan acceder a su cuenta de FamilySearch. Durante un evento el tiempo es limitado, así que hemos preparado un proceso simplificado para activar y recuperar cuentas.</p>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="stat-item">
-                                <div class="stat-number">95%</div>
-                                <div class="stat-label">Cuentas Recuperadas</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="stat-item">
-                                <div class="stat-number">2 min</div>
-                                <div class="stat-label">Tiempo Promedio</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        
+        <div class="footer">
+            <p>💡 Consejo: Guarda esta página en tus favoritos para acceso rápido</p>
+            <p style="margin-top: 10px;">© FamilySearch - Recursos para Voluntarios</p>
         </div>
-    </section>
-
-    <!-- Desbloqueo de IP -->
-    <section class="service-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 service-content fade-up order-lg-1">
-                    <div class="icon-feature">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <h2>Desbloqueo de IP para Eventos</h2>
-                    <p>Actividades con alta concurrencia. Si su actividad contará con la participación de más de 100 personas, le solicitamos informar con anticipación la dirección IP desde la cual se conectarán. Esto nos permitirá optimizar el sistema y garantizar el correcto funcionamiento durante el evento.</p>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="stat-item">
-                                <div class="stat-number">100%</div>
-                                <div class="stat-label">Eventos Sin Bloqueos</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="stat-item">
-                                <div class="stat-number">24/7</div>
-                                <div class="stat-label">Monitoreo</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 fade-up order-lg-2">
-                    <img src="https://laconeo.github.io/ayuda/desbloqueodeip.jpg" alt="Desbloqueo de IP" class="img-fluid service-image">
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
-
-
-    <!-- Herramientas Durante el Evento -->
-    <section class="service-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 fade-up">
-                    <img src="https://laconeo.github.io/ayuda/herramientas-durante.png" alt="Herramientas Durante el Evento" class="img-fluid service-image">
-                </div>
-                <div class="col-lg-6 service-content fade-up">
-                    <div class="icon-feature">
-                        <i class="bi bi-headset"></i>
-                    </div>
-                    <h2>Herramientas Durante el Evento</h2>
-                    <p>Ponemos a su disposición herramientas que facilitan el acceso rápido a los recursos de ayuda durante el evento.</p>
-                    
-                    <a href="https://laconeo.github.io/ayuda/herramientas.html" target="_blank" class="cta-button" style="display: inline-flex; margin-bottom: 2rem;">
-                        <i class="bi bi-box-arrow-up-right"></i>
-                        Acceder a las Herramientas
-                    </a>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="stat-item">
-                                <div class="stat-number">2 min</div>
-                                <div class="stat-label">Tiempo Respuesta</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="stat-item">
-                                <div class="stat-number">99.9%</div>
-                                <div class="stat-label">Uptime Garantizado</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
-    <!-- CTA Final -->
-    <section class="hero" style="min-height: 60vh;" id="contact">
-        <div class="container text-center">
-            <div class="row justify-content-center">
-                <div class="col-lg-8 hero-content">
-                    <h2 class="fade-up mb-4">Nos concentramos en resolver los problemas para que usted se concentre en brindar la mejor experiencia en su evento</h2>
-                    <p class="lead fade-up mb-4">¿Listo para un evento exitoso? Contáctenos y déjenos ayudarle a crear una experiencia memorable de descubrimiento familiar.</p>
-                    <a href="mailto:soporte@familysearch-eventos.com" class="cta-button fade-up">
-                        <i class="bi bi-envelope"></i>
-                        Solicitar Información
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer style="background-color: #1a202c; color: #a0aec0; padding: 40px 0; text-align: center;">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <p style="margin-bottom: 10px; font-size: 0.9rem;">
-                        <i class="bi bi-info-circle" style="margin-right: 8px;"></i>
-                        Este sitio es una construcción local del Departamento de Operaciones de Historia Familiar.
-                    </p>
-                    <p style="margin: 0; font-size: 0.85rem; opacity: 0.8;">
-                        Consultas o comentarios contactar a <strong style="color: #e2e8f0;">Freddy Hernández</strong>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        // Observe all fade-up elements
-        document.querySelectorAll('.fade-up').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Add some entrance animations with delays
-        document.addEventListener('DOMContentLoaded', function() {
-            const heroElements = document.querySelectorAll('.hero .fade-up');
-            heroElements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.classList.add('visible');
-                }, 200 * (index + 1));
-            });
-        });
-    </script>
+    </div>
 </body>
 </html>
