@@ -33,8 +33,28 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow-x: auto;
             margin-top: 20px;
+        }
+        #tableContent {
+            overflow-x: auto;
+            overflow-y: visible;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+        }
+        /* Hacer el scrollbar más visible */
+        #tableContent::-webkit-scrollbar {
+            height: 12px;
+        }
+        #tableContent::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        #tableContent::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 5px;
+        }
+        #tableContent::-webkit-scrollbar-thumb:hover {
+            background: #0056b3;
         }
         table {
             font-size: 14px;
@@ -57,6 +77,15 @@
             padding: 15px !important;
             margin-bottom: 15px !important;
             font-size: 16px;
+        }
+        .scroll-hint {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 14px;
         }
         .info-box {
             background-color: #d1ecf1;
@@ -102,6 +131,9 @@
                 <button class="btn btn-primary" onclick="resetPage()">📁 Cargar otro archivo</button>
             </div>
             <div class="stats-info" id="statsInfo"></div>
+            <div class="scroll-hint">
+                ⬅️ Si la tabla es muy ancha, use la barra de desplazamiento azul abajo para ver todas las columnas ➡️
+            </div>
             <div id="tableContent"></div>
         </div>
     </div>
@@ -176,8 +208,16 @@
                     
                     // Convertir a array para contar filas
                     const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                    const totalRows = jsonData.length;
-                    const dataRows = totalRows > 0 ? totalRows - 1 : 0; // Restar la fila de encabezados
+                    
+                    // Contar solo filas que tengan valor en la primera columna
+                    let validRows = 0;
+                    for (let i = 1; i < jsonData.length; i++) { // Empezar en 1 para saltar encabezado
+                        if (jsonData[i][0] !== undefined && jsonData[i][0] !== null && jsonData[i][0] !== '') {
+                            validRows++;
+                        }
+                    }
+                    
+                    const totalRows = validRows + 1; // +1 por el encabezado
                     
                     // Convertir a HTML
                     const html = XLSX.utils.sheet_to_html(worksheet, {
@@ -199,7 +239,7 @@
                     document.getElementById('statsInfo').innerHTML = `
                         <strong>📊 Información:</strong> 
                         Total de filas procesadas: <strong>${totalRows}</strong> 
-                        (${dataRows} registro${dataRows !== 1 ? 's' : ''} de datos + 1 encabezado)
+                        (${validRows} registro${validRows !== 1 ? 's' : ''} con datos + 1 encabezado)
                     `;
                     
                     // Mostrar contenedor de tabla y ocultar área de carga
@@ -225,38 +265,6 @@
             tableContent.innerHTML = '';
             fileName.textContent = '';
             fileInput.value = '';
-        }
-
-        function addRowNumbers(table) {
-            const thead = table.querySelector('thead');
-            const tbody = table.querySelector('tbody');
-            
-            // Agregar "Nº" al encabezado
-            if (thead) {
-                const headerRow = thead.querySelector('tr');
-                if (headerRow) {
-                    const th = document.createElement('th');
-                    th.classList.add('row-number');
-                    th.textContent = 'Nº';
-                    th.style.fontWeight = 'bold';
-                    headerRow.insertBefore(th, headerRow.firstChild);
-                }
-            }
-            
-            // Agregar números a las filas de datos (empezando en 1)
-            if (tbody) {
-                const dataRows = tbody.querySelectorAll('tr');
-                dataRows.forEach((row, index) => {
-                    const td = document.createElement('td');
-                    td.classList.add('row-number');
-                    td.textContent = index + 1; // Empieza en 1 para el primer registro
-                    row.insertBefore(td, row.firstChild);
-                });
-            }
-        }
-
-        function activateSearch() {
-            // Función removida - ya no se usa
         }
     </script>
 </body>
