@@ -39,6 +39,25 @@
         table {
             font-size: 14px;
         }
+        thead th {
+            font-weight: bold !important;
+            background-color: #e9ecef !important;
+            font-size: 15px;
+        }
+        tbody th {
+            font-weight: bold !important;
+            background-color: #e9ecef !important;
+            font-size: 15px;
+        }
+
+        .stats-info {
+            background-color: #d4edda !important;
+            border: 1px solid #c3e6cb !important;
+            border-radius: 5px !important;
+            padding: 15px !important;
+            margin-bottom: 15px !important;
+            font-size: 16px;
+        }
         .info-box {
             background-color: #d1ecf1;
             border: 1px solid #bee5eb;
@@ -76,9 +95,13 @@
 
         <div id="tableContainer" style="display: none;">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 id="fileName"></h4>
-                <button class="btn btn-primary btn-new" onclick="resetPage()">📁 Cargar otro archivo</button>
+                <div>
+                    <h4 id="fileName" class="mb-2"></h4>
+                    <p class="text-muted mb-0">💡 Tip: Use <strong>Ctrl+F</strong> (o Cmd+F en Mac) para buscar en la tabla</p>
+                </div>
+                <button class="btn btn-primary" onclick="resetPage()">📁 Cargar otro archivo</button>
             </div>
+            <div class="stats-info" id="statsInfo"></div>
             <div id="tableContent"></div>
         </div>
     </div>
@@ -151,6 +174,11 @@
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
                     
+                    // Convertir a array para contar filas
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    const totalRows = jsonData.length;
+                    const dataRows = totalRows > 0 ? totalRows - 1 : 0; // Restar la fila de encabezados
+                    
                     // Convertir a HTML
                     const html = XLSX.utils.sheet_to_html(worksheet, {
                         id: 'excelTable',
@@ -166,6 +194,13 @@
                     if (table) {
                         table.classList.add('table', 'table-striped', 'table-bordered', 'table-hover');
                     }
+                    
+                    // Mostrar estadísticas
+                    document.getElementById('statsInfo').innerHTML = `
+                        <strong>📊 Información:</strong> 
+                        Total de filas procesadas: <strong>${totalRows}</strong> 
+                        (${dataRows} registro${dataRows !== 1 ? 's' : ''} de datos + 1 encabezado)
+                    `;
                     
                     // Mostrar contenedor de tabla y ocultar área de carga
                     uploadSection.style.display = 'none';
@@ -190,6 +225,38 @@
             tableContent.innerHTML = '';
             fileName.textContent = '';
             fileInput.value = '';
+        }
+
+        function addRowNumbers(table) {
+            const thead = table.querySelector('thead');
+            const tbody = table.querySelector('tbody');
+            
+            // Agregar "Nº" al encabezado
+            if (thead) {
+                const headerRow = thead.querySelector('tr');
+                if (headerRow) {
+                    const th = document.createElement('th');
+                    th.classList.add('row-number');
+                    th.textContent = 'Nº';
+                    th.style.fontWeight = 'bold';
+                    headerRow.insertBefore(th, headerRow.firstChild);
+                }
+            }
+            
+            // Agregar números a las filas de datos (empezando en 1)
+            if (tbody) {
+                const dataRows = tbody.querySelectorAll('tr');
+                dataRows.forEach((row, index) => {
+                    const td = document.createElement('td');
+                    td.classList.add('row-number');
+                    td.textContent = index + 1; // Empieza en 1 para el primer registro
+                    row.insertBefore(td, row.firstChild);
+                });
+            }
+        }
+
+        function activateSearch() {
+            // Función removida - ya no se usa
         }
     </script>
 </body>
