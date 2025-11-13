@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>CU-01 Gestionar Eventos – Feria del Libro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Fuentas oficiales FamilySearch -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=MuseoModerno:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <h1 class="header__titulo">Gestionar Eventos</h1>
+    <button class="btn btn--destacado" id="btnNuevo">+ Crear evento</button>
+  </header>
+
+  <main class="main container">
+    <!-- Estado vacío -->
+    <section class="vacio" id="vacio">
+      <img class="vacio__img" src="https://beta.familysearch.org/frontier/zion/images/empty-state.svg" alt="" />
+      <h2 class="vacio__titulo">Aún no hay eventos</h2>
+      <p class="vacio__txt">Creá el primero para comenzar a recibir voluntarios.</p>
+    </section>
+
+    <!-- Listado -->
+    <section class="grid" id="lista"></section>
+  </main>
+
+  <!-- Modal crear / editar -->
+  <div class="modal" id="modal">
+    <div class="modal__content">
+      <h2 class="modal__titulo" id="modalTitulo">Nuevo evento</h2>
+      <form id="formEvento">
+        <input class="input" type="text" id="nombre" placeholder="Nombre del evento" required />
+        <input class="input" type="text" id="ubicacion" placeholder="Ciudad, País" required />
+        <div class="grid2">
+          <input class="input" type="date" id="inicio" required />
+          <input class="input" type="date" id="fin" required />
+        </div>
+        <textarea class="textarea" id="desc" rows="3" placeholder="Descripción (opcional)"></textarea>
+        <input class="input" type="url" id="logo" placeholder="URL del logo (opcional)" />
+        <select class="select" id="estado">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          <option value="archivado">Archivado</option>
+        </select>
+        <div class="modal__foot">
+          <button type="button" class="btn btn--ghost" id="btnCancel">Cancelar</button>
+          <button type="submit" class="btn btn--destacado" id="btnGuardar">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal archivar -->
+  <div class="modal" id="modalArch">
+    <div class="modal__content">
+      <h2>¿Archivar evento?</h2>
+      <p id="archTxt"></p>
+      <div class="modal__foot">
+        <button class="btn btn--ghost" id="btnArchCancel">Cancelar</button>
+        <button class="btn btn--danger" id="btnArchConf">Archivar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

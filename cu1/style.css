@@ -1,0 +1,71 @@
+/* ---------- VARIABLES FS ---------- */
+:root {
+  --fs-green: #87b940;
+  --fs-warm-gray: #786e63;
+  --fs-light-gray: #f6f6f6;
+  --fs-border: #dddfdf;
+  --fs-danger: #d83b3b;
+  --fs-white: #ffffff;
+  --radius: 12px;
+  --sombra: 0 4px 12px rgba(0, 0, 0, .06);
+  --font-body: 'Noto Sans', sans-serif;
+  --font-head: 'MuseoModerno', serif;
+}
+
+/* ---------- RESET ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-body); background: var(--fs-light-gray); color: var(--fs-warm-gray); line-height: 1.5; }
+
+/* ---------- HEADER ---------- */
+.header { background: var(--fs-white); border-bottom: 1px solid var(--fs-border); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.header__titulo { font-family: var(--font-head); color: var(--fs-green); font-size: 1.75rem; }
+
+/* ---------- BOTONES ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; border: none; border-radius: 8px; padding: .6rem 1.2rem; font-weight: 600; cursor: pointer; transition: .2s; }
+.btn--destacado { background: var(--fs-green); color: var(--fs-white); }
+.btn--destacado:hover { background: #6fa132; }
+.btn--ghost { background: transparent; color: var(--fs-green); border: 1px solid var(--fs-green); }
+.btn--ghost:hover { background: var(--fs-green); color: var(--fs-white); }
+.btn--danger { background: var(--fs-danger); color: var(--fs-white); }
+.btn--danger:hover { background: #b52f2f; }
+
+/* ---------- CONTENEDOR ---------- */
+.container { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+
+/* ---------- VACÍO ---------- */
+.vacio { text-align: center; padding: 4rem 1rem; }
+.vacio__img { width: 180px; opacity: .7; margin-bottom: 1rem; }
+.vacio__titulo { font-family: var(--font-head); color: var(--fs-green); margin-bottom: .5rem; }
+
+/* ---------- GRID ---------- */
+.grid { display: grid; gap: 1rem; }
+
+/* ---------- CARD ---------- */
+.card { background: var(--fs-white); border: 1px solid var(--fs-border); border-radius: var(--radius); padding: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; transition: box-shadow .2s; }
+.card:hover { box-shadow: var(--sombra); }
+.card__info h3 { font-family: var(--font-head); color: var(--fs-green); margin-bottom: .5rem; }
+.card__info p { margin: .25rem 0; font-size: .9rem; }
+.card__menu { position: relative; }
+.card__dots { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--fs-warm-gray); }
+.card__dropdown { position: absolute; right: 0; top: 2rem; background: var(--fs-white); border: 1px solid var(--fs-border); border-radius: 8px; overflow: hidden; display: none; flex-direction: column; min-width: 140px; z-index: 10; }
+.card__dropdown.show { display: flex; }
+.card__dropdown button { border: none; background: none; padding: .6rem 1rem; text-align: left; cursor: pointer; font-size: .9rem; }
+.card__dropdown button:hover { background: var(--fs-light-gray); }
+
+/* ---------- MODAL ---------- */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 100; }
+.modal.show { display: flex; }
+.modal__content { background: var(--fs-white); border-radius: var(--radius); width: 90%; max-width: 520px; padding: 2rem; }
+.modal__titulo { font-family: var(--font-head); color: var(--fs-green); margin-bottom: 1rem; }
+.modal__foot { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1.5rem; }
+
+/* ---------- FORM ---------- */
+.input, .textarea, .select { width: 100%; padding: .6rem .75rem; border: 1px solid var(--fs-border); border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; font-family: var(--font-body); }
+.textarea { resize: vertical; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
+
+/* ---------- TOAST ---------- */
+.toast { position: fixed; top: 1.2rem; right: 1.2rem; background: var(--fs-green); color: var(--fs-white); padding: .8rem 1.2rem; border-radius: 8px; box-shadow: var(--sombra); opacity: 0; transform: translateY(-20px); transition: .3s; z-index: 200; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.error { background: var(--fs-danger); }
