@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English B1 Mastery Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#ec4899',
+                        accent: '#8b5cf6',
+                        dark: '#0f172a',
+                        darker: '#020617',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-in': 'slideIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-hover:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .day-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .day-card.completed {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            border-color: #6366f1;
+        }
+        .day-card.active {
+            border-color: #ec4899;
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.3);
+        }
+        .prompt-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid #6366f1;
+        }
+        .checkbox-custom:checked + div {
+            background-color: #6366f1;
+            border-color: #6366f1;
+        }
+        .checkbox-custom:checked + div svg {
+            display: block;
+        }
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body class="text-white antialiased overflow-x-hidden">
+
+    <!-- Background Effects -->
+    <div class="blob bg-primary w-96 h-96 rounded-full top-0 left-0 animate-float"></div>
+    <div class="blob bg-secondary w-80 h-80 rounded-full bottom-0 right-0 animate-float" style="animation-delay: 2s;"></div>
+    <div class="blob bg-accent w-64 h-64 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></div>
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl relative z-10">
+        
+        <!-- Header -->
+        <header class="text-center mb-12 animate-slide-in">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-4 text-sm font-medium text-indigo-300">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                Programa B1 Activo • Feb 9 - Abr 4, 2026
+            </div>
+            <h1 class="font-display text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+                English B1<br>Mastery Tracker
+            </h1>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                15 minutos diarios • 8 semanas • Nivel intermedio completo
+            </p>
+        </header>
+
+        <!-- Progress Dashboard -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <div class="glass rounded-2xl p-6 flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm mb-1">Progreso Total</p>
+                    <p class="text-3xl font-display font-bold" id="totalProgress">0%</p>
+                </div>
+                <div class="relative w-20 h-20">
+                    <svg class="w-20 h-20 progress-ring">
+                        <circle cx="40" cy="40" r="36" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="none"/>
+                        <circle id="progressCircle" cx="40" cy="40" r="36" stroke="#6366f1" stroke-width="8" fill="none" 
+                                stroke-dasharray="226" stroke-dashoffset="226" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="glass rounded-2xl p-6 flex items-center justify-between">
+                <div>
+                    <p class="text-gray-400 text-sm mb-1">Clases Completadas</p>
+                    <p class="text-3xl font-display font-bold"><span id="completedCount">0</span><span class="text-gray-500 text-xl">/48</span></p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-2xl">📚</div>
+            </div>
+
+            <div class="glass rounded-2xl p-6 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="scrollToToday()">
+                <div>
+                    <p class="text-gray-400 text-sm mb-1">Hoy es</p>
+                    <p class="text-2xl font-display font-bold text-pink-400" id="todayDate">--</p>
+                    <p class="text-xs text-gray-500 mt-1">Click para ir a hoy →</p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center text-2xl">📅</div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex flex-wrap gap-4 mb-8 justify-center text-sm">
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-indigo-500"></div>
+                <span class="text-gray-300">Nuevo contenido</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                <span class="text-gray-300">Repaso</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                <span class="text-gray-300">Completado</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-gray-600"></div>
+                <span class="text-gray-300">Descanso</span>
+            </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendarContainer" class="space-y-8">
+            <!-- Weeks will be generated by JavaScript -->
+        </div>
+
+        <!-- Today's Class Modal -->
+        <div id="classModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="glass rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 transform transition-all scale-95 opacity-0" id="modalContent">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="text-indigo-400 text-sm font-medium uppercase tracking-wider" id="modalDate">Fecha</span>
+                        <h2 class="text-3xl font-display font-bold mt-2" id="modalTitle">Título</h2>
+                        <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium" id="modalType">Tipo</span>
+                    </div>
+                    <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3 text-indigo-300">🎯 Objetivo de hoy</h3>
+                        <p class="text-gray-300 leading-relaxed" id="modalObjective">--</p>
+                    </div>
+
+                    <div class="prompt-box rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-3 text-pink-300 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                            Prompt para IA
+                        </h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4" id="modalPrompt">--</p>
+                        <button onclick="copyPrompt()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            Copiar Prompt
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 pt-4 border-t border-white/10">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="checkbox" id="completeCheckbox" class="hidden checkbox-custom" onchange="toggleComplete()">
+                            <div class="w-6 h-6 rounded-lg border-2 border-gray-500 flex items-center justify-center transition-all group-hover:border-indigo-400">
+                                <svg class="w-4 h-4 hidden text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <span class="text-lg font-medium">Marcar como completado</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Program Data
+        const programData = [
+            // Semana 1
+            { date: '2026-02-09', day: 'Lunes', week: 1, type: 'new', title: 'Presente Simple vs. Continuo', objective: 'Dominar el uso del Presente Simple para hábitos y el Continuo para acciones momentáneas', prompt: 'Create 10 fill-in-the-blank sentences mixing Present Simple and Present Continuous about daily routines. Include: "Every morning I _____ (wake) up at 7, but right now I _____ (sleep) because it\'s Sunday." Provide answers at the end.' },
+            { date: '2026-02-10', day: 'Martes', week: 1, type: 'review', title: 'Repaso Presente', objective: 'Practicar conversaciones cortas usando ambos tiempos verbales', prompt: 'Generate a 5-question dialogue between two friends discussing their current activities vs. their usual routines. Use both Present Simple and Present Continuous. After the dialogue, ask me 3 comprehension questions.' },
+            { date: '2026-02-11', day: 'Miércoles', week: 1, type: 'new', title: 'Pasado Simple: Verbos Regulares', objective: 'Aprender la formación del Pasado Simple y sus pronunciaciones', prompt: 'Create a short story (100 words) about someone\'s weekend using 10 regular past tense verbs. Bold the verbs. Then give me 5 sentences to rewrite in past tense and provide the answer key.' },
+            { date: '2026-02-12', day: 'Jueves', week: 1, type: 'review', title: 'Repaso Pasado Simple', objective: 'Transformar presente a pasado en diferentes contextos', prompt: 'Give me a 10-sentence quiz where I must choose between Present Simple and Past Simple. Mix time markers (yesterday, usually, last week, every day). Show correct answers with brief explanations.' },
+            { date: '2026-02-13', day: 'Viernes', week: 1, type: 'new', title: 'Pasado Simple: Irregulares', objective: 'Memorizar verbos irregulares esenciales: go, see, eat, drink, do', prompt: 'Create a travel story using these 5 irregular verbs: go, see, eat, drink, do. Bold them. Then test me with 10 sentences where I fill in the past tense of irregular verbs (mix regular and irregular). Provide answer key.' },
+            { date: '2026-02-14', day: 'Sábado', week: 1, type: 'review', title: 'Repaso Semanal Integral', objective: 'Consolidar presente y pasado simple', prompt: 'Create a B1-level review test: 5 sentences to conjugate (Present Simple/Continuous), 5 irregular past tense verbs to complete, and one short paragraph for me to write about "My Last Weekend" using at least 5 past verbs. Grade my response if I paste it.' },
+            { date: '2026-02-15', day: 'Domingo', week: 1, type: 'rest', title: 'Descanso', objective: 'Día de descanso', prompt: '' },
+
+            // Semana 2
+            { date: '2026-02-16', day: 'Lunes', week: 2, type: 'new', title: 'Futuro: Will vs. Going To', objective: 'Diferenciar predicciones espontáneas de planes establecidos', prompt: 'Create 12 situations where I must choose between "will" and "going to". Example: "Look at those clouds! It _____ (rain)." Include predictions, promises, plans, and spontaneous decisions. Answer key with explanations.' },
+            { date: '2026-02-17', day: 'Martes', week: 2, type: 'review', title: 'Repaso Futuro', objective: 'Practicar planes de viaje usando ambas formas', prompt: 'Simulate a conversation where we\'re planning a trip together. Use going to for plans and will for spontaneous suggestions. After 8 exchanges, identify which sentences used will vs. going to and why.' },
+            { date: '2026-02-18', day: 'Miércoles', week: 2, type: 'new', title: 'Comparativos y Superlativos', objective: 'Formar comparaciones correctas con adjetivos cortos y largos', prompt: 'Give me 15 sentences to complete with comparative or superlative forms. Include: short adjectives (cheap-cheaper-cheapest), long adjectives (expensive), and irregular (good-better-best). Provide answer key with the full adjective table.' },
+            { date: '2026-02-19', day: 'Jueves', week: 2, type: 'review', title: 'Repaso Comparativos', objective: 'Comparar ciudades o productos en contexto real', prompt: 'Create a comparison table of two cities (e.g., Paris vs. Tokyo). Give me 8 prompts to write comparative sentences using: more/less + adjective, -er endings, and superlatives. Then show me a model answer I can compare with.' },
+            { date: '2026-02-20', day: 'Viernes', week: 2, type: 'new', title: 'Presente Perfecto Básico', objective: 'Usar have/has + participio para experiencias de vida', prompt: 'Create a "Find Someone Who" activity list with 8 Present Perfect questions: "Have you ever...?" (traveled alone, tried sushi, seen a concert). Provide possible follow-up questions in Past Simple for when the answer is "yes".' },
+            { date: '2026-02-21', day: 'Sábado', week: 2, type: 'review', title: 'Repaso Semanal', objective: 'Combinar futuro, comparativos y presente perfecto', prompt: 'Generate a 150-word text about someone\'s travel plans (going to), comparing two destinations (comparatives), and mentioning past experiences (present perfect). Bold all target structures. Then ask me 5 questions about the text.' },
+            { date: '2026-02-22', day: 'Domingo', week: 2, type: 'rest', title: 'Descanso', objective: 'Día de descanso', prompt: '' },
+
+            // Semana 3
+            { date: '2026-02-23', day: 'Lunes', week: 3, type: 'new', title: '1er Condicional', objective: 'Expresar situaciones reales y probables con If + present, will', prompt: 'Create 10 first conditional sentence starters: "If I save enough money..." "If it rains tomorrow..." Ask me to complete the second half. Then provide 3 creative model answers for each to show variety.' },
+            { date: '2026-02-24', day: 'Martes', week: 3, type: 'review', title: 'Repaso Condicional 1', objective: 'Crear cadenas de condicionales lógicas', prompt: 'Start a conditional chain story: "If I wake up early tomorrow, I will..." Continue with 6 more conditional sentences linking to the previous result. Ask me to complete the chain, then show your version.' },
+            { date: '2026-02-25', day: 'Miércoles', week: 3, type: 'new', title: 'Vocabulario: Trabajo', objective: 'Dominar lexico laboral y phrasal verbs profesionales', prompt: 'Create a job interview dialogue using 10 career vocabulary words and 3 phrasal verbs. Bold the target vocabulary. After the dialogue, give me definitions to match with the words, and 3 questions to answer about my own job experience.' },
+            { date: '2026-02-26', day: 'Jueves', week: 3, type: 'review', title: 'Repaso Laboral', objective: 'Simular entrevista de trabajo', prompt: 'Role-play as my interviewer for a marketing position. Ask me 5 common interview questions. After I answer (I\'ll type my responses), give me feedback on my vocabulary use and suggest 2 better phrasal verbs or expressions I could have used.' },
+            { date: '2026-02-27', day: 'Viernes', week: 3, type: 'new', title: '2do Condicional', objective: 'Hablar de situaciones hipotéticas con If + past, would', prompt: 'Create 8 hypothetical situations: "If I won the lottery..." "If I could speak any language..." Ask me to write the "would" clause. Then provide creative model answers using advanced B1 vocabulary (invest, pursue, relocate, master).' },
+            { date: '2026-02-28', day: 'Sábado', week: 3, type: 'review', title: 'Repaso Semanal', objective: 'Diferenciar condicional 1 (real) vs condicional 2 (hipotético)', prompt: 'Create 4 scenarios. For each, I must write one sentence with First Conditional (real possibility) and one with Second Conditional (hypothetical). Example scenario: "You see a job ad in another country." Grade my 8 sentences and correct errors.' },
+            { date: '2026-03-01', day: 'Domingo', week: 3, type: 'rest', title: 'Descanso', objective: 'Día de descanso', prompt: '' },
+
+            // Semana 4
+            { date: '2026-03-02', day: 'Lunes', week: 4, type: 'new', title: 'Reported Speech: Statements', objective: 'Reportar declaraciones cambiando tiempos y pronombres', prompt: 'Give me 10 direct speech sentences in various tenses. I convert them to reported speech. Example: "I am tired" → She said that she was tired. Include time expressions (today→that day, yesterday→the day before). Answer key with all changes highlighted.' },
+            { date: '2026-03-03', day: 'Martes', week: 4, type: 'review', title: 'Repaso Reported', objective: 'Practicar noticias y chismes indirectos', prompt: 'Create a gossip scenario: "Your friend tells you what happened at a party." Give me 6 sentences in direct speech that I must report to a third person. Include questions and commands. Show me the complete reported version after.' },
+            { date: '2026-03-04', day: 'Miércoles', week: 4, type: 'new', title: 'Reported Speech: Preguntas', objective: 'Reportar preguntas y órdenes correctamente', prompt: 'Create 5 questions and 5 commands in direct speech. I practice converting: "Where are you going?" → She asked me where I was going. "Close the door!" → He told me to close the door. Answer key with structure formulas.' },
+            { date: '2026-03-05', day: 'Jueves', week: 4, type: 'review', title: 'Repaso Reported Completo', objective: 'Cadena telefónica escrita', prompt: 'Write a short dialogue (6 lines) between two people arguing about plans. I must report the entire conversation to a boss using reported speech. After I submit, check my backshifting of tenses and pronoun changes.' },
+            { date: '2026-03-06', day: 'Viernes', week: 4, type: 'new', title: 'Modales: Obligación', objective: 'Diferenciar must, have to, should, could', prompt: 'Create 12 situations requiring advice. I choose the correct modal: must (strong obligation), have to (external rule), should (advice), could (suggestion). Example: "My throat hurts." → You should drink tea. Answer key with nuance explanations.' },
+            { date: '2026-03-07', day: 'Sábado', week: 4, type: 'review', title: 'Repaso Final B1', objective: 'Examen de práctica completo', prompt: 'Create a complete B1 level test: 5 grammar transformation sentences (active→passive, direct→reported), 10 multiple choice (mixed tenses), 5 vocabulary fill-in-blanks (phrasal verbs), and a 100-word writing prompt: "Write about a difficult decision you made." Provide scoring rubric.' },
+            { date: '2026-03-08', day: 'Domingo', week: 4, type: 'rest', title: 'Descanso', objective: 'Día de descanso', prompt: '' },
+
+            // Semana 5
+            { date: '2026-03-09', day: 'Lunes', week: 5, type: 'new', title: 'Salud: Vocabulario médico', objective: 'Aprender términos médicos básicos y síntomas', prompt: 'Create a medical consultation dialogue with 15 health-related terms (symptoms, diagnosis, treatment). Include: fever, prescription, side effects, dosage. Bold the vocabulary. Then quiz me on definitions.' },
+            { date: '2026-03-10', day: 'Martes', week: 5, type: 'review', title: 'Repaso Salud', objective: 'Practicar descripción de dolencias', prompt: 'Give me 10 symptoms described in simple words (e.g., "My head hurts badly"). I must rephrase using proper medical terminology (e.g., "I have a severe headache"). Provide the terminology list first as reference.' },
+            { date: '2026-03-11', day: 'Miércoles', week: 5, type: 'new', title: 'Describir dolencias', objective: 'Expresar malestares físicos con precisión', prompt: 'Create 8 role-play scenarios where I describe symptoms to a doctor. Include: duration, severity, location of pain. After each, provide a model answer showing B1-level descriptive language (throbbing, dull ache, sharp pain).' },
+            { date: '2026-03-12', day: 'Jueves', week: 5, type: 'review', title: 'Repaso Dolencias', objective: 'Dar consejos saludables usando imperativos y modales', prompt: 'I will describe 3 symptoms. You give me health advice using should/shouldn\'t, must/mustn\'t, and imperative forms (Drink plenty of water). Then reverse: you give symptoms, I give advice, you grade my response.' },
+            { date: '2026-03-13', day: 'Viernes', week: 5, type: 'new', title: 'Sistema de salud', objective: 'Vocabulario de citas, seguros y emergencias', prompt: 'Create a guide to making doctor appointments and navigating health insurance. Include 10 key phrases for: scheduling, insurance coverage, emergency room vs. clinic. Provide a fill-in-the-blank exercise with this vocabulary.' },
+            { date: '2026-03-14', day: 'Sábado', week: 5, type: 'review', title: 'Repaso Semanal', objective: 'Integrar vocabulario médico en contextos reales', prompt: 'Write a story about someone\'s health journey: initial symptoms, doctor visit, diagnosis, treatment, recovery. Use 20 medical terms. Bold them. Ask me comprehension questions and have me retell the story in my own words.' },
+            { date: '2026-03-15', day: 'Domingo', week: 5, type: 'rest', title: 'Descanso', objective: 'Día de descanso', prompt: '' },
+
+            // Semana 6
+            { date: '2026-03-16', day: 'Lunes', week: 6, type: 'new', title: 'Medio Ambiente', objective: 'Vocabulario verde y sostenibilidad', prompt: 'Create an infographic-style text about environmental issues using: renewable energy, carbon footprint, sustainable, pollution, conservation. Define 10 terms, then give me 5 sentences to complete with the correct word.' },
+            { date: '2026-03-17', day: 'Martes', week: 6, type: 'review', title: 'Repaso Verde', objective: 'Debates ecológicos básicos', prompt: 'Present 3 environmental dilemmas (e.g., "Nuclear vs. Solar energy"). For each, give me 2 minutes to write arguments for both sides using comparative structures. Then show me model arguments with advanced vocabulary.' },
+            { date: '2026-03-18', day: 'Miércoles', week: 6, type: 'new', title: 'Tecnología Moderna', objective: 'IA, privacidad y vida digital', prompt: 'Create a dialogue about technology addiction and digital privacy. Include 12 tech terms: AI, algorithm, data breach, encryption, screen time. Bold the terms. After, ask me to summarize the main concerns discussed.' },
+            { date: '2026-03-19', day: 'Jueves', week: 6, type: 'review', title: 'Repaso Tech', objective: 'Describir dependencia tecnológica', prompt: 'Give me 5 scenarios of tech-related problems (phone addiction, social media anxiety). I write advice using Second Conditional ("If I were you...") and tech vocabulary. Grade my responses for vocabulary accuracy.' },
+            { date: '2026-03-20', day: 'Viernes', week: 6, type: 'new', title: 'Debate Pro/Contra', objective: 'Estructurar argumentos a favor y en contra', prompt: 'Choose a controversial tech topic (e.g., "Social media bans for under 16s"). Provide 6 arguments pro and 6 con using linking words (Furthermore, On the other hand, Consequently). Then ask me to debate both sides.' },
+            { date: '2026-03-21', day: 'Sábado', week: 6, type: 'review', title: 'Repaso Semanal', objective: 'Ensayo corto integrador', prompt: 'Ask me to write 150 words on: "Technology should solve environmental problems, not create them." I must use 5 environment words and 5 tech words. After I submit, give detailed feedback on vocabulary usage and grammar.' },
+            { date: '2026-03-22', day: 'Domingo', week: 6, type: 'rest', title: 'Descanso', objective: 'Día de descanso', prompt: '' },
+
+            // Semana 7
+            { date: '2026-03-23', day: 'Lunes', week: 7, type: 'new', title: 'Viajes: Planificación', objective: 'Reservas, itinerarios y sightseeing', prompt: 'Create a travel planning conversation covering: booking flights, accommodation types (B&B, hostel, hotel), itinerary planning. Include 12 travel phrasal verbs: set off, check in, drop off, pick up. Bold them and provide a matching exercise.' },
+            { date: '2026-03-24', day: 'Martes', week: 7, type: 'review', title: 'Repaso Viajes', objective: 'Simular planificación de viaje', prompt: 'I will tell you my dream destination. You ask me 5 questions about my plans using going to and travel vocabulary. Then provide a sample itinerary with 10 activities using different time expressions.' },
+            { date: '2026-03-25', day: 'Miércoles', week: 7, type: 'new', title: 'Problemas de viaje', objective: 'Reclamaciones y situaciones imprevistas', prompt: 'Create 8 travel problems scenarios: delayed flight, lost luggage, overbooking. For each, provide the complaint phrase a traveler would use and the airline/hotel response. Focus on polite but firm language.' },
+            { date: '2026-03-26', day: 'Jueves', week: 7, type: 'review', title: 'Repaso Problemas', objective: 'Role-play de reclamaciones', prompt: 'Role-play: I am a customer with a travel problem, you are the airline representative. We negotiate a solution. Use conditional sentences ("If you upgrade me, I will..."). After, give me feedback on my negotiation language.' },
+            { date: '2026-03-27', day: 'Viernes', week: 7, type: 'new', title: 'Experiencias culturales', objective: 'Describir choque cultural y adaptación', prompt: 'Write about culture shock experiences using: overwhelming, fascinating, bizarre, customary, offensive. Provide 5 situations, I describe how I would feel using 3 of these words each time. Show model answers.' },
+            { date: '2026-03-28', day: 'Sábado', week: 7, type: 'review', title: 'Repaso Semanal', objective: 'Narrativa de viaje completa', prompt: 'Ask me to write a travel blog post (120 words) about a trip with problems but happy ending. Must include: 5 travel verbs, 3 adjectives for feelings, 2 conditional sentences. Grade my text and suggest improvements.' },
+            { date: '2026-03-29', day: 'Domingo', week: 7, type: 'rest', title: 'Descanso', objective: 'Día de descanso', prompt: '' },
+
+            // Semana 8
+            { date: '2026-03-30', day: 'Lunes', week: 8, type: 'new', title: 'Relaciones y Personalidad', objective: 'Adjetivos de carácter y dinámicas sociales', prompt: 'Create personality profiles using: reliable, stubborn, outgoing, petty, supportive. Give me 5 character descriptions, I guess the personality type. Then have me describe someone I know using 5 adjectives with examples.' },
+            { date: '2026-03-31', day: 'Martes', week: 8, type: 'review', title: 'Repaso Relaciones', objective: 'Phrasal verbs de relaciones', prompt: 'Teach 10 relationship phrasal verbs: get along with, fall out, make up, drift apart, catch up. Create a story of a friendship breaking and repairing using all 10. Then test me with fill-in-the-blanks.' },
+            { date: '2026-04-01', day: 'Miércoles', week: 8, type: 'new', title: 'Temas Sociales', objective: 'Desigualdad, comunidad y voluntariado', prompt: 'Discuss social issues using: inequality, privilege, volunteer, community, generation gap. Present 3 social problems, I suggest solutions using "If the government/people...". Evaluate my suggestions for feasibility and language.' },
+            { date: '2026-04-02', day: 'Jueves', week: 8, type: 'review', title: 'Repaso Social', objective: 'Expresar opiniones éticas', prompt: 'Present 4 ethical dilemmas (e.g., "Is it right to give money to homeless people?"). I express my opinion using: In my view..., I tend to think..., Having said that... Provide feedback on my hedging language usage.' },
+            { date: '2026-04-03', day: 'Viernes', week: 8, type: 'new', title: 'Opiniones Complejas', objective: 'Acuerdo, desacuerdo y neutralidad diplomática', prompt: 'Teach polite agreement/disagreement phrases: I see your point, but...; I\'m not convinced that...; That\'s a valid argument. Create 5 controversial statements, I respond with appropriate diplomatic language. Grade my tone and formality.' },
+            { date: '2026-04-04', day: 'Sábado', week: 8, type: 'review', title: 'Repaso Final Curso', objective: 'Evaluación completa B1', prompt: 'Final B1 Exam: 1) Write 200 words on "How learning English has changed my perspective" (must use present perfect, 2nd conditional, comparatives). 2) Transform 5 direct speech to reported. 3) Vocabulary test: 20 words from the course. Provide detailed scoring and certificate text if I pass (80%+).' },
+            { date: '2026-04-05', day: 'Domingo', week: 8, type: 'rest', title: 'Descanso', objective: '¡Felicitaciones! Has completado el curso', prompt: 'Review my overall progress and suggest next steps for B2 level.' }
+        ];
+
+        let completedClasses = JSON.parse(localStorage.getItem('completedClasses')) || [];
+        let currentClass = null;
+
+        function init() {
+            renderCalendar();
+            updateStats();
+            updateTodayDate();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '';
+
+            // Group by weeks
+            const weeks = {};
+            programData.forEach(item => {
+                if (!weeks[item.week]) weeks[item.week] = [];
+                weeks[item.week].push(item);
+            });
+
+            Object.keys(weeks).forEach(weekNum => {
+                const weekData = weeks[weekNum];
+                const weekDiv = document.createElement('div');
+                weekDiv.className = 'glass rounded-3xl p-6 md:p-8';
+                
+                const isCurrentWeek = isWeekCurrent(weekData[0].date);
+                if (isCurrentWeek) {
+                    weekDiv.classList.add('ring-2', 'ring-pink-500', 'ring-opacity-50');
+                }
+
+                weekDiv.innerHTML = `
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-display font-bold flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-bold">
+                                ${weekNum}
+                            </span>
+                            Semana ${weekNum}
+                        </h2>
+                        ${isCurrentWeek ? '<span class="px-3 py-1 rounded-full bg-pink-500/20 text-pink-300 text-sm font-medium animate-pulse">Semana Actual</span>' : ''}
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                        ${weekData.map(day => createDayCard(day)).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(weekDiv);
+            });
+        }
+
+        function createDayCard(day) {
+            const isCompleted = completedClasses.includes(day.date);
+            const isToday = isDateToday(day.date);
+            const dateObj = new Date(day.date);
+            const dayNum = dateObj.getDate();
+            const month = dateObj.toLocaleDateString('es', { month: 'short' });
+
+            let typeColor = 'border-gray-600';
+            let bgColor = 'bg-gray-800/30';
+            let badge = '';
+
+            if (day.type === 'new') {
+                typeColor = 'border-indigo-500';
+                badge = '<span class="text-[10px] uppercase tracking-wider text-indigo-400 font-bold">Nuevo</span>';
+            } else if (day.type === 'review') {
+                typeColor = 'border-pink-500';
+                badge = '<span class="text-[10px] uppercase tracking-wider text-pink-400 font-bold">Repaso</span>';
+            } else if (day.type === 'rest') {
+                typeColor = 'border-gray-600';
+                bgColor = 'bg-gray-900/50';
+                badge = '<span class="text-[10px] uppercase tracking-wider text-gray-500">Descanso</span>';
+            }
+
+            if (isCompleted) {
+                bgColor = 'bg-green-500/20';
+                typeColor = 'border-green-500';
+            }
+
+            if (isToday) {
+                typeColor = 'border-yellow-400 border-2';
+            }
+
+            return `
+                <div onclick="openClass('${day.date}')" 
+                     class="day-card ${isCompleted ? 'completed' : ''} ${isToday ? 'active' : ''} 
+                            glass rounded-xl p-3 cursor-pointer border ${typeColor} ${bgColor}
+                            hover:scale-105 transition-all duration-300 min-h-[120px] flex flex-col justify-between"
+                     id="card-${day.date}">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs text-gray-400 mb-1">${day.day}</p>
+                            <p class="text-lg font-bold">${dayNum} <span class="text-xs font-normal text-gray-500">${month}</span></p>
+                        </div>
+                        ${isCompleted ? '<svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>' : ''}
+                    </div>
+                    <div class="mt-2">
+                        ${badge}
+                        <p class="text-xs mt-1 line-clamp-2 leading-tight ${day.type === 'rest' ? 'text-gray-500' : 'text-gray-300'}">
+                            ${day.title}
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openClass(date) {
+            const day = programData.find(d => d.date === date);
+            if (!day || day.type === 'rest') return;
+
+            currentClass = day;
+            
+            document.getElementById('modalDate').textContent = `${day.day}, ${new Date(day.date).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+            document.getElementById('modalTitle').textContent = day.title;
+            document.getElementById('modalType').textContent = day.type === 'new' ? 'Contenido Nuevo' : 'Día de Repaso';
+            document.getElementById('modalType').className = `inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${day.type === 'new' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-pink-500/20 text-pink-300'}`;
+            document.getElementById('modalObjective').textContent = day.objective;
+            document.getElementById('modalPrompt').textContent = day.prompt;
+            
+            const checkbox = document.getElementById('completeCheckbox');
+            checkbox.checked = completedClasses.includes(date);
+            
+            const modal = document.getElementById('classModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('classModal');
+            const content = document.getElementById('modalContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function toggleComplete() {
+            if (!currentClass) return;
+            
+            const date = currentClass.date;
+            const checkbox = document.getElementById('completeCheckbox');
+            
+            if (checkbox.checked) {
+                if (!completedClasses.includes(date)) {
+                    completedClasses.push(date);
+                }
+            } else {
+                completedClasses = completedClasses.filter(d => d !== date);
+            }
+            
+            localStorage.setItem('completedClasses', JSON.stringify(completedClasses));
+            updateStats();
+            renderCalendar();
+            
+            // Confetti effect for completion
+            if (checkbox.checked) {
+                createConfetti();
+            }
+        }
+
+        function copyPrompt() {
+            const prompt = document.getElementById('modalPrompt').textContent;
+            navigator.clipboard.writeText(prompt).then(() => {
+                const btn = document.querySelector('button[onclick="copyPrompt()"]');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ¡Copiado!';
+                btn.classList.add('bg-green-600');
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.classList.remove('bg-green-600');
+                }, 2000);
+            });
+        }
+
+        function updateStats() {
+            const total = programData.filter(d => d.type !== 'rest').length;
+            const completed = completedClasses.length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('totalProgress').textContent = percentage + '%';
+            
+            const circle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 36;
+            const offset = circumference - (percentage / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
+
+        function updateTodayDate() {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long' };
+            document.getElementById('todayDate').textContent = today.toLocaleDateString('es', options);
+        }
+
+        function isDateToday(dateStr) {
+            const today = new Date().toISOString().split('T')[0];
+            return dateStr === today;
+        }
+
+        function isWeekCurrent(weekStartDate) {
+            const today = new Date();
+            const start = new Date(weekStartDate);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 6);
+            return today >= start && today <= end;
+        }
+
+        function scrollToToday() {
+            const today = new Date().toISOString().split('T')[0];
+            const element = document.getElementById(`card-${today}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('animate-pulse');
+                setTimeout(() => element.classList.remove('animate-pulse'), 2000);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#6366f1', '#ec4899', '#8b5cf6', '#10b981'];
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-10px';
+                confetti.style.borderRadius = '50%';
+                confetti.style.zIndex = '9999';
+                confetti.style.pointerEvents = 'none';
+                document.body.appendChild(confetti);
+                
+                const duration = Math.random() * 3 + 2;
+                confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translateY(100vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: duration * 1000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                }).onfinish = () => confetti.remove();
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('classModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
