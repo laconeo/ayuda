@@ -189,7 +189,7 @@
             padding: 20px;
             border-bottom: 1px solid #ecf0f1;
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: auto 1fr auto;
             gap: 15px;
             transition: background 0.2s;
         }
@@ -200,6 +200,27 @@
 
         .link-item:last-child {
             border-bottom: none;
+        }
+
+        .link-thumbnail {
+            width: 120px;
+            height: 90px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #ecf0f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #95a5a6;
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .link-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
         .link-info {
@@ -552,7 +573,7 @@
                 <button onclick="clearAll()" style="background: #e74c3c;">Limpiar Todo</button>
             </div>
 
-            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar por título, URL o dominio..." oninput="filterLinks()" />
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar en título, URL, dominio, categoría, contexto o notas..." oninput="filterLinks()" />
 
             <div class="stats">
                 <div class="stat-card">
@@ -886,6 +907,70 @@
             renderLinks();
         }
 
+        function getThumbnail(url, domain) {
+            // YouTube
+            if (url.includes('youtube.com/watch')) {
+                const videoId = url.match(/v=([^&]+)/)?.[1];
+                if (videoId) return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+            }
+            if (url.includes('youtu.be/')) {
+                const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+                if (videoId) return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+            }
+            if (url.includes('youtube.com/shorts/')) {
+                const videoId = url.split('shorts/')[1]?.split('?')[0];
+                if (videoId) return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+            }
+
+            // Instagram
+            if (url.includes('instagram.com')) {
+                return '📷';
+            }
+
+            // LinkedIn
+            if (url.includes('linkedin.com')) {
+                return '💼';
+            }
+
+            // Google
+            if (url.includes('google.com')) {
+                return '🔍';
+            }
+
+            // FamilySearch / Church
+            if (url.includes('familysearch') || url.includes('churchofjesuschrist')) {
+                return '🌳';
+            }
+
+            // GitHub
+            if (url.includes('github.com')) {
+                return '💻';
+            }
+
+            // Suno
+            if (url.includes('suno.com')) {
+                return '🎵';
+            }
+
+            // OnShape
+            if (url.includes('onshape.com')) {
+                return '📐';
+            }
+
+            // Adobe
+            if (url.includes('adobe.com') || url.includes('acrobat.adobe.com')) {
+                return '🎨';
+            }
+
+            // Monday
+            if (url.includes('monday.com')) {
+                return '📊';
+            }
+
+            // Default por categoría
+            return '🔗';
+        }
+
         function openEditModal(index) {
             editingIndex = index;
             const link = links[index];
@@ -967,12 +1052,15 @@
                 
                 // Filtro por búsqueda
                 if (searchTerm) {
+                    const categoryLabel = CATEGORIES[link.category]?.label || '';
                     const searchIn = [
                         link.url,
                         link.domain,
                         link.title,
                         link.context,
-                        link.notes
+                        link.notes,
+                        categoryLabel,
+                        link.rating
                     ].join(' ').toLowerCase();
                     
                     if (!searchIn.includes(searchTerm)) {
@@ -1000,9 +1088,16 @@
                 const originalIndex = links.indexOf(link);
                 const date = new Date(link.date).toLocaleDateString('es-AR');
                 const catInfo = CATEGORIES[link.category];
+                const thumbnail = getThumbnail(link.url, link.domain);
                 
                 return `
                     <div class="link-item">
+                        <div class="link-thumbnail">
+                            ${thumbnail.startsWith('http') 
+                                ? `<img src="${thumbnail}" alt="thumbnail" onerror="this.parentElement.innerHTML='🔗'">` 
+                                : thumbnail}
+                        </div>
+                        
                         <div class="link-info">
                             <div class="link-header">
                                 <span class="link-date">${date}</span>
