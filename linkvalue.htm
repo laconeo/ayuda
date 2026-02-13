@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Catálogo de Revisión - LinkVault</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --neutral: #6b7280;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+            border-bottom: 1px solid var(--surface-light);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            -webkit-text-fill-color: white;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: var(--surface);
+            border: 2px dashed var(--surface-light);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 800px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover, .upload-section.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .upload-text {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--surface-light);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-pending { color: var(--warning); }
+        .stat-useful { color: var(--success); }
+        .stat-useless { color: var(--danger); }
+        .stat-total { color: var(--primary); }
+
+        /* Filters */
+        .filters {
+            max-width: 1400px;
+            margin: 0 auto 2rem;
+            padding: 0 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--surface-light);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--surface-light);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+        }
+
+        /* Links Grid */
+        .links-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .link-card {
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--surface-light);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .link-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .link-card.useful {
+            border-left: 4px solid var(--success);
+        }
+
+        .link-card.useless {
+            border-left: 4px solid var(--danger);
+            opacity: 0.7;
+        }
+
+        .link-card.pending {
+            border-left: 4px solid var(--warning);
+        }
+
+        .link-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--surface-light);
+            flex: 1;
+        }
+
+        .link-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .type-youtube { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .type-web { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; }
+        .type-pdf { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+        .type-image { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        .type-audio { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+        .type-doc { background: rgba(236, 72, 153, 0.2); color: #f9a8d4; }
+        .type-other { background: rgba(107, 114, 128, 0.2); color: #d1d5db; }
+
+        .link-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .link-context {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .link-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link-content {
+            padding: 1.25rem;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .link-url {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            word-break: break-all;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            font-family: monospace;
+        }
+
+        .link-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .btn-pending:hover, .btn-pending.active {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-useful {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .btn-useful:hover, .btn-useful.active {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-useless {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-useless:hover, .btn-useless.active {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-visit {
+            background: var(--surface-light);
+            color: var(--text);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-visit:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--surface-light);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .links-container {
+                grid-template-columns: 1fr;
+                padding: 0 1rem 2rem;
+            }
+
+            .filters {
+                padding: 0 1rem;
+            }
+
+            .upload-section {
+                margin: 1rem;
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Add Button */
+        .add-more {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s;
+            display: none;
+        }
+
+        .add-more:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .add-more.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Preview de contenido extraído */
+        .extracted-preview {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">📚</div>
+                <span>LinkVault Pro</span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button onclick="exportData()" style="padding: 0.5rem 1rem; background: var(--surface-light); border: none; border-radius: 8px; color: var(--text); cursor: pointer; font-size: 0.875rem;">
+                    💾 Exportar
+                </button>
+                <button onclick="clearAll()" style="padding: 0.5rem 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); cursor: pointer; font-size: 0.875rem;">
+                    🗑️ Limpiar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Upload Section -->
+        <div class="upload-section" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Arrastra tu archivo _chat.txt aquí</div>
+            <div class="upload-hint">O haz clic para seleccionar • Soporta múltiples archivos</div>
+            <input type="file" id="fileInput" accept=".txt" onchange="handleFile(this.files[0])">
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar" id="statsBar" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number stat-total" id="totalCount">0</div>
+                <div class="stat-label">Total Links</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-pending" id="pendingCount">0</div>
+                <div class="stat-label">Pendientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-useful" id="usefulCount">0</div>
+                <div class="stat-label">Útiles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number stat-useless" id="uselessCount">0</div>
+                <div class="stat-label">No Útiles</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters" id="filters" style="display: none;">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar por título, contexto, URL o fecha..." onkeyup="filterLinks()">
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="setFilter('all')" id="filter-all">Todos</button>
+                <button class="filter-btn" onclick="setFilter('pending')" id="filter-pending">⏳ Pendientes</button>
+                <button class="filter-btn" onclick="setFilter('useful')" id="filter-useful">✅ Útiles</button>
+                <button class="filter-btn" onclick="setFilter('useless')" id="filter-useless">❌ No Útiles</button>
+            </div>
+        </div>
+
+        <!-- Links Grid -->
+        <div class="links-container" id="linksContainer">
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h3>No hay enlaces cargados</h3>
+                <p>Sube tu archivo _chat.txt para comenzar a organizar tus referencias</p>
+            </div>
+        </div>
+    </main>
+
+    <button class="add-more" id="addMoreBtn" onclick="showUpload()" title="Agregar más archivos">+</button>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toastIcon">✅</span>
+        <span id="toastMessage">Operación exitosa</span>
+    </div>
+
+    <script>
+        // Estado global
+        let links = [];
+        let currentFilter = 'all';
+        let searchTerm = '';
+
+        // Patrones de limpieza y extracción
+        const WHATSAPP_JUNK = [
+            /imagen omitida/gi,
+            /video omitido/gi,
+            /audio omitido/gi,
+            /documento omitido/gi,
+            /sticker omitido/gi,
+            /tarjeta de contacto omitida/gi,
+            /‎/g, // Caracter especial de WhatsApp
+            /•\s*\d+\s*(página|páginas|diapositiva|diapositivas|hoja|hojas)/gi,
+            /\.pdf\s*•/gi,
+            /^\s*[-–—]\s*/g,
+        ];
+
+        // Palabras clave que indican descripción valiosa
+        const DESCRIPTIVE_KEYWORDS = [
+            'tutorial', 'guía', 'curso', 'clase', 'seminario', 'conferencia',
+            'documento', 'informe', 'análisis', 'resumen', 'artículo', 'libro',
+            'herramienta', 'aplicación', 'software', 'sistema', 'plataforma',
+            'método', 'técnica', 'estrategia', 'proceso', 'procedimiento',
+            'contacto', 'teléfono', 'número', 'email', 'correo', 'dirección',
+            'reunión', 'evento', 'feria', 'exposición', 'congreso',
+            'presupuesto', 'factura', 'recibo', 'comprobante', 'pago',
+            'manual', 'instructivo', 'protocolo', 'reglamento', 'norma'
+        ];
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            setupDragAndDrop();
+        });
+
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById('dropZone');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'));
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'));
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) handleFile(files[0]);
+            });
+        }
+
+        function showUpload() {
+            document.getElementById('dropZone').style.display = 'block';
+            document.getElementById('dropZone').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function handleFile(file) {
+            if (!file || !file.name.endsWith('.txt')) {
+                showToast('❌', 'Por favor sube un archivo .txt');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => parseChatFile(e.target.result);
+            reader.readAsText(file);
+        }
+
+        // Parser principal mejorado
+        function parseChatFile(content) {
+            // Normalizar saltos de línea
+            content = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            
+            // Dividir en bloques de mensaje (cada bloque puede tener múltiples líneas)
+            const messageBlocks = splitIntoMessageBlocks(content);
+            
+            const newLinks = [];
+            const seenUrls = new Set(links.map(l => l.url));
+
+            messageBlocks.forEach(block => {
+                const parsed = parseMessageBlock(block);
+                if (!parsed) return;
+
+                const { date, sender, content: messageContent } = parsed;
+                
+                // Extraer todas las URLs del mensaje
+                const urls = extractUrls(messageContent);
+                
+                urls.forEach(url => {
+                    if (seenUrls.has(url)) return;
+                    seenUrls.add(url);
+
+                    // Extraer título con heurísticas avanzadas
+                    const titleData = extractTitleAdvanced(messageContent, url);
+                    
+                    newLinks.push({
+                        id: Date.now() + Math.random(),
+                        url: url,
+                        title: titleData.title,
+                        context: titleData.context,
+                        extractionMethod: titleData.method, // Para debugging
+                        type: detectType(url, messageContent),
+                        date: date,
+                        status: 'pending',
+                        added: new Date().toISOString()
+                    });
+                });
+            });
+
+            // Combinar y actualizar
+            if (newLinks.length > 0) {
+                links = [...links, ...newLinks];
+                saveToStorage();
+                renderLinks();
+                updateStats();
+                showToast('📥', `Se agregaron ${newLinks.length} nuevos enlaces`);
+                
+                document.getElementById('statsBar').style.display = 'grid';
+                document.getElementById('filters').style.display = 'flex';
+                document.getElementById('dropZone').style.display = 'none';
+                document.getElementById('addMoreBtn').classList.add('show');
+            } else {
+                showToast('ℹ️', 'No se encontraron nuevos enlaces únicos');
+            }
+        }
+
+        // Dividir contenido en bloques de mensaje
+        function splitIntoMessageBlocks(content) {
+            const blocks = [];
+            const lines = content.split('\n');
+            let currentBlock = [];
+            
+            const datePattern = /^\[\d{1,2}\/\d{1,2}\/\d{2,4},\s*\d{1,2}:\d{2}:\d{2}\s*[ap]\.?\s*m\.?\]/;
+            
+            lines.forEach(line => {
+                if (datePattern.test(line.trim())) {
+                    // Nueva línea con fecha, guardar bloque anterior
+                    if (currentBlock.length > 0) {
+                        blocks.push(currentBlock.join('\n'));
+                    }
+                    currentBlock = [line];
+                } else if (line.trim() || currentBlock.length > 0) {
+                    // Línea de continuación o vacía dentro de bloque
+                    currentBlock.push(line);
+                }
+            });
+            
+            if (currentBlock.length > 0) {
+                blocks.push(currentBlock.join('\n'));
+            }
+            
+            return blocks;
+        }
+
+        // Parsear un bloque de mensaje
+        function parseMessageBlock(block) {
+            // Patrón: [fecha] Nombre: contenido
+            const pattern = /^\[(\d{1,2}\/\d{1,2}\/\d{2,4}),\s*(\d{1,2}:\d{2}:\d{2}\s*[ap]\.?\s*m\.?)\]\s*(.*?):\s*(.*)$/s;
+            const match = block.match(pattern);
+            
+            if (!match) return null;
+            
+            return {
+                date: `[${match[1]}, ${match[2]}]`,
+                time: match[2],
+                sender: match[3].trim(),
+                content: match[4].trim()
+            };
+        }
+
+        // Extracción de URLs mejorada
+        function extractUrls(text) {
+            const urls = [];
+            const patterns = [
+                // URLs completas
+                /https?:\/\/[^\s<>"{}|\\^`\[\]]+/gi,
+                // URLs sin protocolo
+                /(?:^|\s)(www\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}[^\s<>"{}|\\^`\[\]]*)/gi,
+                // Dominios con path
+                /(?:^|\s)([a-zA-Z0-9-]+\.(com|ar|org|net|edu|gov|io|co|app|dev|ai|cloud|tech)[^\s<>"{}|\\^`\[\]]*)/gi
+            ];
+
+            patterns.forEach(pattern => {
+                let match;
+                while ((match = pattern.exec(text)) !== null) {
+                    let url = match[0].trim();
+                    // Limpiar caracteres de puntuación al final
+                    url = url.replace(/[.,;!?)"'\]]+$/, '');
+                    
+                    if (!url.startsWith('http')) {
+                        url = 'https://' + url.replace(/^\s*www\./, '');
+                    }
+                    
+                    // Validar que parezca una URL
+                    if (isValidUrl(url) && !urls.includes(url)) {
+                        urls.push(url);
+                    }
+                }
+            });
+
+            return urls;
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // HEURÍSTICAS AVANZADAS DE EXTRACCIÓN DE TÍTULO
+        function extractTitleAdvanced(message, url) {
+            let method = 'unknown';
+            let title = '';
+            let context = '';
+
+            // 1. LIMPIAR EL MENSAJE
+            let cleanMessage = cleanWhatsAppArtifacts(message);
+            
+            // 2. ESTRATEGIA: Buscar texto entre comillas o markdown antes/después de URL
+            const quotedPattern = /"([^"]{10,100})"|'([^']{10,100})'|\*([^*]{10,100})\*/g;
+            let match;
+            while ((match = quotedPattern.exec(message)) !== null) {
+                const quoted = match[1] || match[2] || match[3];
+                if (quoted && !quoted.includes('http')) {
+                    title = quoted;
+                    method = 'quoted_text';
+                    break;
+                }
+            }
+
+            // 3. ESTRATEGIA: Separar mensaje en partes y analizar
+            if (!title) {
+                const parts = cleanMessage.split(url);
+                const before = parts[0]?.trim() || '';
+                const after = parts[1]?.trim() || '';
+
+                // Heurística: ¿Cuál parte tiene más valor descriptivo?
+                const beforeScore = scoreDescriptiveValue(before);
+                const afterScore = scoreDescriptiveValue(after);
+
+                if (beforeScore > afterScore && beforeScore > 20) {
+                    title = before;
+                    method = 'context_before';
+                } else if (afterScore > 20) {
+                    title = after;
+                    method = 'context_after';
+                } else if (before || after) {
+                    // Combinar ambas partes si son cortas
+                    context = `${before} ${after}`.trim();
+                }
+            }
+
+            // 4. ESTRATEGIA: Detectar patrones específicos de tipo de contenido
+            if (!title) {
+                title = detectContentPattern(cleanMessage, url);
+                if (title) method = 'pattern_detection';
+            }
+
+            // 5. ESTRATEGIA: Extraer de nombre de archivo en URL
+            if (!title) {
+                title = extractFromFilePath(url);
+                if (title) method = 'filename_extraction';
+            }
+
+            // 6. ESTRATEGIA: Último recurso - dominio + path
+            if (!title) {
+                title = extractFromUrlFallback(url);
+                method = 'url_fallback';
+            }
+
+            // Limpiar y formatear
+            title = cleanTitle(title);
+            
+            // Si el título es muy largo, usarlo como contexto y generar uno corto
+            if (title.length > 150) {
+                context = title;
+                title = generateShortTitle(title, url);
+            }
+
+            // Generar contexto si no existe
+            if (!context && method !== 'context_before' && method !== 'context_after') {
+                context = generateContext(message, url, title);
+            }
+
+            return { title, context, method };
+        }
+
+        // Limpiar artefactos de WhatsApp
+        function cleanWhatsAppArtifacts(text) {
+            let cleaned = text;
+            WHATSAPP_JUNK.forEach(pattern => {
+                cleaned = cleaned.replace(pattern, ' ');
+            });
+            return cleaned.replace(/\s+/g, ' ').trim();
+        }
+
+        // Puntuar valor descriptivo de un texto
+        function scoreDescriptiveValue(text) {
+            if (!text || text.length < 3) return 0;
+            
+            let score = 0;
+            const lower = text.toLowerCase();
+            
+            // Longitud ideal (20-100 chars)
+            if (text.length > 10) score += 10;
+            if (text.length > 20) score += 10;
+            if (text.length > 100) score -= 10; // Penalizar muy largo
+            
+            // Palabras descriptivas
+            DESCRIPTIVE_KEYWORDS.forEach(keyword => {
+                if (lower.includes(keyword.toLowerCase())) score += 15;
+            });
+            
+            // Presencia de mayúsculas (nombres propios)
+            if (/[A-Z][a-z]+/.test(text)) score += 10;
+            
+            // Presencia de números (fechas, códigos)
+            if (/\d{2,}/.test(text)) score += 5;
+            
+            // Penalizar solo emojis o símbolos
+            if (/^[\s\p{Emoji}]+$/u.test(text)) score = 0;
+            
+            // Penalizar solo URLs
+            if (text.includes('http')) score -= 20;
+            
+            return score;
+        }
+
+        // Detectar patrones específicos de contenido
+        function detectContentPattern(message, url) {
+            const patterns = [
+                // Patrón: "Algo - URL" o "URL - Algo"
+                {
+                    regex: /^([^-–—]{10,80})\s*[-–—]\s*https?:/i,
+                    group: 1,
+                    desc: 'prefix_description'
+                },
+                {
+                    regex: /https?:\/\/[^\s]+\s*[-–—]\s*([^-–—]{10,80})$/i,
+                    group: 1,
+                    desc: 'suffix_description'
+                },
+                // Patrón: "Re: Asunto" o "Fwd: Asunto"
+                {
+                    regex: /^(Re|Fwd|FW):\s*(.{10,100})/i,
+                    group: 2,
+                    desc: 'email_subject'
+                },
+                // Patrón: Nombre de contacto + número
+                {
+                    regex: /^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*[\+\d]/,
+                    group: 1,
+                    desc: 'contact_name'
+                },
+                // Patrón: "Ver", "Mira", "Checa" + descripción
+                {
+                    regex: /^(?:ver|mira|checa|mira esto|fijate)\s*:?\s*(.{10,100})/i,
+                    group: 1,
+                    desc: 'recommendation'
+                }
+            ];
+
+            for (const pattern of patterns) {
+                const match = message.match(pattern.regex);
+                if (match && match[pattern.group]) {
+                    return match[pattern.group].trim();
+                }
+            }
+
+            return null;
+        }
+
+        // Extraer título desde path de archivo
+        function extractFromFilePath(url) {
+            try {
+                const urlObj = new URL(url);
+                const path = urlObj.pathname;
+                
+                // Obtener último segmento
+                const segments = path.split('/').filter(s => s.length > 0);
+                if (segments.length === 0) return null;
+                
+                let filename = segments[segments.length - 1];
+                
+                // Decodificar URL encoding
+                filename = decodeURIComponent(filename);
+                
+                // Quitar query strings
+                filename = filename.split('?')[0];
+                
+                // Quitar extensión común
+                const ext = filename.match(/\.([a-zA-Z0-9]{2,5})$/);
+                if (ext) {
+                    filename = filename.slice(0, -(ext[0].length));
+                }
+                
+                // Limpiar
+                filename = filename
+                    .replace(/[-_]/g, ' ')
+                    .replace(/[0-9]{6,}/g, '') // Quitar timestamps largos
+                    .trim();
+                
+                if (filename.length > 3 && filename.length < 100) {
+                    return capitalizeWords(filename);
+                }
+            } catch (e) {
+                return null;
+            }
+            return null;
+        }
+
+        // Fallback: extraer desde URL
+        function extractFromUrlFallback(url) {
+            try {
+                const urlObj = new URL(url);
+                
+                // Para YouTube, extraer indicador de tipo
+                if (urlObj.hostname.includes('youtube') || urlObj.hostname.includes('youtu.be')) {
+                    if (url.includes('shorts')) return '🎬 YouTube Short';
+                    if (url.includes('playlist')) return '📋 Playlist de YouTube';
+                    if (url.includes('live')) return '🔴 YouTube Live';
+                    return '🎬 Video de YouTube';
+                }
+                
+                // Para otros, usar hostname + último path
+                let host = urlObj.hostname.replace(/^www\./, '');
+                const segments = urlObj.pathname.split('/').filter(s => s.length > 2);
+                
+                if (segments.length > 0) {
+                    const lastSegment = segments[segments.length - 1]
+                        .replace(/[-_]/g, ' ')
+                        .replace(/\.(html|php|asp)$/i, '');
+                    return `${capitalizeWords(lastSegment)} | ${host}`;
+                }
+                
+                return host;
+            } catch (e) {
+                return 'Enlace sin título';
+            }
+        }
+
+        // Generar título corto desde texto largo
+        function generateShortTitle(longText, url) {
+            // Extraer primera frase sustancial
+            const sentences = longText.match(/[^.!?]+[.!?]+/g) || [longText];
+            for (const sentence of sentences) {
+                const clean = sentence.trim();
+                if (clean.length > 10 && clean.length < 80 && !clean.includes('http')) {
+                    return clean;
+                }
+            }
+            
+            // Fallback: primeras palabras
+            const words = longText.split(/\s+/).slice(0, 8).join(' ');
+            return words + (longText.split(/\s+/).length > 8 ? '...' : '');
+        }
+
+        // Generar contexto desde mensaje
+        function generateContext(message, url, title) {
+            // Remover la URL y limpiar
+            let context = message.replace(url, '').trim();
+            context = cleanWhatsAppArtifacts(context);
+            
+            // Si el contexto es igual al título, no repetir
+            if (context === title || context.includes(title)) {
+                return '';
+            }
+            
+            // Truncar si es muy largo
+            if (context.length > 200) {
+                context = context.substring(0, 200) + '...';
+            }
+            
+            return context;
+        }
+
+        // Utilidades de formato
+        function cleanTitle(title) {
+            if (!title) return 'Sin título';
+            
+            return title
+                .replace(/^[\s•\-—:\[\]]+|[\s•\-—:\[\]]+$/g, '') // Quitar caracteres de bordes
+                .replace(/\s+/g, ' ') // Normalizar espacios
+                .replace(/[–—-]{2,}/g, '—') // Normalizar guiones
+                .trim();
+        }
+
+        function capitalizeWords(str) {
+            return str.replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        // Detectar tipo de contenido
+        function detectType(url, context) {
+            const lowerUrl = url.toLowerCase();
+            const lowerContext = context.toLowerCase();
+            
+            // YouTube específico
+            if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) {
+                if (lowerUrl.includes('shorts')) return 'youtube-shorts';
+                if (lowerUrl.includes('playlist')) return 'youtube-playlist';
+                return 'youtube';
+            }
+            
+            // Documentos
+            if (lowerUrl.includes('.pdf') || lowerContext.includes('.pdf')) return 'pdf';
+            if (lowerUrl.match(/\.(doc|docx|odt|rtf)(\?|$)/)) return 'doc';
+            if (lowerUrl.match(/\.(xls|xlsx|csv|ods)(\?|$)/)) return 'spreadsheet';
+            if (lowerUrl.match(/\.(ppt|pptx|odp)(\?|$)/)) return 'presentation';
+            
+            // Imágenes
+            if (lowerUrl.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp|tiff?)(\?|$)/) || 
+                lowerContext.includes('imagen omitida')) return 'image';
+            
+            // Audio/Video
+            if (lowerUrl.match(/\.(mp3|wav|ogg|m4a|flac|aac)(\?|$)/) || 
+                lowerContext.includes('audio omitido')) return 'audio';
+            if (lowerUrl.match(/\.(mp4|mov|avi|mkv|flv|wmv)(\?|$)/) || 
+                lowerContext.includes('video omitido')) return 'video';
+            
+            // Comprimidos
+            if (lowerUrl.match(/\.(zip|rar|7z|tar|gz)(\?|$)/)) return 'archive';
+            
+            // Código/Repos
+            if (lowerUrl.includes('github.com')) return 'code';
+            if (lowerUrl.includes('gitlab.com')) return 'code';
+            if (lowerUrl.includes('stackoverflow.com')) return 'code';
+            
+            // Redes sociales
+            if (lowerUrl.includes('linkedin.com')) return 'linkedin';
+            if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return 'twitter';
+            if (lowerUrl.includes('instagram.com')) return 'instagram';
+            if (lowerUrl.includes('facebook.com')) return 'facebook';
+            if (lowerUrl.includes('whatsapp.com')) return 'whatsapp';
+            
+            // Maps/Direcciones
+            if (lowerUrl.includes('maps.google') || lowerUrl.includes('goo.gl/maps')) return 'maps';
+            
+            // Default
+            return 'web';
+        }
+
+        // Renderizado
+        function renderLinks() {
+            const container = document.getElementById('linksContainer');
+            
+            let filtered = links.filter(link => {
+                const matchesFilter = currentFilter === 'all' || link.status === currentFilter;
+                const searchLower = searchTerm.toLowerCase();
+                const matchesSearch = !searchTerm || 
+                    link.title.toLowerCase().includes(searchLower) ||
+                    (link.context && link.context.toLowerCase().includes(searchLower)) ||
+                    link.url.toLowerCase().includes(searchLower) ||
+                    link.date.toLowerCase().includes(searchLower);
+                return matchesFilter && matchesSearch;
+            });
+
+            filtered.sort((a, b) => {
+                if (a.status === 'pending' && b.status !== 'pending') return -1;
+                if (b.status === 'pending' && a.status !== 'pending') return 1;
+                return new Date(b.added) - new Date(a.added);
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-icon">🔍</div>
+                        <h3>No se encontraron enlaces</h3>
+                        <p>Prueba con otros filtros o términos de búsqueda</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(link => `
+                <div class="link-card ${link.status}" data-id="${link.id}">
+                    <div class="link-header">
+                        <span class="link-type type-${link.type.split('-')[0]}">
+                            ${getTypeIcon(link.type)} ${formatType(link.type)}
+                        </span>
+                        <div class="link-title">${escapeHtml(link.title)}</div>
+                        ${link.context ? `
+                            <div class="link-context">${escapeHtml(link.context)}</div>
+                        ` : ''}
+                        <div class="link-date">
+                            <span>📅</span>
+                            <span>${extractDate(link.date)}</span>
+                            ${link.extractionMethod ? `<span class="extracted-preview">vía: ${link.extractionMethod}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="link-content">
+                        <div class="link-url">${escapeHtml(link.url)}</div>
+                        <div class="link-actions">
+                            <button class="action-btn btn-pending ${link.status === 'pending' ? 'active' : ''}" 
+                                    onclick="setStatus(${link.id}, 'pending')" title="Pendiente">⏳</button>
+                            <button class="action-btn btn-useful ${link.status === 'useful' ? 'active' : ''}" 
+                                    onclick="setStatus(${link.id}, 'useful')" title="Útil">✅</button>
+                            <button class="action-btn btn-useless ${link.status === 'useless' ? 'active' : ''}" 
+                                    onclick="setStatus(${link.id}, 'useless')" title="No útil">❌</button>
+                            <a href="${link.url}" target="_blank" class="action-btn btn-visit" title="Visitar">🔗</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getTypeIcon(type) {
+            const icons = {
+                'youtube': '🎬',
+                'youtube-shorts': '⏱️',
+                'youtube-playlist': '📋',
+                'pdf': '📄',
+                'doc': '📝',
+                'spreadsheet': '📊',
+                'presentation': '📽️',
+                'image': '🖼️',
+                'audio': '🎵',
+                'video': '🎞️',
+                'archive': '📦',
+                'code': '💻',
+                'linkedin': '💼',
+                'twitter': '🐦',
+                'instagram': '📷',
+                'facebook': '👥',
+                'whatsapp': '💬',
+                'maps': '🗺️',
+                'web': '🌐'
+            };
+            return icons[type] || '🔗';
+        }
+
+        function formatType(type) {
+            return type.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function extractDate(dateStr) {
+            if (!dateStr) return 'Fecha desconocida';
+            const match = dateStr.match(/\[(\d{1,2}\/\d{1,2}\/\d{2,4})/);
+            return match ? match[1] : dateStr;
+        }
+
+        // Estado y filtros
+        function setStatus(id, status) {
+            const link = links.find(l => l.id === id);
+            if (link) {
+                link.status = status;
+                saveToStorage();
+                renderLinks();
+                updateStats();
+                const messages = {
+                    pending: '⏳ Marcado como pendiente',
+                    useful: '✅ Marcado como útil',
+                    useless: '❌ Marcado como no útil'
+                };
+                showToast(status === 'useful' ? '✅' : status === 'useless' ? '❌' : '⏳', messages[status]);
+            }
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`filter-${filter}`).classList.add('active');
+            renderLinks();
+        }
+
+        function filterLinks() {
+            searchTerm = document.getElementById('searchInput').value;
+            renderLinks();
+        }
+
+        function updateStats() {
+            document.getElementById('totalCount').textContent = links.length;
+            document.getElementById('pendingCount').textContent = links.filter(l => l.status === 'pending').length;
+            document.getElementById('usefulCount').textContent = links.filter(l => l.status === 'useful').length;
+            document.getElementById('uselessCount').textContent = links.filter(l => l.status === 'useless').length;
+        }
+
+        // Persistencia
+        function saveToStorage() {
+            localStorage.setItem('linkvault_data', JSON.stringify(links));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('linkvault_data');
+            if (saved) {
+                links = JSON.parse(saved);
+                if (links.length > 0) {
+                    document.getElementById('statsBar').style.display = 'grid';
+                    document.getElementById('filters').style.display = 'flex';
+                    document.getElementById('dropZone').style.display = 'none';
+                    document.getElementById('addMoreBtn').classList.add('show');
+                    renderLinks();
+                    updateStats();
+                }
+            }
+        }
+
+        function exportData() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                stats: {
+                    total: links.length,
+                    pending: links.filter(l => l.status === 'pending').length,
+                    useful: links.filter(l => l.status === 'useful').length,
+                    useless: links.filter(l => l.status === 'useless').length
+                },
+                usefulLinks: links.filter(l => l.status === 'useful'),
+                allLinks: links
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `linkvault_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('💾', 'Datos exportados');
+        }
+
+        function clearAll() {
+            if (confirm('¿Eliminar todo? No se puede deshacer.')) {
+                links = [];
+                localStorage.removeItem('linkvault_data');
+                location.reload();
+            }
+        }
+
+        function showToast(icon, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastIcon').textContent = icon;
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
