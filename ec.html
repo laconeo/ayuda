@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Especialistas del Corazón - FamilySearch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+                        serif: ['Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        fs: {
+                            primary: '#8CB83E',
+                            'primary-hover': '#7cb342',
+                            'primary-light': '#f1f8e9',
+                            blue: '#005994',
+                            'blue-hover': '#004a7c',
+                            text: '#282829',
+                            'text-light': '#575757',
+                            border: '#dcdcdc',
+                            bg: '#ffffff',
+                            'bg-alt': '#f3f3f3',
+                            gray: '#f3f3f3',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 2px 4px rgba(0, 0, 0, 0.1)',
+                        'card-hover': '0 4px 8px rgba(0, 0, 0, 0.15)',
+                        'modal': '0 10px 25px rgba(0, 0, 0, 0.2)',
+                    },
+                    borderRadius: {
+                        'fs': '8px',
+                        'pill': '20px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f3f3f3;
+            color: #282829;
+            font-family: "Roboto", system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.5;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Roboto", sans-serif;
+            color: #282829;
+            font-weight: 500;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: -0.5px;
+        }
+
+        button {
+            font-family: "Roboto", sans-serif;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        input, select, textarea {
+            font-family: "Roboto", sans-serif;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        select {
+            border: 1px solid #dcdcdc;
+            border-radius: 4px;
+            padding: 10px 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #005994;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 89, 148, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #8CB83E;
+            color: white;
+            border-radius: 20px;
+            padding: 10px 24px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #7cb342;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #005994;
+            border: 1px solid #005994;
+            border-radius: 20px;
+            padding: 10px 24px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 89, 148, 0.05);
+        }
+
+        .card-fs {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s;
+        }
+
+        .card-fs:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bdbdbd;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9e9e9e;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .tab-active {
+            color: #005994;
+            border-bottom: 3px solid #005994;
+            font-weight: 500;
+        }
+
+        .progress-ring circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .checkbox-fs:checked {
+            background-color: #8CB83E;
+            border-color: #8CB83E;
+        }
+
+        .link-fs {
+            color: #005994;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .link-fs:hover {
+            color: #004a7c;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-fs-bg-alt min-h-screen">
+
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-fs-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-fs-primary flex items-center justify-center text-white shadow-md">
+                        <i class="fas fa-heart text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-normal tracking-tight text-fs-text">Especialistas del Corazón</h1>
+                        <p class="text-xs text-fs-text-light uppercase tracking-wider">Certificación FamilySearch</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-1">
+                    <button onclick="showSection('dashboard')" class="nav-btn px-4 py-2 text-sm font-medium text-fs-text-light hover:text-fs-blue transition-colors rounded-fs">
+                        Mi Progreso
+                    </button>
+                    <button onclick="showSection('modules')" class="nav-btn px-4 py-2 text-sm font-medium text-fs-text-light hover:text-fs-blue transition-colors rounded-fs">
+                        Módulos
+                    </button>
+                    <button onclick="showSection('documentation')" class="nav-btn px-4 py-2 text-sm font-medium text-fs-text-light hover:text-fs-blue transition-colors rounded-fs">
+                        Documentación
+                    </button>
+                    <button onclick="showSection('interview')" class="nav-btn px-4 py-2 text-sm font-medium text-fs-text-light hover:text-fs-blue transition-colors rounded-fs">
+                        Entrevista Final
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex flex-col items-end">
+                        <span class="text-xs text-fs-text-light">Progreso General</span>
+                        <div class="w-32 h-2 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                            <div id="global-progress" class="h-full bg-fs-primary transition-all duration-1000" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    <button class="md:hidden text-fs-text text-xl p-2">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section-content animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-3xl font-light text-fs-text mb-2">Panel de Progreso</h2>
+                <p class="text-fs-text-light">Tu camino hacia la certificación como Especialista del Corazón</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="card-fs p-5 border-l-4 border-fs-primary">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <p class="text-xs text-fs-text-light uppercase tracking-wide font-medium">Módulo Actual</p>
+                            <h3 class="text-xl font-medium text-fs-text mt-1" id="current-module">Embajador</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-fs-primary-light flex items-center justify-center text-fs-primary">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-1.5 mt-3">
+                        <div class="bg-fs-primary h-1.5 rounded-full" style="width: 25%"></div>
+                    </div>
+                    <p class="text-xs text-fs-text-light mt-2">Etapa 1 de 4</p>
+                </div>
+
+                <div class="card-fs p-5 border-l-4 border-fs-blue">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <p class="text-xs text-fs-text-light uppercase tracking-wide font-medium">Experiencias</p>
+                            <h3 class="text-xl font-medium text-fs-text mt-1"><span id="completed-experiences">0</span>/5</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-fs-blue">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-fs-text-light mt-2">Personas ayudadas</p>
+                </div>
+
+                <div class="card-fs p-5 border-l-4 border-green-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <p class="text-xs text-fs-text-light uppercase tracking-wide font-medium">Documentos</p>
+                            <h3 class="text-xl font-medium text-fs-text mt-1" id="document-count">2</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-fs-text-light mt-2">Evidencias subidas</p>
+                </div>
+
+                <div class="card-fs p-5 border-l-4 border-purple-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <p class="text-xs text-fs-text-light uppercase tracking-wide font-medium">Estado</p>
+                            <h3 class="text-xl font-medium text-fs-text mt-1" id="certification-status">En Progreso</h3>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
+                            <i class="fas fa-award"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-fs-text-light mt-2">Certificación</p>
+                </div>
+            </div>
+
+            <!-- Journey Timeline -->
+            <div class="card-fs p-6 mb-8">
+                <h3 class="text-lg font-medium text-fs-text mb-6">Tu Camino de Certificación</h3>
+                <div class="relative">
+                    <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 -translate-y-1/2 hidden md:block"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
+                        
+                        <!-- Step 1 -->
+                        <div class="relative group cursor-pointer" onclick="showSection('modules')">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 rounded-full bg-fs-primary text-white flex items-center justify-center text-xl shadow-md z-10 border-4 border-white">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <h4 class="font-medium text-fs-text">Embajador</h4>
+                                    <p class="text-xs text-fs-text-light mt-0.5">Semanas 1-2</p>
+                                    <div class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-medium">
+                                        <i class="fas fa-check mr-1"></i> Completado
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative group cursor-pointer" onclick="showSection('modules')">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 rounded-full bg-fs-blue text-white flex items-center justify-center text-xl shadow-md z-10 border-4 border-white animate-pulse">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <h4 class="font-medium text-fs-text">Visionario</h4>
+                                    <p class="text-xs text-fs-text-light mt-0.5">Semanas 3-4</p>
+                                    <div class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium">
+                                        <i class="fas fa-clock mr-1"></i> En Progreso
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative group cursor-pointer opacity-60" onclick="showSection('modules')">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 rounded-full bg-gray-300 text-white flex items-center justify-center text-xl shadow-md z-10 border-4 border-white">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <h4 class="font-medium text-fs-text">Protector</h4>
+                                    <p class="text-xs text-fs-text-light mt-0.5">Semanas 5-6</p>
+                                    <div class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 text-xs font-medium">
+                                        Pendiente
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="relative group cursor-pointer opacity-60" onclick="showSection('modules')">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 rounded-full bg-gray-300 text-white flex items-center justify-center text-xl shadow-md z-10 border-4 border-white">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <h4 class="font-medium text-fs-text">Especialista</h4>
+                                    <p class="text-xs text-fs-text-light mt-0.5">Semanas 7-8</p>
+                                    <div class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 text-xs font-medium">
+                                        Pendiente
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="card-fs p-6 bg-gradient-to-br from-fs-primary to-green-600 text-white cursor-pointer hover:shadow-card-hover transition-shadow" onclick="showSection('modules')">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas fa-play-circle text-3xl text-white/90"></i>
+                        <span class="bg-white/20 px-3 py-1 rounded-pill text-xs font-medium">Continuar</span>
+                    </div>
+                    <h3 class="text-xl font-medium mb-1">Continuar Módulo Visionario</h3>
+                    <p class="text-white/90 text-sm mb-4">Tienes 2 tareas pendientes de completar en esta etapa.</p>
+                    <div class="w-full bg-white/30 rounded-full h-1.5">
+                        <div class="bg-white h-1.5 rounded-full" style="width: 60%"></div>
+                    </div>
+                </div>
+
+                <div class="card-fs p-6 border-2 border-dashed border-fs-border cursor-pointer hover:border-fs-primary hover:bg-fs-primary-light/30 transition-colors" onclick="showSection('documentation')">
+                    <div class="flex items-center justify-between mb-3">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-fs-text-light"></i>
+                        <span class="bg-fs-primary-light text-fs-primary px-3 py-1 rounded-pill text-xs font-medium">Nuevo</span>
+                    </div>
+                    <h3 class="text-xl font-medium text-fs-text mb-1">Subir Documentación</h3>
+                    <p class="text-fs-text-light text-sm mb-4">Documenta tu experiencia y envíala a tu mentor.</p>
+                    <div class="flex items-center text-fs-text-light text-xs">
+                        <i class="fas fa-info-circle mr-2 text-fs-blue"></i>
+                        <span>Soporta PDF, Word, imágenes y videos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modules Section -->
+        <section id="modules" class="section-content hidden animate-fade-in">
+            <div class="mb-6 flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-light text-fs-text mb-2">Módulos de Certificación</h2>
+                    <p class="text-fs-text-light">Completa las 4 etapas para obtener tu certificación</p>
+                </div>
+                <div class="hidden md:block">
+                    <span class="text-xs text-fs-text-light bg-white px-3 py-2 rounded-fs shadow-card border border-fs-border">
+                        <i class="fas fa-lightbulb mr-2 text-fs-primary"></i>
+                        Recuerda contactar a 5 personas desde la Semana 1
+                    </span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                
+                <!-- Módulo 1: Embajador -->
+                <div class="card-fs overflow-hidden border border-fs-border">
+                    <div class="bg-fs-primary text-white p-4 flex justify-between items-center cursor-pointer hover:bg-green-700 transition-colors" onclick="toggleModule('module1')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-lg">Módulo 1: Embajador</h3>
+                                <p class="text-white/90 text-xs">Semanas 1-2 • Experiencia Personalizada</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="bg-white text-fs-primary px-3 py-1 rounded-pill text-xs font-bold">
+                                <i class="fas fa-check mr-1"></i> Completado
+                            </span>
+                            <i class="fas fa-chevron-down transform transition-transform" id="icon-module1"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="content-module1" class="hidden p-5 bg-white">
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-fs-bg-alt rounded-fs p-4 border border-fs-border">
+                                <h4 class="font-medium text-fs-text mb-2 flex items-center gap-2">
+                                    <i class="fas fa-bullseye text-fs-primary"></i> Objetivo
+                                </h4>
+                                <p class="text-fs-text-light text-sm leading-relaxed">Recibir una experiencia personalizada de historia familiar y luego brindar una experiencia a otra persona.</p>
+                            </div>
+                            <div class="bg-fs-bg-alt rounded-fs p-4 border border-fs-border">
+                                <h4 class="font-medium text-fs-text mb-2 flex items-center gap-2">
+                                    <i class="fas fa-tasks text-fs-primary"></i> Actividades Principales
+                                </h4>
+                                <ul class="space-y-1.5 text-sm text-fs-text-light">
+                                    <li class="flex items-start gap-2"><i class="fas fa-check-circle text-fs-primary mt-0.5"></i> Tener una experiencia personalizada</li>
+                                    <li class="flex items-start gap-2"><i class="fas fa-check-circle text-fs-primary mt-0.5"></i> Ayudar a llevar un nombre al templo</li>
+                                    <li class="flex items-start gap-2"><i class="fas fa-check-circle text-fs-primary mt-0.5"></i> Usar el Planificador</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-fs-primary-light/50 rounded-fs p-4 mb-4 border border-fs-primary/20">
+                            <h4 class="font-medium text-fs-text mb-3">Preguntas del Reporte (Documentación)</h4>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-fs p-3 border-l-4 border-fs-primary">
+                                    <p class="text-sm font-medium text-fs-text mb-2">1. ¿A qué antepasado conoció y llevó al templo la persona a la que ayudó?</p>
+                                    <textarea class="w-full p-2 text-sm border border-fs-border rounded-fs bg-gray-50" rows="2" placeholder="Tu respuesta..." readonly></textarea>
+                                </div>
+                                <div class="bg-white rounded-fs p-3 border-l-4 border-fs-primary">
+                                    <p class="text-sm font-medium text-fs-text mb-2">2. ¿A quién fue la persona que decidió ayudar y cómo le fue?</p>
+                                    <textarea class="w-full p-2 text-sm border border-fs-border rounded-fs bg-gray-50" rows="2" placeholder="Tu respuesta..." readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-3 border-t border-fs-border">
+                            <div class="flex items-center gap-2 text-green-600 text-sm">
+                                <i class="fas fa-check-double"></i>
+                                <span class="font-medium">Módulo completado y documentado</span>
+                            </div>
+                            <button onclick="showSection('documentation')" class="btn-primary text-xs py-2 px-4">
+                                Ver Documentación
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Módulo 2: Visionario -->
+                <div class="card-fs overflow-hidden border-2 border-fs-blue ring-2 ring-fs-blue/20">
+                    <div class="bg-fs-blue text-white p-4 flex justify-between items-center cursor-pointer hover:bg-blue-800 transition-colors" onclick="toggleModule('module2')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-lg">Módulo 2: Visionario</h3>
+                                <p class="text-white/90 text-xs">Semanas 3-4 • Alineación con la Visión</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="bg-yellow-400 text-fs-text px-3 py-1 rounded-pill text-xs font-bold">
+                                <i class="fas fa-clock mr-1"></i> En Progreso
+                            </span>
+                            <i class="fas fa-chevron-down transform transition-transform" id="icon-module2"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="content-module2" class="p-5 bg-white">
+                        <div class="grid md:grid-cols-3 gap-3 mb-4">
+                            <div class="bg-blue-50 rounded-fs p-3 border border-blue-200">
+                                <div class="flex items-center gap-2 mb-2 text-fs-blue font-medium text-sm">
+                                    <i class="fas fa-video"></i> Video 2023
+                                </div>
+                                <p class="text-xs text-fs-text-light mb-3">Instrucción para líderes de templo e historia familiar</p>
+                                <button class="w-full bg-fs-blue text-white py-2 rounded-fs text-xs font-medium hover:bg-fs-blue-hover transition-colors">
+                                    <i class="fas fa-play mr-1"></i> Ver Resumen
+                                </button>
+                            </div>
+                            <div class="bg-purple-50 rounded-fs p-3 border border-purple-200">
+                                <div class="flex items-center gap-2 mb-2 text-purple-700 font-medium text-sm">
+                                    <i class="fas fa-video"></i> Video 2024
+                                </div>
+                                <p class="text-xs text-fs-text-light mb-3">Instrucción para líderes de templo e historia familiar</p>
+                                <button class="w-full bg-purple-600 text-white py-2 rounded-fs text-xs font-medium hover:bg-purple-700 transition-colors">
+                                    <i class="fas fa-play mr-1"></i> Ver Resumen
+                                </button>
+                            </div>
+                            <div class="bg-pink-50 rounded-fs p-3 border border-pink-200">
+                                <div class="flex items-center gap-2 mb-2 text-pink-700 font-medium text-sm">
+                                    <i class="fas fa-video"></i> Video 2025
+                                </div>
+                                <p class="text-xs text-fs-text-light mb-3">Instrucción para líderes de templo e historia familiar</p>
+                                <button class="w-full bg-pink-600 text-white py-2 rounded-fs text-xs font-medium hover:bg-pink-700 transition-colors">
+                                    <i class="fas fa-play mr-1"></i> Ver Resumen
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-fs-bg-alt rounded-fs p-4 border border-fs-border mb-4">
+                            <h4 class="font-medium text-fs-text mb-3 flex items-center gap-2">
+                                <i class="fas fa-book text-fs-primary"></i> Estudio: 1 Nefi 5
+                            </h4>
+                            <div class="bg-white p-3 rounded-fs border border-fs-border mb-3">
+                                <p class="text-sm text-fs-text-light italic">"¿Qué aprendemos de la experiencia de Lehi sobre historia familiar?"</p>
+                            </div>
+                            <textarea class="w-full p-3 text-sm border border-fs-border rounded-fs focus:ring-2 focus:ring-fs-blue/20" rows="3" placeholder="Escribe tu reflexión sobre la experiencia de Lehi y las planchas de bronce..."></textarea>
+                        </div>
+
+                        <div class="space-y-2 mb-4">
+                            <h4 class="font-medium text-fs-text text-sm">Checklist de Tareas</h4>
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-fs border border-fs-border cursor-pointer hover:bg-fs-bg-alt transition-colors">
+                                <input type="checkbox" class="w-4 h-4 text-fs-primary rounded border-fs-border focus:ring-fs-primary" checked>
+                                <span class="text-sm text-fs-text-light line-through">Ver video 2023 y hacer resumen</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-fs border border-fs-border cursor-pointer hover:bg-fs-bg-alt transition-colors">
+                                <input type="checkbox" class="w-4 h-4 text-fs-primary rounded border-fs-border focus:ring-fs-primary" checked>
+                                <span class="text-sm text-fs-text-light line-through">Ver video 2024 y hacer resumen</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-fs border border-fs-border cursor-pointer hover:bg-fs-bg-alt transition-colors">
+                                <input type="checkbox" class="w-4 h-4 text-fs-primary rounded border-fs-border focus:ring-fs-primary">
+                                <span class="text-sm text-fs-text">Ver video 2025 y hacer resumen</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-white rounded-fs border border-fs-border cursor-pointer hover:bg-fs-bg-alt transition-colors">
+                                <input type="checkbox" class="w-4 h-4 text-fs-primary rounded border-fs-border focus:ring-fs-primary">
+                                <span class="text-sm text-fs-text">Estudiar 1 Nefi 5 y documentar aprendizajes</span>
+                            </label>
+                        </div>
+
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-fs p-4 mb-4">
+                            <h4 class="font-medium text-yellow-800 mb-3 flex items-center gap-2 text-sm">
+                                <i class="fas fa-question-circle"></i> Preguntas para el Reporte
+                            </h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-xs font-medium text-fs-text mb-1">1. ¿Alguna vez ha considerado la Visión del Departamento de Historia Familiar?</p>
+                                    <textarea class="w-full p-2 text-sm border border-yellow-300 rounded-fs" rows="2"></textarea>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-fs-text mb-1">2. ¿Cuáles son sus impresiones?</p>
+                                    <textarea class="w-full p-2 text-sm border border-yellow-300 rounded-fs" rows="2"></textarea>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-fs-text mb-1">3. ¿Cómo aplicará la visión a lo que hace diariamente?</p>
+                                    <textarea class="w-full p-2 text-sm border border-yellow-300 rounded-fs" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button class="btn-secondary text-xs py-2 px-4">
+                                Guardar Borrador
+                            </button>
+                            <button onclick="markComplete('module2')" class="btn-primary text-xs py-2 px-4">
+                                <i class="fas fa-check mr-1"></i> Marcar como Completado
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Módulo 3: Protector -->
+                <div class="card-fs overflow-hidden border border-fs-border opacity-60">
+                    <div class="bg-gray-400 text-white p-4 flex justify-between items-center cursor-not-allowed">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-lg">Módulo 3: Protector</h3>
+                                <p class="text-white/90 text-xs">Semanas 5-6 • Normas y Privacidad</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="bg-gray-600 text-white px-3 py-1 rounded-pill text-xs font-bold">
+                                <i class="fas fa-lock mr-1"></i> Bloqueado
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Módulo 4: Especialista -->
+                <div class="card-fs overflow-hidden border border-fs-border opacity-60">
+                    <div class="bg-gray-400 text-white p-4 flex justify-between items-center cursor-not-allowed">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-lg">Módulo 4: Especialista del Corazón</h3>
+                                <p class="text-white/90 text-xs">Semanas 7-8 • 5 Experiencias Personalizadas</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="bg-gray-600 text-white px-3 py-1 rounded-pill text-xs font-bold">
+                                <i class="fas fa-lock mr-1"></i> Bloqueado
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Documentation Section -->
+        <section id="documentation" class="section-content hidden animate-fade-in">
+            <div class="mb-6">
+                <h2 class="text-3xl font-light text-fs-text mb-2">Centro de Documentación</h2>
+                <p class="text-fs-text-light">Sube y gestiona tus evidencias para cada etapa</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Upload Area -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="card-fs p-8 border-2 border-dashed border-fs-border bg-fs-bg-alt text-center" id="drop-zone">
+                        <div class="mb-4">
+                            <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center shadow-card text-fs-text-light text-2xl">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-medium text-fs-text mb-2">Subir Nuevo Documento</h3>
+                        <p class="text-fs-text-light text-sm mb-4">Arrastra archivos aquí o haz clic para seleccionar</p>
+                        <div class="flex justify-center gap-2 mb-4 flex-wrap">
+                            <span class="px-2 py-1 bg-white rounded-fs text-xs text-fs-text-light border border-fs-border"><i class="fas fa-file-pdf mr-1 text-red-500"></i> PDF</span>
+                            <span class="px-2 py-1 bg-white rounded-fs text-xs text-fs-text-light border border-fs-border"><i class="fas fa-file-word mr-1 text-blue-500"></i> Word</span>
+                            <span class="px-2 py-1 bg-white rounded-fs text-xs text-fs-text-light border border-fs-border"><i class="fas fa-image mr-1 text-green-500"></i> Imágenes</span>
+                            <span class="px-2 py-1 bg-white rounded-fs text-xs text-fs-text-light border border-fs-border"><i class="fas fa-video mr-1 text-purple-500"></i> Videos</span>
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-plus mr-2"></i> Seleccionar Archivos
+                        </button>
+                    </div>
+
+                    <!-- Recent Documents -->
+                    <div class="card-fs p-5">
+                        <h3 class="font-medium text-fs-text mb-4 flex items-center gap-2">
+                            <i class="fas fa-history text-fs-primary"></i> Documentos Recientes
+                        </h3>
+                        <div class="space-y-2" id="document-list">
+                            <div class="flex items-center justify-between p-3 bg-fs-bg-alt rounded-fs border border-fs-border hover:shadow-card transition-shadow">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-fs bg-red-100 flex items-center justify-center text-red-600">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-fs-text">Reporte_Embajador_Juan.pdf</h4>
+                                        <p class="text-xs text-fs-text-light">Módulo 1 • Subido el 15 Feb 2026</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 rounded-fs text-xs font-medium">Aprobado</span>
+                                    <button class="p-2 text-fs-text-light hover:text-fs-blue"><i class="fas fa-download"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-fs-bg-alt rounded-fs border border-fs-border hover:shadow-card transition-shadow">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-fs bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <i class="fas fa-file-word"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-fs-text">Resumen_Videos_2023-2024.docx</h4>
+                                        <p class="text-xs text-fs-text-light">Módulo 2 • Subido el 18 Feb 2026</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-fs text-xs font-medium">En Revisión</span>
+                                    <button class="p-2 text-fs-text-light hover:text-fs-blue"><i class="fas fa-download"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-4">
+                    <div class="card-fs p-5">
+                        <h3 class="font-medium text-fs-text mb-4">Estado de Revisión</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center p-2 bg-green-50 rounded-fs border border-green-200">
+                                <span class="text-sm text-green-800 font-medium">Módulo 1</span>
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-yellow-50 rounded-fs border border-yellow-200">
+                                <span class="text-sm text-yellow-800 font-medium">Módulo 2</span>
+                                <i class="fas fa-clock text-yellow-600"></i>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-gray-50 rounded-fs border border-gray-200">
+                                <span class="text-sm text-gray-600">Módulo 3</span>
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-gray-50 rounded-fs border border-gray-200">
+                                <span class="text-sm text-gray-600">Módulo 4</span>
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-fs p-5 bg-gradient-to-br from-fs-blue to-blue-800 text-white">
+                        <h3 class="font-medium mb-3">Notas del Mentor</h3>
+                        <div class="bg-white/10 rounded-fs p-3 mb-3">
+                            <p class="text-sm text-white/90 italic">"Excelente trabajo en el Módulo 1. Tu experiencia con Juan fue muy bien documentada. Continúa con el mismo esfuerzo en el Visionario."</p>
+                            <p class="text-xs text-white/70 mt-2">— Hna. María González, Mentora</p>
+                        </div>
+                        <button class="w-full bg-white/20 hover:bg-white/30 py-2 rounded-fs text-xs font-medium transition-colors">
+                            <i class="fas fa-comment mr-1"></i> Enviar Mensaje
+                        </button>
+                    </div>
+
+                    <div class="card-fs p-5">
+                        <h3 class="font-medium text-fs-text mb-3">Formatos Aceptados</h3>
+                        <ul class="space-y-1.5 text-sm text-fs-text-light">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-fs-primary text-xs"></i> Word, PowerPoint, Canva</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-fs-primary text-xs"></i> Diario personal (fotos)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-fs-primary text-xs"></i> Audios (MP3, WAV)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-fs-primary text-xs"></i> Videos (MP4, MOV)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-fs-primary text-xs"></i> PDF</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interview Section -->
+        <section id="interview" class="section-content hidden animate-fade-in">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 mx-auto bg-fs-primary rounded-full flex items-center justify-center text-white text-3xl shadow-lg mb-4">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h2 class="text-3xl font-light text-fs-text mb-2">Entrevista Final</h2>
+                    <p class="text-fs-text-light">El paso final hacia tu certificación como Especialista del Corazón</p>
+                </div>
+
+                <div class="card-fs p-6 mb-6 border-t-4 border-fs-primary">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-medium text-fs-text">Requisitos para la Entrevista</h3>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-pill text-xs font-bold">
+                            <i class="fas fa-hourglass-half mr-1"></i> En Espera
+                        </span>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center gap-3 p-3 bg-green-50 rounded-fs border border-green-200">
+                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fas fa-check text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-fs-text">Módulo 1: Embajador</h4>
+                                <p class="text-xs text-fs-text-light">Completado y documentado</p>
+                            </div>
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-fs border border-yellow-200">
+                            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                <i class="fas fa-spinner fa-spin text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-fs-text">Módulo 2: Visionario</h4>
+                                <p class="text-xs text-fs-text-light">En progreso</p>
+                            </div>
+                            <i class="fas fa-circle text-gray-300 text-sm"></i>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-fs border border-gray-200 opacity-60">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                                <i class="fas fa-lock text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-gray-600">Módulo 3: Protector</h4>
+                                <p class="text-xs text-gray-400">Pendiente</p>
+                            </div>
+                            <i class="fas fa-circle text-gray-300 text-sm"></i>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-fs border border-gray-200 opacity-60">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                                <i class="fas fa-lock text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-gray-600">Módulo 4: Especialista</h4>
+                                <p class="text-xs text-gray-400">5 experiencias pendientes</p>
+                            </div>
+                            <i class="fas fa-circle text-gray-300 text-sm"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-fs-bg-alt rounded-fs p-4 mb-6 border border-fs-border">
+                        <h4 class="font-medium text-fs-text mb-3 flex items-center gap-2 text-sm">
+                            <i class="fas fa-info-circle text-fs-blue"></i> Información Importante
+                        </h4>
+                        <ul class="space-y-2 text-fs-text-light text-sm">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-calendar-alt mt-0.5 text-fs-text-light"></i>
+                                <span>Las entrevistas se realizan los domingos por la tarde, una vez certificados los Misioneros de Tiempo Completo</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-user-tie mt-0.5 text-fs-text-light"></i>
+                                <span>Serás contactado por tu mentora para asignar fecha y hora específica</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-certificate mt-0.5 text-fs-text-light"></i>
+                                <span>La certificación se realizará en una fecha que será avisada con anticipación</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button disabled class="w-full py-3 bg-gray-300 text-gray-500 rounded-pill font-medium cursor-not-allowed text-sm">
+                        <i class="fas fa-lock mr-2"></i> Programar Entrevista (Completa todos los módulos primero)
+                    </button>
+                </div>
+
+                <!-- Contact Card -->
+                <div class="card-fs p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-fs-bg-alt flex items-center justify-center text-fs-text-light text-xl">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-fs-text">Tu Mentora</h4>
+                        <p class="text-sm text-fs-text-light">Hna. María González</p>
+                        <p class="text-xs text-fs-text-light">maria.gonzalez@ejemplo.org</p>
+                    </div>
+                    <button class="btn-primary text-xs py-2 px-4">
+                        <i class="fas fa-envelope mr-1"></i> Contactar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-fs-border mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-heart text-fs-primary text-xl"></i>
+                        <h3 class="font-medium text-fs-text">Especialistas del Corazón</h3>
+                    </div>
+                    <p class="text-sm text-fs-text-light leading-relaxed">"No pueden ser salvos sin nosotros, ni nosotros podemos ser salvos sin ellos" (D.Y.C. 128:18)</p>
+                </div>
+                <div>
+                    <h4 class="font-medium text-fs-text mb-3 text-sm">Enlaces Rápidos</h4>
+                    <ul class="space-y-1.5 text-sm">
+                        <li><a href="#" class="link-fs text-fs-blue">FamilySearch.org</a></li>
+                        <li><a href="#" class="link-fs text-fs-blue">Recursos para el Ayudante</a></li>
+                        <li><a href="#" class="link-fs text-fs-blue">Planificador</a></li>
+                        <li><a href="#" class="link-fs text-fs-blue">7 Principios</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-fs-text mb-3 text-sm">Soporte</h4>
+                    <p class="text-sm text-fs-text-light mb-2">¿Necesitas ayuda con tu certificación?</p>
+                    <a href="#" class="link-fs text-fs-blue text-sm font-medium">
+                        Contactar a soporte <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-fs-border mt-8 pt-6 text-center text-xs text-fs-text-light">
+                <p>&copy; 2026 Certificación Especialistas del Corazón. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global State
+        let currentSection = 'dashboard';
+        let moduleStates = {
+            module1: true,
+            module2: false,
+            module3: false,
+            module4: false
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateGlobalProgress();
+            
+            // Auto-expand current module
+            document.getElementById('content-module2').classList.remove('hidden');
+            document.getElementById('icon-module2').style.transform = 'rotate(180deg)';
+        });
+
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            document.getElementById(sectionId).classList.remove('hidden');
+            currentSection = sectionId;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Module Content
+        function toggleModule(moduleId) {
+            const content = document.getElementById(`content-${moduleId}`);
+            const icon = document.getElementById(`icon-${moduleId}`);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Mark Module Complete
+        function markComplete(moduleId) {
+            if (confirm('¿Estás seguro de que deseas marcar este módulo como completado?')) {
+                moduleStates[moduleId] = true;
+                
+                const btn = event.target;
+                btn.innerHTML = '<i class="fas fa-check mr-1"></i> Completado';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('bg-green-600', 'text-white', 'rounded-pill', 'py-2', 'px-4', 'text-xs', 'font-medium');
+                
+                updateGlobalProgress();
+                showNotification('¡Módulo completado exitosamente!', 'success');
+            }
+        }
+
+        // Update Global Progress Bar
+        function updateGlobalProgress() {
+            const completed = Object.values(moduleStates).filter(v => v).length;
+            const percentage = (completed / 4) * 100;
+            document.getElementById('global-progress').style.width = percentage + '%';
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 px-4 py-3 rounded-fs shadow-modal z-50 transform translate-x-full transition-transform duration-300 ${
+                type === 'success' ? 'bg-fs-primary text-white' : 'bg-fs-blue text-white'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center gap-2 text-sm font-medium">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Drag and Drop Simulation
+        const dropZone = document.getElementById('drop-zone');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-fs-primary', 'bg-fs-primary-light/30');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-fs-primary', 'bg-fs-primary-light/30');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-fs-primary', 'bg-fs-primary-light/30');
+            showNotification('Archivos recibidos. Procesando...', 'success');
+            
+            setTimeout(() => {
+                addDocumentToList();
+            }, 1000);
+        });
+
+        function addDocumentToList() {
+            const list = document.getElementById('document-list');
+            const newDoc = document.createElement('div');
+            newDoc.className = 'flex items-center justify-between p-3 bg-fs-bg-alt rounded-fs border border-fs-border hover:shadow-card transition-shadow animate-slide-up';
+            newDoc.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-fs bg-purple-100 flex items-center justify-center text-purple-600">
+                        <i class="fas fa-file-image"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-fs-text">Evidencia_Visionario_001.jpg</h4>
+                        <p class="text-xs text-fs-text-light">Justo ahora</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-fs text-xs font-medium">Nuevo</span>
+                    <button class="p-2 text-fs-text-light hover:text-fs-blue"><i class="fas fa-download"></i></button>
+                </div>
+            `;
+            list.insertBefore(newDoc, list.firstChild);
+            
+            const count = document.getElementById('document-count');
+            count.textContent = parseInt(count.textContent) + 1;
+        }
+    </script>
+</body>
+</html>
