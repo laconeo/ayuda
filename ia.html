@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Observatory — Directorio Global de Inteligencias Artificiales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a78bfa;
+    --text: #e8e8f0;
+    --text-dim: #7070a0;
+    --text-muted: #3a3a5a;
+    --green: #22c55e;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: linear-gradient(180deg, rgba(0,229,255,0.04) 0%, transparent 100%);
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .logo-tag {
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .logo h1 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--text) 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+
+  .stat-pill .num {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-pill .lbl {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tab {
+    padding: 14px 22px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* TABLE PANEL */
+  .table-panel { padding: 24px 40px; }
+
+  .filters-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box input:focus { border-color: var(--accent); }
+  .search-box::before {
+    content: '⌕';
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 16px;
+  }
+
+  select {
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  .filter-btn {
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .filter-btn:hover, .filter-btn.active-filter {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  th:hover { color: var(--accent); }
+  th.sorted { color: var(--accent); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: var(--surface); }
+  tbody tr:last-child { border-bottom: none; }
+
+  td {
+    padding: 12px 16px;
+    vertical-align: middle;
+  }
+
+  .ai-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ai-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .ai-link:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .country-flag {
+    font-size: 18px;
+  }
+
+  .category-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .cat-conversacional { background: rgba(0,229,255,0.12); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+  .cat-imagen { background: rgba(167,139,250,0.12); color: var(--accent3); border: 1px solid rgba(167,139,250,0.3); }
+  .cat-video { background: rgba(255,107,53,0.12); color: var(--accent2); border: 1px solid rgba(255,107,53,0.3); }
+  .cat-audio { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .cat-codigo { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .cat-herramienta { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .cat-agente { background: rgba(236,72,153,0.12); color: #f472b6; border: 1px solid rgba(236,72,153,0.3); }
+  .cat-investigacion { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+
+  /* USAGE CELL */
+  .usage-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .usage-count {
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+
+  .usage-count:hover { color: var(--accent); }
+  .usage-count.has-uses { color: var(--green); }
+
+  .open-btn {
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .open-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .note-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--yellow);
+    flex-shrink: 0;
+    display: none;
+  }
+
+  .note-indicator.has-note { display: block; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 560px;
+    padding: 28px;
+    position: relative;
+    animation: slideUp 0.2s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal h2 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .modal .modal-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .modal textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    resize: vertical;
+    outline: none;
+    line-height: 1.6;
+    transition: border-color 0.2s;
+  }
+
+  .modal textarea:focus { border-color: var(--accent); }
+
+  .modal-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    flex: 1;
+    padding: 10px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-secondary {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+  .usage-history {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  .usage-history h4 {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .usage-entry {
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .usage-entry:last-child { border-bottom: none; }
+
+  .usage-entry::before {
+    content: '→';
+    color: var(--accent);
+  }
+
+  /* STATS PANEL */
+  .stats-panel { padding: 24px 40px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .stats-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .stats-card h3 {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 8px; }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .bar-label {
+    min-width: 120px;
+    color: var(--text-dim);
+    font-size: 10px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .bar-val {
+    min-width: 24px;
+    font-size: 11px;
+    color: var(--text);
+    text-align: right;
+  }
+
+  .donut-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .donut-legend { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* USAGE PANEL */
+  .usage-panel { padding: 24px 40px; }
+
+  .usage-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .overview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .overview-card .big-num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .overview-card .big-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .usage-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .usage-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .usage-item:hover { border-color: var(--accent); }
+
+  .usage-item-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .usage-item-count {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(0,229,255,0.1);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .usage-bar-mini {
+    width: 80px;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .usage-bar-mini-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* NEVER USED SECTION */
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title .badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    background: rgba(248,113,113,0.15);
+    color: var(--red);
+    border: 1px solid rgba(248,113,113,0.3);
+    border-radius: 20px;
+  }
+
+  .unused-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+
+  .unused-chip {
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .unused-chip:hover {
+    border-color: var(--red);
+    color: var(--text);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    header { padding: 20px; }
+    .tabs { padding: 0 20px; }
+    .table-panel, .stats-panel, .usage-panel { padding: 16px 20px; }
+    .logo h1 { font-size: 24px; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--accent);
+    z-index: 2000;
+    animation: toastIn 0.2s ease, toastOut 0.2s ease 1.8s forwards;
+  }
+
+  @keyframes toastIn {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes toastOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  .progress-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <span class="logo-tag">▸ AI Observatory</span>
+      <h1>Directorio Global de IA</h1>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill">
+        <span class="num" id="stat-total">0</span>
+        <span class="lbl">Total IAs</span>
+      </div>
+      <div class="stat-pill">
+        <span class="num" id="stat-used">0</span>
+        <span class="lbl">Usadas</span>
+      </div>
+      <div class="stat-pill">
+        <span class="num" id="stat-opens">0</span>
+        <span class="lbl">Aperturas</span>
+      </div>
+      <div class="stat-pill">
+        <span class="num" id="stat-pct">0%</span>
+        <span class="lbl">Cobertura</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('table')">⊞ Directorio</button>
+    <button class="tab" onclick="switchTab('stats')">◈ Estadísticas</button>
+    <button class="tab" onclick="switchTab('usage')">◉ Mi Uso</button>
+  </div>
+
+  <!-- TABLE PANEL -->
+  <div class="panel active" id="panel-table">
+    <div class="table-panel">
+      <div class="filters-bar">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Buscar IA, país, descripción..." oninput="applyFilters()">
+        </div>
+        <select id="filterCategory" onchange="applyFilters()">
+          <option value="">Todas las categorías</option>
+          <option value="Conversacional">Conversacional</option>
+          <option value="Imagen">Imagen</option>
+          <option value="Video">Video</option>
+          <option value="Audio">Audio/Música</option>
+          <option value="Código">Código</option>
+          <option value="Herramienta">Herramienta</option>
+          <option value="Agente">Agente</option>
+          <option value="Investigación">Investigación</option>
+        </select>
+        <select id="filterCountry" onchange="applyFilters()">
+          <option value="">Todos los países</option>
+        </select>
+        <button class="filter-btn" id="btnUnused" onclick="toggleUnusedFilter()">Sin usar</button>
+        <button class="filter-btn" id="btnNotes" onclick="toggleNotesFilter()">Con notas</button>
+        <button class="filter-btn" onclick="clearFilters()">✕ Limpiar</button>
+      </div>
+      <div class="table-wrap">
+        <table id="aiTable">
+          <thead>
+            <tr>
+              <th onclick="sortBy('name')">Nombre ↕</th>
+              <th onclick="sortBy('category')">Categoría ↕</th>
+              <th onclick="sortBy('country')">País ↕</th>
+              <th>Descripción</th>
+              <th onclick="sortBy('uses')">Uso ↕</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS PANEL -->
+  <div class="panel" id="panel-stats">
+    <div class="stats-panel">
+      <div class="stats-grid">
+        <div class="stats-card">
+          <h3>🌍 Por País</h3>
+          <div class="bar-chart" id="chart-countries"></div>
+        </div>
+        <div class="stats-card">
+          <h3>📂 Por Categoría</h3>
+          <div class="bar-chart" id="chart-categories"></div>
+        </div>
+        <div class="stats-card">
+          <h3>📊 Cobertura de Uso</h3>
+          <div id="coverage-display" style="text-align:center;padding:20px 0;"></div>
+        </div>
+        <div class="stats-card">
+          <h3>🔥 Top IAs Más Usadas</h3>
+          <div class="bar-chart" id="chart-topused"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USAGE PANEL -->
+  <div class="panel" id="panel-usage">
+    <div class="usage-panel">
+      <div class="usage-overview">
+        <div class="overview-card">
+          <span class="big-num" id="ov-total" style="color:var(--accent)">0</span>
+          <span class="big-label">IAs en directorio</span>
+        </div>
+        <div class="overview-card">
+          <span class="big-num" id="ov-used" style="color:var(--green)">0</span>
+          <span class="big-label">IAs probadas</span>
+        </div>
+        <div class="overview-card">
+          <span class="big-num" id="ov-opens" style="color:var(--accent2)">0</span>
+          <span class="big-label">Total aperturas</span>
+        </div>
+        <div class="overview-card">
+          <span class="big-num" id="ov-unused" style="color:var(--red)">0</span>
+          <span class="big-label">Sin explorar</span>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-bottom:16px;">
+        <span>IAs que has usado</span>
+      </div>
+      <div class="usage-list" id="usageList" style="margin-bottom:32px;"></div>
+
+      <div class="section-title">
+        <span>Sin explorar todavía</span>
+        <span class="badge" id="unusedBadge">0</span>
+      </div>
+      <div class="unused-grid" id="unusedGrid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle"></h2>
+    <div class="modal-meta" id="modalMeta"></div>
+
+    <label class="modal-label">Mis notas personales</label>
+    <textarea id="modalNote" placeholder="Escribe tus impresiones, casos de uso, comparaciones..."></textarea>
+
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveNote()">GUARDAR NOTA</button>
+      <button class="btn-secondary" onclick="openAI()">ABRIR IA ↗</button>
+    </div>
+
+    <div class="usage-history" id="usageHistory" style="display:none;">
+      <h4>Historial de aperturas</h4>
+      <div id="usageEntries"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const AI_DATA = [
+  // CONVERSACIONAL
+  { name: "ChatGPT", company: "OpenAI", url: "https://chatgpt.com", country: "EE.UU.", category: "Conversacional", desc: "Líder del mercado. Fuerte en razonamiento, multimodalidad, codificación y análisis de datos." },
+  { name: "Gemini", company: "Google DeepMind", url: "https://gemini.google.com", country: "EE.UU.", category: "Conversacional", desc: "Multimodal nativo. Contexto de 1M+ tokens, integrado en Google Workspace." },
+  { name: "Claude", company: "Anthropic", url: "https://claude.ai", country: "EE.UU.", category: "Conversacional", desc: "IA Constitucional. Destacado en seguridad, razonamiento y análisis de documentos extensos." },
+  { name: "Grok", company: "xAI", url: "https://grok.com", country: "EE.UU.", category: "Conversacional", desc: "Integrado en X/Twitter. Acceso en tiempo real a datos sociales y noticias de última hora." },
+  { name: "DeepSeek", company: "High-Flyer", url: "https://deepseek.com", country: "China", category: "Conversacional", desc: "Arquitectura MoE. Rendimiento de frontera en matemáticas y código a costo computacional muy bajo." },
+  { name: "Qwen", company: "Alibaba", url: "https://chat.qwen.ai", country: "China", category: "Conversacional", desc: "Modelos abiertos y cerrados. Excelente en multilingüe y análisis visual." },
+  { name: "Kimi", company: "Moonshot AI", url: "https://kimi.com", country: "China", category: "Conversacional", desc: "Pionero en contextos ultra-largos (128k+). Optimizado para documentos legales y financieros." },
+  { name: "Alice / YandexGPT", company: "Yandex", url: "https://ya.ru/ai/aliceai", country: "Rusia", category: "Conversacional", desc: "Ecosistema ruso. Procesamiento profundo del idioma ruso, asistente integral y B2B." },
+  { name: "Mistral AI", company: "Mistral", url: "https://mistral.ai", country: "Francia", category: "Conversacional", desc: "Líder europeo en eficiencia. Open-weights, privacidad de datos, cumplimiento RGPD." },
+  { name: "Microsoft Copilot", company: "Microsoft", url: "https://copilot.microsoft.com", country: "EE.UU.", category: "Conversacional", desc: "Capa de IA ambiental en Office 365, Windows y GitHub. Basado en GPT." },
+  { name: "Meta Llama", company: "Meta", url: "https://llama.com", country: "EE.UU.", category: "Conversacional", desc: "Pilar del open-source. Modelos de 8B a 405B descargables y personalizables." },
+  { name: "Perplexity AI", company: "Perplexity", url: "https://perplexity.ai", country: "EE.UU.", category: "Conversacional", desc: "Motor de respuesta con IA. Síntesis en tiempo real con citas de fuentes precisas." },
+  { name: "Pi", company: "Inflection AI", url: "https://pi.ai", country: "EE.UU.", category: "Conversacional", desc: "Asistente conversacional empático. Enfocado en bienestar y conversación natural." },
+  { name: "Command R", company: "Cohere", url: "https://cohere.com", country: "Canadá", category: "Conversacional", desc: "Empresarial, fuerte en RAG y datos privados corporativos." },
+  { name: "Jamba", company: "AI21 Labs", url: "https://ai21.com", country: "Israel", category: "Conversacional", desc: "Arquitectura híbrida innovadora (Transformer + Mamba)." },
+  { name: "Reka AI", company: "Reka", url: "https://reka.ai", country: "EE.UU./Singapur", category: "Conversacional", desc: "Modelos multimodales compactos y eficientes." },
+  { name: "GLM / Z.ai", company: "Zhipu AI", url: "https://zhipuai.cn", country: "China", category: "Conversacional", desc: "Spin-off de Tsinghua. Modelos GLM-4, AutoGLM para automatización de navegadores." },
+  { name: "Baichuan", company: "Baichuan AI", url: "https://baichuan-ai.com", country: "China", category: "Conversacional", desc: "Unicornio chino. Productividad empresarial y NLP avanzado." },
+  { name: "Yi", company: "01.AI", url: "https://01.ai", country: "China", category: "Conversacional", desc: "Modelos open-source de Kai-Fu Lee. Alto rendimiento en comprensión y código." },
+  { name: "Poe", company: "Quora", url: "https://poe.com", country: "EE.UU.", category: "Conversacional", desc: "Agregador: accede a Claude, GPT, Gemini y open-source desde una sola interfaz." },
+  { name: "You.com", company: "You.com", url: "https://you.com", country: "EE.UU.", category: "Conversacional", desc: "Buscador con IA, modo privado y resúmenes con fuentes." },
+  { name: "Sarvam", company: "Sarvam AI", url: "https://sarvam.ai", country: "India", category: "Conversacional", desc: "Modelos para idiomas indios, 105B parámetros." },
+
+  // CÓDIGO
+  { name: "GitHub Copilot", company: "GitHub/Microsoft", url: "https://github.com/features/copilot", country: "EE.UU.", category: "Código", desc: "El más usado mundialmente. 55% más rápido según datos de GitHub. Modo Agente disponible." },
+  { name: "Cursor", company: "Anysphere", url: "https://cursor.sh", country: "EE.UU.", category: "Código", desc: "Editor AI-native muy popular. Autocompletado contextual de archivos completos." },
+  { name: "Windsurf", company: "Codeium", url: "https://windsurf.com", country: "EE.UU.", category: "Código", desc: "'Agentic IDE' con Cascade para autonomía. Basado en VS Code." },
+  { name: "Bolt.new", company: "StackBlitz", url: "https://bolt.new", country: "EE.UU.", category: "Código", desc: "Genera apps full-stack directamente en el navegador, sin setup local." },
+  { name: "Replit Agent", company: "Replit", url: "https://replit.com", country: "EE.UU.", category: "Código", desc: "Agente que construye aplicaciones completas de forma autónoma." },
+  { name: "Devin", company: "Cognition", url: "https://cognition.ai", country: "EE.UU.", category: "Código", desc: "Primer 'ingeniero de software AI'. Autónomo en tareas de desarrollo." },
+  { name: "Tabnine", company: "Tabnine", url: "https://tabnine.com", country: "Israel", category: "Código", desc: "Privacidad primero. On-premise disponible, SOC-2 compliant." },
+  { name: "Aider", company: "Aider", url: "https://aider.chat", country: "EE.UU.", category: "Código", desc: "Terminal-based, edición multi-archivo, BYOK (Bring Your Own Key)." },
+  { name: "Amazon Q Developer", company: "Amazon", url: "https://aws.amazon.com/q/developer", country: "EE.UU.", category: "Código", desc: "Optimizado para AWS e infraestructura como código." },
+  { name: "Jules", company: "Google", url: "https://jules.google", country: "EE.UU.", category: "Código", desc: "Agente asíncrono integrado con GitHub. Usa Gemini 2.5 Pro." },
+
+  // IMAGEN
+  { name: "Midjourney", company: "Midjourney", url: "https://midjourney.com", country: "EE.UU.", category: "Imagen", desc: "Referencia en estética artística. Estilos oníricos e hiperrealistas." },
+  { name: "DALL-E 3", company: "OpenAI", url: "https://openai.com/dall-e-3", country: "EE.UU.", category: "Imagen", desc: "Integrado en ChatGPT. Buen seguimiento de prompts complejos." },
+  { name: "Stable Diffusion", company: "Stability AI", url: "https://stability.ai", country: "Reino Unido", category: "Imagen", desc: "Modelo open-source referencia. SDXL, SD 3. Altamente personalizable." },
+  { name: "Flux AI", company: "Black Forest Labs", url: "https://bfl.ai", country: "Alemania", category: "Imagen", desc: "Estado del arte open-weights. Excelente en tipografía y fidelidad compositiva." },
+  { name: "Leonardo.ai", company: "Canva/Leonardo", url: "https://leonardo.ai", country: "Australia", category: "Imagen", desc: "Especializado en videojuegos y concept art. Control granular del proceso." },
+  { name: "Adobe Firefly", company: "Adobe", url: "https://adobe.com/firefly", country: "EE.UU.", category: "Imagen", desc: "Entrenado con imágenes de stock. Seguro para uso comercial." },
+  { name: "Ideogram", company: "Ideogram", url: "https://ideogram.ai", country: "Canadá", category: "Imagen", desc: "Especializado en renderizar texto dentro de imágenes." },
+  { name: "Krea", company: "Krea", url: "https://krea.ai", country: "España", category: "Imagen", desc: "Generación en tiempo real y upscaling avanzado." },
+  { name: "Recraft", company: "Recraft", url: "https://recraft.ai", country: "Reino Unido", category: "Imagen", desc: "Diseño vectorial, iconografía y branding." },
+  { name: "Imagen 3", company: "Google DeepMind", url: "https://deepmind.google", country: "EE.UU.", category: "Imagen", desc: "Integrado en Gemini y Vertex AI. Alta calidad fotorrealista." },
+
+  // VIDEO
+  { name: "Sora", company: "OpenAI", url: "https://openai.com/sora", country: "EE.UU.", category: "Video", desc: "Fotorrealismo y física superiores. Hasta 25 segundos de video." },
+  { name: "Runway Gen-4", company: "Runway", url: "https://runwayml.com", country: "EE.UU.", category: "Video", desc: "Control de cámara profesional, 4K. Para cineastas y productoras." },
+  { name: "Kling AI", company: "Kuaishou", url: "https://klingai.com", country: "China", category: "Video", desc: "Alternativa china de frontera. Duración larga, alta fidelidad cinemática." },
+  { name: "Pika 2.5", company: "Pika Labs", url: "https://pika.art", country: "EE.UU.", category: "Video", desc: "Generación rápida (30-90s). Efectos creativos (Pikaffects)." },
+  { name: "Google Veo 3", company: "Google DeepMind", url: "https://deepmind.google", country: "EE.UU.", category: "Video", desc: "Audio nativo sincronizado. Generación multi-shot." },
+  { name: "Luma Dream Machine", company: "Luma AI", url: "https://lumalabs.ai", country: "EE.UU.", category: "Video", desc: "Edición consciente de sujetos. Movimiento fluido y natural." },
+  { name: "HeyGen", company: "HeyGen", url: "https://heygen.com", country: "EE.UU.", category: "Video", desc: "Avatares digitales hiperrealistas. Para presentaciones y marketing corporativo." },
+  { name: "Hailuo AI", company: "MiniMax", url: "https://hailuoai.video", country: "China", category: "Video", desc: "Video de alta calidad. Fuerte competidor chino." },
+  { name: "LTX-Video", company: "Lightricks", url: "https://lightricks.com", country: "Israel", category: "Video", desc: "Image-to-video de alta calidad y consistencia." },
+
+  // AUDIO
+  { name: "Suno", company: "Suno", url: "https://suno.com", country: "EE.UU.", category: "Audio", desc: "Generación de canciones completas con voz e instrumentación en segundos." },
+  { name: "Udio", company: "Udio", url: "https://udio.com", country: "Reino Unido", category: "Audio", desc: "Alta calidad musical. Control de estilo y género detallado." },
+  { name: "ElevenLabs", company: "ElevenLabs", url: "https://elevenlabs.io", country: "Reino Unido", category: "Audio", desc: "Estándar de la industria en síntesis y clonación de voz. 30+ idiomas." },
+  { name: "Murf AI", company: "Murf", url: "https://murf.ai", country: "EE.UU.", category: "Audio", desc: "Voces profesionales para presentaciones y negocios." },
+  { name: "Hume AI", company: "Hume", url: "https://hume.ai", country: "EE.UU.", category: "Audio", desc: "Voces con tonos emocionales personalizables por descripción." },
+  { name: "Moshi AI", company: "Kyutai", url: "https://kyutai.org", country: "Francia", category: "Audio", desc: "Audio LLM nativo. Voz a voz en tiempo real con latencia de milisegundos." },
+  { name: "AIVA", company: "AIVA", url: "https://aiva.ai", country: "Luxemburgo", category: "Audio", desc: "Composición musical clásica y cinematográfica con IA." },
+  { name: "Fish Audio", company: "Fish Audio", url: "https://fish.audio", country: "China", category: "Audio", desc: "Text-to-speech de alta calidad, open-source." },
+  { name: "Voicemod", company: "Voicemod", url: "https://voicemod.net", country: "España", category: "Audio", desc: "Modificación de voz en tiempo real para gaming y streaming." },
+
+  // HERRAMIENTA
+  { name: "NotebookLM", company: "Google", url: "https://notebooklm.google.com", country: "EE.UU.", category: "Herramienta", desc: "Asistente de investigación basado en tus documentos. Genera podcasts 'Audio Overview'." },
+  { name: "Enclave AI", company: "Enclave", url: "https://enclaveai.app", country: "EE.UU.", category: "Herramienta", desc: "IA offline y privada para iOS/macOS. Cero transmisión de datos a la nube." },
+  { name: "Abacus.AI", company: "Abacus.AI", url: "https://abacus.ai", country: "EE.UU.", category: "Herramienta", desc: "Plataforma corporativa. ChatLLM unifica GPT, Claude, Gemini. Compliance SOC-2." },
+  { name: "OpenClaw", company: "OpenClaw", url: "https://openclaw.ai", country: "Austria/EE.UU.", category: "Herramienta", desc: "Agente orquestador viral. Conecta LLMs a WhatsApp, Telegram y terminal local." },
+  { name: "HuggingFace", company: "Hugging Face", url: "https://huggingface.co", country: "EE.UU./Francia", category: "Herramienta", desc: "Mayor repositorio de modelos open-source. 2.7M+ modelos y datasets." },
+  { name: "Ollama", company: "Ollama", url: "https://ollama.com", country: "EE.UU.", category: "Herramienta", desc: "Ejecuta LLMs localmente con un comando. Simple y potente." },
+  { name: "LangChain", company: "LangChain", url: "https://langchain.com", country: "EE.UU.", category: "Herramienta", desc: "Framework para construir aplicaciones complejas con LLMs." },
+  { name: "LlamaIndex", company: "LlamaIndex", url: "https://llamaindex.ai", country: "EE.UU.", category: "Herramienta", desc: "Framework para RAG y manejo de documentos con LLMs." },
+  { name: "Groq", company: "Groq", url: "https://groq.com", country: "EE.UU.", category: "Herramienta", desc: "Hardware LPU para inferencia ultrarrápida. No es un modelo, sino velocidad." },
+  { name: "Together AI", company: "Together AI", url: "https://together.ai", country: "EE.UU.", category: "Herramienta", desc: "Inferencia de modelos open-source en cloud. Rápido y económico." },
+  { name: "ChatPDF", company: "ChatPDF", url: "https://chatpdf.com", country: "Alemania", category: "Herramienta", desc: "Interactúa con PDFs mediante conversación natural." },
+
+  // AGENTE
+  { name: "Kortix (Suna)", company: "Kortix", url: "https://kortix.com", country: "Global", category: "Agente", desc: "Agente open-source 'Empleado de IA'. 100+ integraciones API, genera reportes y presentaciones." },
+  { name: "AutoGPT", company: "Significant Gravitas", url: "https://autogpt.net", country: "Global", category: "Agente", desc: "Agente autónomo open-source. Pionero del movimiento agentic AI." },
+  { name: "MultiOn", company: "MultiOn", url: "https://multion.ai", country: "EE.UU.", category: "Agente", desc: "Agente que navega la web de forma autónoma en tu nombre." },
+  { name: "Character.AI", company: "Character.AI", url: "https://character.ai", country: "EE.UU.", category: "Agente", desc: "Millones de personajes IA. Conversaciones abiertas y roleplay." },
+  { name: "Replika", company: "Luka", url: "https://replika.ai", country: "EE.UU.", category: "Agente", desc: "Compañero IA personal. Enfoque en bienestar emocional." },
+
+  // INVESTIGACIÓN
+  { name: "Perplexity Pro", company: "Perplexity", url: "https://perplexity.ai", country: "EE.UU.", category: "Investigación", desc: "Deep research con síntesis de múltiples fuentes y citas precisas." },
+  { name: "Elicit", company: "Elicit", url: "https://elicit.org", country: "EE.UU.", category: "Investigación", desc: "Síntesis de literatura científica. Extracción de datos de papers." },
+  { name: "Consensus", company: "Consensus", url: "https://consensus.app", country: "EE.UU.", category: "Investigación", desc: "Busca respuestas en literatura científica con 'Consensus Meter'." },
+  { name: "Research Rabbit", company: "Research Rabbit", url: "https://researchrabbit.ai", country: "EE.UU.", category: "Investigación", desc: "Mapeo de literatura científica. Visualización de redes de citas." },
+  { name: "Semantic Scholar", company: "Allen Institute", url: "https://semanticscholar.org", country: "EE.UU.", category: "Investigación", desc: "Buscador académico con IA del Allen Institute for AI." },
+  { name: "SciSpace", company: "Typeset", url: "https://typeset.io", country: "India", category: "Investigación", desc: "Lectura y análisis interactivo de papers científicos." },
+  { name: "Aleph Alpha", company: "Aleph Alpha", url: "https://aleph-alpha.com", country: "Alemania", category: "Investigación", desc: "B2B europeo. Modelos Luminous con trazabilidad de fuentes para gobiernos." },
+  { name: "Silo AI", company: "Silo AI (AMD)", url: "https://silo.ai", country: "Finlandia", category: "Investigación", desc: "Laboratorio nórdico. Modelos Poro/Viking para idiomas europeos minoritarios." },
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let storage = {};
+let sortColumn = '';
+let sortDir = 1;
+let filterUnused = false;
+let filterNotes = false;
+let currentModalAI = null;
+
+function loadStorage() {
+  try {
+    const raw = localStorage.getItem('ai_observatory');
+    storage = raw ? JSON.parse(raw) : {};
+  } catch(e) { storage = {}; }
+}
+
+function saveStorage() {
+  try {
+    localStorage.setItem('ai_observatory', JSON.stringify(storage));
+  } catch(e) {}
+}
+
+function getAIData(name) {
+  if (!storage[name]) storage[name] = { opens: [], note: '' };
+  return storage[name];
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function applyFilters() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('filterCategory').value;
+  const country = document.getElementById('filterCountry').value;
+
+  let data = AI_DATA.filter(ai => {
+    const matchSearch = !search ||
+      ai.name.toLowerCase().includes(search) ||
+      ai.desc.toLowerCase().includes(search) ||
+      ai.country.toLowerCase().includes(search) ||
+      ai.category.toLowerCase().includes(search);
+
+    const matchCat = !cat || ai.category === cat;
+    const matchCountry = !country || ai.country.includes(country);
+
+    const aiData = getAIData(ai.name);
+    const matchUnused = !filterUnused || aiData.opens.length === 0;
+    const matchNotes = !filterNotes || aiData.note.trim().length > 0;
+
+    return matchSearch && matchCat && matchCountry && matchUnused && matchNotes;
+  });
+
+  if (sortColumn) {
+    data.sort((a, b) => {
+      let av, bv;
+      if (sortColumn === 'uses') {
+        av = getAIData(a.name).opens.length;
+        bv = getAIData(b.name).opens.length;
+      } else {
+        av = a[sortColumn] || '';
+        bv = b[sortColumn] || '';
+      }
+      if (av < bv) return -sortDir;
+      if (av > bv) return sortDir;
+      return 0;
+    });
+  }
+
+  renderTable(data);
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No se encontraron IAs con los filtros aplicados</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(ai => {
+    const aiData = getAIData(ai.name);
+    const opens = aiData.opens.length;
+    const hasNote = aiData.note.trim().length > 0;
+    const catClass = 'cat-' + ai.category.toLowerCase().replace('/', '').replace(' ', '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const countryFlag = getFlag(ai.country);
+
+    return `<tr>
+      <td>
+        <div class="ai-name">
+          <span class="note-indicator ${hasNote ? 'has-note' : ''}" title="Tiene notas"></span>
+          ${ai.name}
+        </div>
+        ${ai.company !== ai.name ? `<div style="font-size:10px;color:var(--text-muted);margin-top:3px;">${ai.company}</div>` : ''}
+      </td>
+      <td><span class="category-tag ${catClass}">${ai.category}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="country-flag">${countryFlag}</span>
+          <span style="font-size:11px;color:var(--text-dim);">${ai.country}</span>
+        </div>
+      </td>
+      <td style="max-width:280px;font-size:11px;color:var(--text-dim);line-height:1.5;">${ai.desc}</td>
+      <td>
+        <span class="usage-count ${opens > 0 ? 'has-uses' : ''}" onclick="openModal('${escapeQ(ai.name)}')" title="Click para ver historial">
+          ${opens > 0 ? `✓ ${opens}x` : '— sin usar'}
+        </span>
+      </td>
+      <td>
+        <div class="usage-cell">
+          <a class="ai-link" href="${ai.url}" target="_blank" rel="noopener" onclick="trackOpen('${escapeQ(ai.name)}')">Abrir</a>
+          <button class="open-btn" onclick="openModal('${escapeQ(ai.name)}')">✎ Nota</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function escapeQ(s) { return s.replace(/'/g, "\\'"); }
+
+function getFlag(country) {
+  const flags = {
+    'EE.UU.': '🇺🇸', 'China': '🇨🇳', 'Francia': '🇫🇷', 'Alemania': '🇩🇪',
+    'Rusia': '🇷🇺', 'Canadá': '🇨🇦', 'Israel': '🇮🇱', 'España': '🇪🇸',
+    'Australia': '🇦🇺', 'Finlandia': '🇫🇮', 'India': '🇮🇳', 'Luxemburgo': '🇱🇺',
+    'Reino Unido': '🇬🇧', 'Global': '🌍', 'Austria/EE.UU.': '🇦🇹',
+    'EE.UU./Francia': '🇺🇸', 'EE.UU./Singapur': '🇺🇸',
+  };
+  for (const k of Object.keys(flags)) {
+    if (country.includes(k.split('/')[0])) return flags[k];
+  }
+  return '🌐';
+}
+
+function sortBy(col) {
+  if (sortColumn === col) sortDir *= -1;
+  else { sortColumn = col; sortDir = 1; }
+  applyFilters();
+}
+
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterCategory').value = '';
+  document.getElementById('filterCountry').value = '';
+  filterUnused = false;
+  filterNotes = false;
+  document.getElementById('btnUnused').classList.remove('active-filter');
+  document.getElementById('btnNotes').classList.remove('active-filter');
+  applyFilters();
+}
+
+function toggleUnusedFilter() {
+  filterUnused = !filterUnused;
+  document.getElementById('btnUnused').classList.toggle('active-filter', filterUnused);
+  applyFilters();
+}
+
+function toggleNotesFilter() {
+  filterNotes = !filterNotes;
+  document.getElementById('btnNotes').classList.toggle('active-filter', filterNotes);
+  applyFilters();
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(name) {
+  const ai = AI_DATA.find(a => a.name === name);
+  if (!ai) return;
+  currentModalAI = ai;
+  const aiData = getAIData(name);
+
+  document.getElementById('modalTitle').textContent = ai.name;
+  document.getElementById('modalMeta').innerHTML = `
+    <span>${getFlag(ai.country)} ${ai.country}</span>
+    <span class="category-tag cat-${ai.category.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}">${ai.category}</span>
+    <span style="color:var(--${aiData.opens.length > 0 ? 'green' : 'text-muted'})">${aiData.opens.length > 0 ? `✓ Abierta ${aiData.opens.length} vez${aiData.opens.length>1?'es':''}` : '⊘ Sin abrir aún'}</span>
+  `;
+  document.getElementById('modalNote').value = aiData.note || '';
+
+  const histDiv = document.getElementById('usageHistory');
+  const entriesDiv = document.getElementById('usageEntries');
+  if (aiData.opens.length > 0) {
+    histDiv.style.display = 'block';
+    entriesDiv.innerHTML = [...aiData.opens].reverse().map(d =>
+      `<div class="usage-entry">${formatDate(d)}</div>`
+    ).join('');
+  } else {
+    histDiv.style.display = 'none';
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  currentModalAI = null;
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function saveNote() {
+  if (!currentModalAI) return;
+  const note = document.getElementById('modalNote').value;
+  const aiData = getAIData(currentModalAI.name);
+  aiData.note = note;
+  saveStorage();
+  closeModal();
+  applyFilters();
+  updateHeaderStats();
+  showToast('Nota guardada ✓');
+}
+
+function openAI() {
+  if (!currentModalAI) return;
+  trackOpen(currentModalAI.name);
+  window.open(currentModalAI.url, '_blank', 'noopener');
+  // refresh modal
+  openModal(currentModalAI.name);
+}
+
+function trackOpen(name) {
+  const aiData = getAIData(name);
+  aiData.opens.push(new Date().toISOString());
+  saveStorage();
+  applyFilters();
+  updateHeaderStats();
+  if (document.getElementById('panel-usage').classList.contains('active')) renderUsagePanel();
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleString('es-AR', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function renderStats() {
+  // Countries
+  const countryCounts = {};
+  AI_DATA.forEach(ai => {
+    const c = ai.country.split('/')[0].trim();
+    countryCounts[c] = (countryCounts[c] || 0) + 1;
+  });
+  const sortedCountries = Object.entries(countryCounts).sort((a,b) => b[1]-a[1]).slice(0, 10);
+  const maxC = sortedCountries[0]?.[1] || 1;
+  const colors = ['#00e5ff','#a78bfa','#ff6b35','#22c55e','#fbbf24','#f87171','#34d399','#f472b6','#60a5fa','#e879f9'];
+  document.getElementById('chart-countries').innerHTML = sortedCountries.map(([c, n], i) => `
+    <div class="bar-row">
+      <span class="bar-label">${getFlag(c)} ${c}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(n/maxC*100).toFixed(0)}%;background:${colors[i%colors.length]};"></div></div>
+      <span class="bar-val">${n}</span>
+    </div>`).join('');
+
+  // Categories
+  const catCounts = {};
+  AI_DATA.forEach(ai => { catCounts[ai.category] = (catCounts[ai.category]||0)+1; });
+  const sortedCats = Object.entries(catCounts).sort((a,b) => b[1]-a[1]);
+  const maxCat = sortedCats[0]?.[1] || 1;
+  document.getElementById('chart-categories').innerHTML = sortedCats.map(([c,n],i) => `
+    <div class="bar-row">
+      <span class="bar-label">${c}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(n/maxCat*100).toFixed(0)}%;background:${colors[i%colors.length]};"></div></div>
+      <span class="bar-val">${n}</span>
+    </div>`).join('');
+
+  // Coverage
+  const usedCount = AI_DATA.filter(ai => getAIData(ai.name).opens.length > 0).length;
+  const pct = Math.round(usedCount / AI_DATA.length * 100);
+  document.getElementById('coverage-display').innerHTML = `
+    <div style="font-family:var(--font-display);font-size:64px;font-weight:800;color:var(--accent);line-height:1;">${pct}%</div>
+    <div style="font-size:11px;color:var(--text-dim);margin-top:8px;letter-spacing:2px;">${usedCount} de ${AI_DATA.length} IAs exploradas</div>
+    <div style="margin-top:16px;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;">
+      <div style="width:${pct}%;height:100%;background:var(--accent);border-radius:4px;transition:width 0.8s;"></div>
+    </div>`;
+
+  // Top used
+  const topUsed = AI_DATA
+    .map(ai => ({ name: ai.name, opens: getAIData(ai.name).opens.length }))
+    .filter(x => x.opens > 0)
+    .sort((a,b) => b.opens - a.opens)
+    .slice(0, 8);
+  const maxU = topUsed[0]?.opens || 1;
+  if (topUsed.length === 0) {
+    document.getElementById('chart-topused').innerHTML = `<div style="color:var(--text-muted);font-size:11px;text-align:center;padding:20px;">Aún no has abierto ninguna IA</div>`;
+  } else {
+    document.getElementById('chart-topused').innerHTML = topUsed.map(({name, opens},i) => `
+      <div class="bar-row">
+        <span class="bar-label">${name}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${(opens/maxU*100).toFixed(0)}%;background:${colors[i%colors.length]};"></div></div>
+        <span class="bar-val">${opens}x</span>
+      </div>`).join('');
+  }
+}
+
+// ============================================================
+// USAGE PANEL
+// ============================================================
+function renderUsagePanel() {
+  const total = AI_DATA.length;
+  const used = AI_DATA.filter(ai => getAIData(ai.name).opens.length > 0);
+  const unused = AI_DATA.filter(ai => getAIData(ai.name).opens.length === 0);
+  const totalOpens = AI_DATA.reduce((s, ai) => s + getAIData(ai.name).opens.length, 0);
+
+  document.getElementById('ov-total').textContent = total;
+  document.getElementById('ov-used').textContent = used.length;
+  document.getElementById('ov-opens').textContent = totalOpens;
+  document.getElementById('ov-unused').textContent = unused.length;
+  document.getElementById('unusedBadge').textContent = unused.length;
+
+  // Used list
+  const sortedUsed = [...used].sort((a,b) => getAIData(b.name).opens.length - getAIData(a.name).opens.length);
+  const maxOpens = sortedUsed[0] ? getAIData(sortedUsed[0].name).opens.length : 1;
+
+  if (sortedUsed.length === 0) {
+    document.getElementById('usageList').innerHTML = `<div class="empty-state">Aún no has abierto ninguna IA desde aquí</div>`;
+  } else {
+    document.getElementById('usageList').innerHTML = sortedUsed.map(ai => {
+      const opens = getAIData(ai.name).opens.length;
+      const pct = (opens / maxOpens * 100).toFixed(0);
+      return `<div class="usage-item" onclick="openModal('${escapeQ(ai.name)}')">
+        <span class="country-flag" style="font-size:20px;">${getFlag(ai.country)}</span>
+        <span class="usage-item-name">${ai.name}</span>
+        <div class="usage-bar-mini"><div class="usage-bar-mini-fill" style="width:${pct}%;"></div></div>
+        <span class="usage-item-count">${opens} apertura${opens>1?'s':''}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Unused grid
+  document.getElementById('unusedGrid').innerHTML = unused.map(ai => `
+    <div class="unused-chip" onclick="openModal('${escapeQ(ai.name)}')">
+      <span>${getFlag(ai.country)} ${ai.name}</span>
+      <a href="${ai.url}" target="_blank" rel="noopener" onclick="event.stopPropagation();trackOpen('${escapeQ(ai.name)}')" style="color:var(--accent);font-size:10px;text-decoration:none;" title="Abrir">↗</a>
+    </div>`).join('');
+}
+
+// ============================================================
+// HEADER STATS
+// ============================================================
+function updateHeaderStats() {
+  const total = AI_DATA.length;
+  const used = AI_DATA.filter(ai => getAIData(ai.name).opens.length > 0).length;
+  const totalOpens = AI_DATA.reduce((s, ai) => s + getAIData(ai.name).opens.length, 0);
+  const pct = Math.round(used / total * 100);
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-used').textContent = used;
+  document.getElementById('stat-opens').textContent = totalOpens;
+  document.getElementById('stat-pct').textContent = pct + '%';
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const tabs = ['table','stats','usage'];
+    t.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'stats') renderStats();
+  if (name === 'usage') renderUsagePanel();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  loadStorage();
+
+  // Populate country filter
+  const countries = [...new Set(AI_DATA.map(ai => ai.country.split('/')[0].trim()))].sort();
+  const sel = document.getElementById('filterCountry');
+  countries.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = `${getFlag(c)} ${c}`;
+    sel.appendChild(o);
+  });
+
+  updateHeaderStats();
+  applyFilters();
+}
+
+init();
+</script>
+</body>
+</html>
