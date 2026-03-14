@@ -80,6 +80,8 @@ td{padding:9px 12px;vertical-align:middle;}
 .cat-datos{background:rgba(232,121,249,.1);color:#e879f9;border:1px solid rgba(232,121,249,.3);}
 .cat-marketing{background:rgba(253,186,116,.1);color:#fb923c;border:1px solid rgba(253,186,116,.3);}
 .cat-hardware{background:rgba(148,163,184,.1);color:#94a3b8;border:1px solid rgba(148,163,184,.3);}
+.cat-framework{background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.3);}
+.cat-latam{background:rgba(52,211,153,.12);color:#6ee7b7;border:1px solid rgba(52,211,153,.35);}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-width:600px;padding:20px 18px 36px;position:relative;animation:slideUp .25s ease;max-height:90vh;overflow-y:auto;}
@@ -194,7 +196,7 @@ td{padding:9px 12px;vertical-align:middle;}
         <option value="">Todas las categorías</option>
         <option>Conversacional</option><option>Imagen</option><option>Video</option><option>Audio</option>
         <option>Código</option><option>Herramienta</option><option>Agente</option><option>Investigación</option>
-        <option>Empresarial</option><option>Datos</option><option>Marketing</option><option>Hardware</option>
+        <option>Empresarial</option><option>Datos</option><option>Marketing</option><option>Hardware</option><option>Framework</option><option>LATAM</option>
       </select>
       <select id="filterCountry" onchange="applyFilters()"></select>
     </div>
@@ -298,6 +300,7 @@ const AI_DATA=[
 {name:"OpenAssistant",company:"LAION",url:"https://open-assistant.io",country:"Global",category:"Conversacional",desc:"Alternativa open-source comunitaria a ChatGPT. Proyecto de LAION."},
 {name:"xGen",company:"Salesforce",url:"https://xgen.ai",country:"EE.UU.",category:"Conversacional",desc:"Modelos para empresas y datos estructurados. De Salesforce."},
 {name:"SmolLM",company:"HuggingFace",url:"https://huggingface.co",country:"Francia",category:"Conversacional",desc:"Modelos ultraligeros de Hugging Face. Para dispositivos con recursos limitados."},
+{name:"Euria",company:"Infomaniak",url:"https://euria.infomaniak.com",country:"Suiza",category:"Conversacional",desc:"LLM europeo de Infomaniak. Funciona 100% con energía renovable, servidores en Suiza. Enfoque en privacidad y soberanía digital europea."},
 {name:"Kortik",company:"Kortik",url:"",country:"Rusia",category:"Conversacional",desc:"Modelo regional ruso menos conocido, orientado a asistentes locales."},
 {name:"Amelia",company:"Amelia",url:"https://amelia.ai",country:"EE.UU.",category:"Conversacional",desc:"Automatización de conversaciones empresariales complejas."},
 {name:"Kore.ai",company:"Kore.ai",url:"https://kore.ai",country:"EE.UU.",category:"Conversacional",desc:"Plataforma de chatbots y agentes conversacionales corporativos."},
@@ -395,7 +398,7 @@ const AI_DATA=[
 {name:"ClickUp AI",company:"ClickUp",url:"https://clickup.com",country:"EE.UU.",category:"Herramienta",desc:"IA integrada en el gestor de proyectos ClickUp."},
 {name:"Airtable AI",company:"Airtable",url:"https://airtable.com",country:"EE.UU.",category:"Herramienta",desc:"Bases de datos con IA integrada para automatización y análisis."},
 {name:"Groq LPU",company:"Groq",url:"https://groq.com",country:"EE.UU.",category:"Hardware",desc:"Hardware LPU para inferencia ultrarrápida. No es un modelo, sino velocidad."},
-{name:"NVIDIA NIM",company:"NVIDIA",url:"https://nvidia.com",country:"EE.UU.",category:"Hardware",desc:"Microservicios de inferencia optimizados para GPUs NVIDIA."},
+{name:"NVIDIA NIM / NeMo",company:"NVIDIA",url:"https://nvidia.com",country:"EE.UU.",category:"Hardware",desc:"Microservicios de inferencia (NIM) y framework de entrenamiento (NeMo). Ecosistema completo para LLMs en GPUs NVIDIA."},
 {name:"AWS Bedrock",company:"Amazon",url:"https://aws.amazon.com/bedrock",country:"EE.UU.",category:"Empresarial",desc:"Plataforma para usar múltiples modelos fundacionales en AWS."},
 {name:"Azure AI Studio",company:"Microsoft",url:"https://azure.microsoft.com",country:"EE.UU.",category:"Empresarial",desc:"Plataforma para desplegar modelos y agentes en Azure."},
 {name:"Google Vertex AI",company:"Google",url:"https://cloud.google.com/vertex-ai",country:"EE.UU.",category:"Empresarial",desc:"Plataforma ML empresarial de Google Cloud. Entrenamiento e inferencia."},
@@ -435,6 +438,28 @@ const AI_DATA=[
 {name:"Ocoya",company:"Ocoya",url:"https://ocoya.com",country:"Reino Unido",category:"Marketing",desc:"Gestión y creación de contenido para redes sociales con IA."},
 {name:"Taskade AI",company:"Taskade",url:"https://taskade.com",country:"EE.UU.",category:"Marketing",desc:"Equipos y proyectos potenciados con IA. Colaboración inteligente."},
 {name:"MarketMuse",company:"MarketMuse",url:"https://marketmuse.com",country:"EE.UU.",category:"Marketing",desc:"Estrategia de contenido SEO con IA. Auditoría y planificación."},
+// ── NUEVOS FRAMEWORKS / AGENTES ─────────────────────────────
+{name:"SuperAGI",company:"SuperAGI",url:"https://superagi.com",country:"Global",category:"Agente",desc:"Open-source para agentes autónomos con memoria, planificación y herramientas externas."},
+{name:"Voyager",company:"MineDojo",url:"https://voyager.minedojo.org",country:"EE.UU.",category:"Agente",desc:"Agente experimental que aprende explorando mundos virtuales (Minecraft). Investigación de IA encarnada."},
+{name:"AutoGen",company:"Microsoft Research",url:"https://microsoft.github.io/autogen",country:"EE.UU.",category:"Framework",desc:"Framework de Microsoft para agentes multi-rol que colaboran entre sí. Muy usado en investigación."},
+{name:"Camel AI",company:"Camel AI",url:"https://github.com/camel-ai/camel",country:"Global",category:"Framework",desc:"Simulación de conversaciones y roles entre agentes IA. Framework open-source para estudio de emergencia."},
+{name:"LangGraph",company:"LangChain",url:"https://langchain.com/langgraph",country:"EE.UU.",category:"Framework",desc:"Extensión de LangChain para agentes con memoria persistente y flujos cíclicos (grafos de estado)."},
+{name:"DSPy",company:"Stanford NLP",url:"https://dspy.ai",country:"EE.UU.",category:"Framework",desc:"Optimización automática de prompts y pipelines de agentes. Enfoque declarativo sobre LLMs."},
+{name:"Lamini",company:"Lamini",url:"https://lamini.ai",country:"EE.UU.",category:"Framework",desc:"Plataforma para fine-tuning y entrenamiento de LLMs personalizados en datos propios."},
+{name:"OpenAI Swarm",company:"OpenAI",url:"https://openai.com/research/swarm",country:"EE.UU.",category:"Framework",desc:"Framework experimental de OpenAI para coordinación y orquestación de múltiples agentes IA."},
+// ── IA EN LATAM ──────────────────────────────────────────────
+{name:"Aivo",company:"Aivo",url:"https://aivo.co",country:"Argentina",category:"LATAM",desc:"Plataforma de atención al cliente con IA conversacional. Líder en LATAM para servicio al cliente automatizado."},
+{name:"Zippin",company:"Zippin",url:"https://zippin.com",country:"Argentina",category:"LATAM",desc:"Tiendas automatizadas sin cajeros. IA aplicada al retail físico. Operaciones en múltiples países."},
+{name:"Yalo",company:"Yalo",url:"https://yalo.com",country:"México",category:"LATAM",desc:"Comercio conversacional en WhatsApp y redes sociales. Muy adoptado en retail latinoamericano."},
+{name:"Nowports AI",company:"Nowports",url:"https://nowports.com",country:"México",category:"LATAM",desc:"IA aplicada a logística, transporte y comercio internacional. Optimización de cadenas de suministro."},
+{name:"Khipu AI",company:"Khipu AI",url:"https://khipu.ai",country:"Chile",category:"LATAM",desc:"Proyecto académico para modelos de lenguaje en español y lenguas indígenas latinoamericanas."},
+{name:"Ualabee AI",company:"Ualabee",url:"https://ualabee.com",country:"Argentina",category:"LATAM",desc:"IA para transporte urbano y planificación de viajes en ciudades latinoamericanas."},
+{name:"Botmaker",company:"Botmaker",url:"https://botmaker.com",country:"Argentina",category:"LATAM",desc:"Plataforma de bots conversacionales para empresas en LATAM. Integración con WhatsApp y canales digitales."},
+{name:"Inspenet AI",company:"Inspenet",url:"https://inspenet.com",country:"Colombia",category:"LATAM",desc:"IA para inspección industrial en petróleo y gas. Detección de fallas y mantenimiento predictivo."},
+{name:"NeuralMind",company:"NeuralMind",url:"https://neuralmind.ai",country:"Brasil",category:"LATAM",desc:"Investigación en modelos de lenguaje en portugués. Uno de los laboratorios de NLP más importantes de Brasil."},
+{name:"Kunumi",company:"Kunumi",url:"https://kunumi.com",country:"Brasil",category:"LATAM",desc:"IA aplicada a salud y educación. Proyectos con impacto social en Brasil."},
+{name:"Lab IA UNAM",company:"UNAM",url:"https://unam.mx",country:"México",category:"LATAM",desc:"Laboratorio académico de NLP en español de la Universidad Nacional Autónoma de México."},
+{name:"IA-PUC Chile",company:"PUC Chile",url:"https://puc.cl",country:"Chile",category:"LATAM",desc:"Investigación universitaria en IA aplicada a minería, energía y salud. Pontificia Universidad Católica de Chile."},
 ];
 
 let storage={},sortCol='',sortDir=1,filters={unused:false,notes:false},viewMode='cards',currentAI=null;
@@ -444,8 +469,8 @@ function getAI(n){if(!storage[n])storage[n]={opens:[],note:''};return storage[n]
 function esc(s){return s.replace(/'/g,"\\'");}
 function fmtDate(iso){return new Date(iso).toLocaleString('es-AR',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
 function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
-function getCls(c){const m={Conversacional:'conversacional',Imagen:'imagen',Video:'video',Audio:'audio',Código:'codigo',Herramienta:'herramienta',Agente:'agente',Investigación:'investigacion',Empresarial:'empresarial',Datos:'datos',Marketing:'marketing',Hardware:'hardware'};return'cat-'+(m[c]||'herramienta');}
-function getFlag(c){const f={'EE.UU.':'🇺🇸','China':'🇨🇳','Francia':'🇫🇷','Alemania':'🇩🇪','Rusia':'🇷🇺','Canadá':'🇨🇦','Israel':'🇮🇱','España':'🇪🇸','Australia':'🇦🇺','Finlandia':'🇫🇮','India':'🇮🇳','Luxemburgo':'🇱🇺','Reino Unido':'🇬🇧','Global':'🌍','Japón':'🇯🇵','Corea del Sur':'🇰🇷','Países Bajos':'🇳🇱','Polonia':'🇵🇱','Austria':'🇦🇹','Rep. Checa':'🇨🇿','Suecia':'🇸🇪'};for(const k of Object.keys(f)){if(c.includes(k))return f[k];}return'🌐';}
+function getCls(c){const m={Conversacional:'conversacional',Imagen:'imagen',Video:'video',Audio:'audio',Código:'codigo',Herramienta:'herramienta',Agente:'agente',Investigación:'investigacion',Empresarial:'empresarial',Datos:'datos',Marketing:'marketing',Hardware:'hardware',Framework:'framework',LATAM:'latam'};return'cat-'+(m[c]||'herramienta');}
+function getFlag(c){const f={'EE.UU.':'🇺🇸','China':'🇨🇳','Francia':'🇫🇷','Alemania':'🇩🇪','Rusia':'🇷🇺','Canadá':'🇨🇦','Israel':'🇮🇱','España':'🇪🇸','Australia':'🇦🇺','Finlandia':'🇫🇮','India':'🇮🇳','Luxemburgo':'🇱🇺','Reino Unido':'🇬🇧','Global':'🌍','Japón':'🇯🇵','Corea del Sur':'🇰🇷','Países Bajos':'🇳🇱','Polonia':'🇵🇱','Austria':'🇦🇹','Rep. Checa':'🇨🇿','Suecia':'🇸🇪','Suiza':'🇨🇭','Argentina':'🇦🇷','México':'🇲🇽','Chile':'🇨🇱','Colombia':'🇨🇴','Brasil':'🇧🇷','Perú':'🇵🇪','Uruguay':'🇺🇾'};for(const k of Object.keys(f)){if(c.includes(k))return f[k];}return'🌐';}
 
 function applyFilters(){
   const q=document.getElementById('searchInput').value.toLowerCase();
