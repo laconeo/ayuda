@@ -1,239 +1,966 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recursos FamilySearch - Guía para Voluntarios</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #7fb539 0%, #5a8a28 100%);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .container {
-            max-width: 800px;
-            width: 100%;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #5a8a28 0%, #4a7220 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        
-        .logo {
-            width: 280px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .header p {
-            font-size: 16px;
-            opacity: 0.9;
-            line-height: 1.5;
-        }
-        
-        .content {
-            padding: 40px 30px;
-        }
-        
-        .resource-card {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .resource-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-color: #7fb539;
-        }
-        
-        .resource-card:active {
-            transform: translateY(-2px);
-        }
-        
-        .resource-number {
-            display: inline-block;
-            background: linear-gradient(135deg, #7fb539 0%, #5a8a28 100%);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 36px;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        
-        .resource-card h2 {
-            font-size: 24px;
-            color: #2d3748;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-        
-        .resource-card p {
-            font-size: 16px;
-            color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .resource-link {
-            display: inline-block;
-            background: linear-gradient(135deg, #7fb539 0%, #5a8a28 100%);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .resource-link:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(127, 181, 57, 0.4);
-        }
-        
-        .whatsapp-card {
-            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-            border: none;
-            color: white;
-        }
-        
-        .whatsapp-card h2,
-        .whatsapp-card p {
-            color: white;
-        }
-        
-        .whatsapp-card .resource-number {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        .whatsapp-link {
-            background: white;
-            color: #25D366;
-        }
-        
-        .whatsapp-link:hover {
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
-        }
-        
-        .footer {
-            background: #f7fafc;
-            padding: 20px 30px;
-            text-align: center;
-            color: #718096;
-            font-size: 14px;
-            border-top: 2px solid #e2e8f0;
-        }
-        
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .header h1 {
-                font-size: 24px;
-            }
-            
-            .header p {
-                font-size: 14px;
-            }
-            
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .resource-card {
-                padding: 20px;
-            }
-            
-            .resource-card h2 {
-                font-size: 20px;
-            }
-            
-            .resource-card p {
-                font-size: 15px;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Centro de control de tickets LATAM</title>
+<style>
+:root { --fg: #1f1f1d; --bg: #faf9f5; --panel: #ffffff; --border: #e3e0d6; --muted: #6b6a64; --bad: #b3261e; --warn: #9a5b00; --ok: #1b6e3c; color-scheme: light dark; }
+@media (prefers-color-scheme: dark) { :root { --fg: #ece9e0; --bg: #1b1b19; --panel: #262624; --border: #3a3935; --muted: #a29f94; --bad: #ff8a80; --warn: #ffc266; --ok: #7dd3a0; } }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 15px; line-height: 1.45; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 28px; margin: 0; line-height: 1.15; }
+h2 { font-size: 16px; font-weight: 600; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* Acceso */
+.login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.login form { width: 100%; max-width: 360px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.login p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.login label { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.login .msg { min-height: 20px; color: var(--bad); }
+
+.tk { display: flex; flex-direction: column; gap: 20px; max-width: 1320px; margin: 0 auto; padding: 20px 16px 40px; }
+.tk-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.tk-top .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+.tk-lede { margin: 6px 0 0; color: var(--muted); line-height: 1.55; max-width: 980px; }
+.tk-lede b { color: var(--fg); font-weight: 600; }
+.tk-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; min-width: 0; }
+.tk-note { margin: 4px 0 12px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.tk-view { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.tk-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.tk-field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.tk-field.grow { flex: 1 1 260px; }
+.tk-input { font-size: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-width: 0; width: 100%; }
+select.tk-input { width: auto; }
+.tk-input.num { width: 90px; }
+.tk-textarea { resize: vertical; min-height: 84px; font-size: 13px; }
+.tk-check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; padding: 8px 0; cursor: pointer; }
+.tk-btn { display: inline-block; font-size: 13px; background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; cursor: pointer; text-decoration: none; color: inherit; }
+.tk-btn:hover:not(:disabled) { background: var(--bg); }
+.tk-btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.tk-btn.small { padding: 3px 9px; font-size: 12px; }
+.tk-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.tk-tab { font-size: 14px; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 6px 16px; cursor: pointer; }
+.tk-tab:hover { color: var(--fg); }
+.tk-tab.is-on { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+.tk-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; font-size: 13px; color: var(--muted); }
+.tk-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 3px 4px 3px 10px; color: var(--fg); }
+.tk-chip button { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 6px; border-radius: 999px; }
+.tk-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.tk-kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.tk-kpi .l { font-size: 12.5px; color: var(--muted); }
+.tk-kpi .v { font-family: Georgia, "Times New Roman", serif; font-size: 32px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.tk-kpi .s { font-size: 12px; color: var(--muted); }
+.tk-kpi.bad .v { color: var(--bad); }
+.tk-kpi.warn .v { color: var(--warn); }
+.tk-funnel { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 430px), 1fr)); gap: 14px; align-items: start; }
+.tk-side { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+.tk-step { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--fg); color: var(--bg); font-size: 12px; margin-right: 8px; }
+.tk-scroll { overflow-x: auto; }
+.tk-scroll.alto { max-height: 420px; overflow: auto; }
+.tk-tbl { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.tk-tbl th { text-align: left; font-weight: 600; color: var(--muted); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.tk-tbl td { padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.tk-tbl .num, .tk-tbl th.num { text-align: right; }
+.tk-tbl tbody tr[data-pick-area], .tk-tbl tbody tr[data-pick-cat], .tk-tbl tbody tr[data-pick-agente], .tk-tbl tbody tr[data-ag-pick] { cursor: pointer; }
+.tk-tbl tbody tr[data-pick-area]:hover, .tk-tbl tbody tr[data-pick-cat]:hover, .tk-tbl tbody tr[data-pick-agente]:hover, .tk-tbl tbody tr[data-ag-pick]:hover { background: var(--bg); }
+.tk-tbl tbody tr.is-on { background: var(--bg); box-shadow: inset 3px 0 0 var(--fg); }
+.tk-tbl tbody tr.is-none td.k { color: var(--muted); font-style: italic; }
+.tk-tbl tbody tr.tk-match { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.tk-tbl td.k { font-weight: 600; }
+.tk-tbl td.warn { color: var(--warn); font-weight: 600; }
+.tk-tbl td.bad { color: var(--bad); font-weight: 600; }
+.tk-tbl td.ok { color: var(--ok); font-weight: 600; }
+.tk-tbl td.tk-bar { background-image: linear-gradient(90deg, color-mix(in srgb, var(--fg) 16%, transparent) var(--w, 0%), transparent var(--w, 0%)); }
+.tk-tbl td.empty { color: var(--muted); text-align: center; padding: 18px; }
+.tk-tbl th[data-sort], .tk-tbl th[data-ag-sort] { cursor: pointer; user-select: none; }
+.tk-tbl th[aria-sort="ascending"]::after { content: " ▲"; font-size: 10px; }
+.tk-tbl th[aria-sort="descending"]::after { content: " ▼"; font-size: 10px; }
+.tk-tbl a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.tk-reason { display: inline-block; font-size: 11.5px; padding: 1px 7px; margin: 0 4px 3px 0; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); white-space: nowrap; }
+.tk-msg { font-size: 13px; color: var(--muted); }
+.tk-msg.ok { color: var(--ok); }
+.tk-msg.bad { color: var(--bad); }
+.tk-vacio { text-align: center; padding: 28px 16px; color: var(--muted); }
+.tk-foot { font-size: 12px; color: var(--muted); margin: 0; }
+details { font-size: 13px; color: var(--muted); line-height: 1.6; }
+details summary { cursor: pointer; color: var(--fg); }
+details ul { margin: 8px 0 0; padding-left: 20px; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h3>Stand de FamilySearch</h3>
-            <h1>Recursos para Voluntarios</h1>
-            <p>Guía rápida de acceso a herramientas esenciales de FamilySearch</p>
-        </div>
-        
-        <div class="content">
-            <div class="resource-card" onclick="window.open('https://www.familysearch.org/es/tree/guided/connect-to-tree', '_blank')">
-                <div class="resource-number">1</div>
-                <h2>🌳 Crea tu Árbol Genealógico</h2>
-                <p>Comienza tu investigación familiar con una guía paso a paso. Conecta con tus antepasados y descubre tu historia familiar.</p>
-                <a href="https://www.familysearch.org/es/tree/guided/connect-to-tree" target="_blank" class="resource-link" onclick="event.stopPropagation()">Iniciar Árbol</a>
-            </div>
-            
-            <div class="resource-card" onclick="window.open('https://www.familysearch.org/es/tree-designs/global/', '_blank')">
-                <div class="resource-number">2</div>
-                <h2>📸 Recuerdos y Diseños</h2>
-                <p>Explora y descarga diseños personalizados de tu árbol genealógico. Preserva historias familiares con fotos y documentos.</p>
-                <a href="https://www.familysearch.org/es/tree-designs/global/" target="_blank" class="resource-link" onclick="event.stopPropagation()">Ver Recuerdos</a>
-            </div>
-            
-            <div class="resource-card" onclick="window.open('https://forms.gle/CCAPxehi9BTtWvrh7', '_blank')">
-                <div class="resource-number">3</div>
-                <h2>📋 Formulario de Reporte</h2>
-                <p>Comparte tu experiencia como voluntario. Reporta actividades, incidencias o sugerencias para mejorar el servicio.</p>
-                <a href="https://forms.gle/CCAPxehi9BTtWvrh7" target="_blank" class="resource-link" onclick="event.stopPropagation()">Enviar Reporte</a>
-            </div>
-            
-            <div class="resource-card whatsapp-card" onclick="window.open('https://chat.whatsapp.com/GiJaDENItTH6AMz3514QQu', '_blank')">
-                <div class="resource-number">4</div>
-                <h2>💬 Soporte y Ayuda</h2>
-                <p>Únete al grupo de WhatsApp para recibir ayuda con activación y recuperación de cuentas. Conecta con otros voluntarios.</p>
-                <a href="https://chat.whatsapp.com/GiJaDENItTH6AMz3514QQu" target="_blank" class="whatsapp-link" onclick="event.stopPropagation()">Unirse al Grupo</a>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>💡 Consejo: Guarda esta página en tus favoritos para acceso rápido</p>
-            <p style="margin-top: 10px;">© FamilySearch - Recursos para Voluntarios</p>
-        </div>
+
+<!-- ───────────── Acceso ───────────── -->
+<div class="login" id="login" hidden>
+  <form id="form_login" autocomplete="off">
+    <h1>Centro de control</h1>
+    <p>Acceso privado. Escribe tu correo y tu PIN.</p>
+    <label>Correo<input class="tk-input" id="l_email" type="email" required autocomplete="off"></label>
+    <label>PIN<input class="tk-input" id="l_pin" type="password" inputmode="numeric" required autocomplete="off"></label>
+    <button class="tk-btn primary" type="submit" id="l_btn">Entrar</button>
+    <p class="msg" id="l_msg" role="alert"></p>
+  </form>
+</div>
+
+<!-- ───────────── Aplicación (solo se muestra con la sesión abierta) ───────────── -->
+<div id="app" hidden>
+<div class="tk">
+  <header class="tk-top">
+    <h1>Centro de control de tickets LATAM</h1>
+    <div class="acciones">
+      <button class="tk-btn" type="button" id="btn_borrar">Borrar los datos de este navegador</button>
+      <button class="tk-btn" type="button" id="btn_salir">Cerrar sesión</button>
     </div>
+  </header>
+
+  <nav class="tk-nav" aria-label="Vistas">
+    <button class="tk-tab is-on" type="button" data-vista="tickets" aria-pressed="true">Tickets</button>
+    <button class="tk-tab" type="button" data-vista="agentes" aria-pressed="false">Agentes</button>
+  </nav>
+
+  <!-- ═════════ Vista de tickets ═════════ -->
+  <div class="tk-view" id="vista_tickets">
+
+    <section class="tk-card" id="obtener">
+      <h2>Obtener los datos de Zendesk</h2>
+      <p class="tk-note">Escribe el número de la vista que quieres analizar. El script es siempre el mismo y solo cambia la vista.</p>
+      <div class="tk-filters">
+        <label class="tk-field">Número de vista de Zendesk
+          <input class="tk-input" id="f_vista" type="text" inputmode="numeric" value="58628443607067" autocomplete="off" spellcheck="false">
+        </label>
+        <button class="tk-btn" type="button" id="btn_copiar_script">Copiar script</button>
+        <button class="tk-btn" type="button" id="btn_descargar_script">Descargar script (.js)</button>
+        <a class="tk-btn" id="lnk_api" href="#" target="_blank" rel="noopener noreferrer">Abrir la API de esta vista</a>
+      </div>
+      <p class="tk-msg" style="margin: 10px 0 0" id="m_script" role="status"></p>
+      <details id="det_script" style="margin-top: 10px">
+        <summary>Ver el script y los pasos</summary>
+        <ul>
+          <li>Si empiezas de cero, abre el enlace de la API en Edge con tu sesión de Zendesk iniciada y comprueba que ves los tickets en formato JSON.</li>
+          <li>Copia el script, vuelve a una pestaña de <b>familysearch.zendesk.com</b>, pulsa F12, ve a <b>Consola</b>, pega y pulsa Enter.</li>
+          <li>Al terminar se descarga <b>zendesk_vista_completa.json</b>, sea cual sea la vista. Cárgalo con el botón de abajo.</li>
+          <li>La vista tiene que ser una a la que tu usuario tenga acceso en Zendesk.</li>
+        </ul>
+        <textarea class="tk-input tk-textarea mono" id="txt_script" style="margin-top: 8px; min-height: 160px" readonly spellcheck="false" aria-label="Script de consola"></textarea>
+      </details>
+    </section>
+
+    <section class="tk-card" id="cargar">
+      <div class="tk-filters">
+        <button class="tk-btn primary" type="button" id="btn_cargar">Cargar JSON de Zendesk</button>
+        <input type="file" id="f_json" accept="application/json,.json" hidden>
+        <span class="tk-msg" id="m_cargar" role="status"></span>
+      </div>
+      <p class="tk-note" style="margin: 10px 0 0">Elige el archivo <b>zendesk_vista_completa.json</b>. Los datos se guardan solo en este navegador (localStorage) y no se envían a ningún servidor.</p>
+    </section>
+
+    <div class="tk-vacio tk-card" id="t_vacio" hidden>Todavía no hay datos de tickets en este navegador. Carga el JSON exportado de Zendesk para empezar.</div>
+
+    <div class="tk-view" id="t_contenido" hidden>
+      <p class="tk-lede" id="t_lede"></p>
+
+      <section class="tk-card" aria-label="Filtros">
+        <div class="tk-filters">
+          <label class="tk-field grow">Buscar (ID, asunto, agente, país, categoría…)
+            <input class="tk-input" id="f_q" type="search" placeholder="Ej.: impresora, Guatemala, 993137" autocomplete="off">
+          </label>
+          <label class="tk-field">Estado<select class="tk-input" id="f_estado"></select></label>
+          <label class="tk-field">Días sin actualizar
+            <select class="tk-input" id="f_rango">
+              <option value="">Todos</option><option value="0-7 días">0-7 días</option><option value="8-14 días">8-14 días</option>
+              <option value="15-30 días">15-30 días</option><option value="31-60 días">31-60 días</option><option value="Más de 60 días">Más de 60 días</option>
+            </select>
+          </label>
+          <label class="tk-field">Estancado si supera (días)
+            <input class="tk-input num" id="f_umbral" type="number" min="1" max="365" step="1" value="14">
+          </label>
+          <label class="tk-check"><input type="checkbox" id="f_accion"> Solo los que requieren acción</label>
+          <button class="tk-btn" type="button" data-reset="1">Limpiar todo</button>
+        </div>
+        <div class="tk-crumbs"><span>Selección:</span><span id="t_crumbs" style="display: contents"></span></div>
+      </section>
+
+      <section class="tk-kpis" id="t_kpis" aria-label="Indicadores"></section>
+
+      <section class="tk-funnel" aria-label="Embudo por área, categoría y agente">
+        <div class="tk-card">
+          <h2><span class="tk-step">1</span>Áreas: dónde pedir ayuda</h2>
+          <p class="tk-note">Ordenadas por número de tickets. Haz clic en un área para abrirla por categoría. «Tickets por agente» cuenta solo los tickets ya asignados.</p>
+          <div class="tk-scroll"><table class="tk-tbl"><thead><tr>
+            <th>Área</th><th class="num">Tickets</th><th class="num">Sin asignar</th><th class="num">Estancados</th><th class="num">Agentes</th><th class="num">Tickets por agente</th>
+          </tr></thead><tbody id="tb_area"></tbody></table></div>
+        </div>
+        <div class="tk-card">
+          <h2><span class="tk-step">2</span>Categorías</h2>
+          <p class="tk-note">Primera parte de la categoría (por ejemplo «FS Centers»), dentro del área elegida. Sin área elegida se suman todas.</p>
+          <div class="tk-scroll"><table class="tk-tbl"><thead><tr>
+            <th>Categoría</th><th class="num">Tickets</th><th class="num">Sin asignar</th><th class="num">Estancados</th><th class="num">Agentes</th><th class="num">Prom. días</th>
+          </tr></thead><tbody id="tb_cat"></tbody></table></div>
+        </div>
+        <div class="tk-card">
+          <h2><span class="tk-step">3</span>Agentes</h2>
+          <p class="tk-note">Quién tiene los tickets del área y la categoría elegidas. «Sin asignar» agrupa los tickets que nadie ha tomado.</p>
+          <div class="tk-scroll"><table class="tk-tbl"><thead><tr>
+            <th>Agente</th><th class="num">Tickets</th><th class="num">Estancados</th><th class="num">Escalados</th><th class="num">Prom. días</th><th class="num">Máx. días</th><th class="num">Áreas</th>
+          </tr></thead><tbody id="tb_agente"></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="tk-side" aria-label="Distribución de la selección">
+        <div class="tk-card">
+          <h2>Por estado</h2><p class="tk-note">Estado de los tickets de la selección actual.</p>
+          <div class="tk-scroll"><table class="tk-tbl"><thead><tr><th>Estado</th><th class="num">Tickets</th></tr></thead><tbody id="tb_estado"></tbody></table></div>
+        </div>
+        <div class="tk-card">
+          <h2>Por días sin actualizar</h2><p class="tk-note">Cuánto tiempo lleva cada ticket sin movimiento.</p>
+          <div class="tk-scroll"><table class="tk-tbl"><thead><tr><th>Rango</th><th class="num">Tickets</th></tr></thead><tbody id="tb_rango"></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="tk-card" aria-label="Tickets de la selección">
+        <h2><span class="tk-step">4</span>Tickets que requieren acción</h2>
+        <p class="tk-note">Lista de los tickets de la selección, con los más urgentes primero (más motivos y más días sin actualizar). Haz clic en un encabezado para ordenar y en el ID para abrir el ticket en Zendesk. Se muestran todos los tickets de la selección.</p>
+        <div class="tk-filters" style="margin-bottom: 12px">
+          <button class="tk-btn" type="button" id="btn_exportar">Descargar esta lista (CSV)</button>
+          <span class="tk-msg" id="m_exportar" role="status"></span>
+        </div>
+        <div class="tk-scroll"><table class="tk-tbl"><thead><tr>
+          <th data-sort="id">ID</th><th data-sort="asunto">Asunto</th><th data-sort="estado">Estado</th><th data-sort="agente">Agente</th>
+          <th data-sort="area">Área</th><th data-sort="categoria">Categoría</th><th data-sort="pais">País</th>
+          <th class="num" data-sort="dias_sin_actualizar">Días sin actualizar</th><th data-sort="prioridad">Por qué requiere acción</th>
+        </tr></thead><tbody id="tb_lista"></tbody></table></div>
+      </section>
+
+      <section class="tk-card">
+        <details>
+          <summary>Cómo se decide qué requiere acción</summary>
+          <ul>
+            <li><b>Sin asignar:</b> el ticket no tiene agente en Zendesk.</li>
+            <li><b>Estancado:</b> lleva más de <span id="t_umbral_txt">14</span> días sin actualizarse (puedes cambiar el umbral arriba).</li>
+            <li><b>Escalado sin movimiento:</b> tiene estado Escalated y lleva más de 7 días sin actualizarse.</li>
+            <li>Un ticket requiere acción si cumple al menos uno de los tres criterios.</li>
+            <li>El área sale del tag del ticket. Si falta, se usa el área más frecuente de su país; los que no tienen ni área ni país quedan en «Sin área».</li>
+          </ul>
+        </details>
+      </section>
+
+      <p class="tk-foot" id="t_pie"></p>
+    </div>
+  </div>
+
+  <!-- ═════════ Vista de agentes ═════════ -->
+  <div class="tk-view" id="vista_agentes" hidden>
+
+    <section class="tk-card" id="obtener_ag">
+      <h2>Obtener la lista de agentes de Zendesk</h2>
+      <p class="tk-note">Abre Zendesk con tu sesión iniciada, ejecuta el script en la consola y carga el archivo que se descarga.</p>
+      <div class="tk-filters">
+        <button class="tk-btn" type="button" id="btn_copiar_script_ag">Copiar script de agentes</button>
+        <button class="tk-btn" type="button" id="btn_descargar_script_ag">Descargar script (.js)</button>
+        <a class="tk-btn" href="https://familysearch.zendesk.com/admin/people/team/members" target="_blank" rel="noopener noreferrer">Abrir «Miembros del equipo» (Zendesk)</a>
+        <a class="tk-btn" href="https://familysearch.zendesk.com/api/v2/users.json?role%5B%5D=agent&amp;role%5B%5D=admin&amp;per_page=100" target="_blank" rel="noopener noreferrer">Abrir la API de agentes</a>
+      </div>
+      <p class="tk-msg" style="margin: 10px 0 0" id="m_script_ag" role="status"></p>
+      <details id="det_script_ag" style="margin-top: 10px">
+        <summary>Ver el script y los pasos</summary>
+        <ul>
+          <li>Abre «Miembros del equipo» (o cualquier página de familysearch.zendesk.com) en Edge con tu sesión iniciada.</li>
+          <li>Para comprobar que tu usuario puede leer la lista, abre «la API de agentes»: debes ver las cuentas en formato JSON.</li>
+          <li>Copia el script, pulsa F12, ve a <b>Consola</b>, pega y pulsa Enter.</li>
+          <li>Al terminar se descarga <b>zendesk_agentes.json</b>. Cárgalo con el botón de abajo. El archivo contiene nombres y correos: guárdalo en un lugar privado.</li>
+        </ul>
+        <textarea class="tk-input tk-textarea mono" id="txt_script_ag" style="margin-top: 8px; min-height: 160px" readonly spellcheck="false" aria-label="Script de consola para agentes"></textarea>
+      </details>
+    </section>
+
+    <section class="tk-card" id="cargar_ag">
+      <div class="tk-filters">
+        <button class="tk-btn primary" type="button" id="btn_cargar_ag">Cargar JSON de agentes</button>
+        <input type="file" id="f_json_ag" accept="application/json,.json" hidden>
+        <span class="tk-msg" id="m_cargar_ag" role="status"></span>
+      </div>
+      <p class="tk-note" style="margin: 10px 0 0">Elige el archivo <b>zendesk_agentes.json</b>. Se guarda solo en este navegador. Para ver cuántos tickets tiene cada agente, carga también el JSON de tickets.</p>
+    </section>
+
+    <div class="tk-vacio tk-card" id="a_vacio" hidden>Todavía no hay datos de agentes en este navegador. Carga el JSON exportado de Zendesk para empezar.</div>
+
+    <div class="tk-view" id="a_contenido" hidden>
+      <p class="tk-lede" id="a_lede"></p>
+
+      <section class="tk-card" aria-label="Filtros de agentes">
+        <div class="tk-filters">
+          <label class="tk-field grow">Buscar (nombre, correo, grupo, rol)
+            <input class="tk-input" id="ag_q" type="search" placeholder="Ej.: apellido, correo, Missionary" autocomplete="off">
+          </label>
+          <label class="tk-field">Rol<select class="tk-input" id="ag_tipo"></select></label>
+          <label class="tk-field">Estado
+            <select class="tk-input" id="ag_estado"><option value="">Todos</option><option value="Activo">Activo</option><option value="Inactivo">Inactivo</option><option value="Suspendido">Suspendido</option></select>
+          </label>
+          <label class="tk-field">Último acceso
+            <select class="tk-input" id="ag_acceso"><option value="">Todos</option><option value="Nunca ha ingresado">Nunca ha ingresado</option><option value="0-30 días">0-30 días</option><option value="31-90 días">31-90 días</option><option value="Más de 90 días">Más de 90 días</option></select>
+          </label>
+          <label class="tk-field">Tickets
+            <select class="tk-input" id="ag_tickets"><option value="">Todos</option><option value="con">Con tickets</option><option value="sin">Sin tickets</option></select>
+          </label>
+          <label class="tk-field">Mi listado
+            <select class="tk-input" id="ag_listado"><option value="">Todos</option><option value="si">Coinciden con mi listado</option><option value="no">No están en mi listado</option></select>
+          </label>
+          <label class="tk-check"><input type="checkbox" id="ag_revisar"> Solo los que conviene revisar</label>
+          <button class="tk-btn" type="button" data-ag-reset="1">Limpiar todo</button>
+        </div>
+        <label class="tk-field" style="margin-top: 12px">Listado de correos para marcar (pega uno por línea, o separados por comas, espacios o punto y coma)
+          <textarea class="tk-input tk-textarea" id="ag_correos" rows="4" placeholder="misionero1@ejemplo.org; misionero2@ejemplo.org" autocomplete="off" spellcheck="false"></textarea>
+        </label>
+        <div class="tk-crumbs" style="margin-top: 8px"><button class="tk-btn small" type="button" data-ag-limpiar-listado="1">Borrar listado</button></div>
+        <div class="tk-crumbs"><span>Selección:</span><span id="a_crumbs" style="display: contents"></span></div>
+      </section>
+
+      <section class="tk-kpis" id="a_kpis" aria-label="Indicadores de agentes"></section>
+      <section class="tk-kpis" id="a_listado_kpis" aria-label="Resumen de tu listado de correos" hidden></section>
+
+      <section class="tk-side" id="a_resumen_listado" aria-label="Quiénes están en tu listado" hidden>
+        <div class="tk-card">
+          <h2>Con cuenta y con tickets abiertos</h2>
+          <p class="tk-note">Personas de tu listado que tienen tickets de la vista asignados, de más a menos tickets.</p>
+          <div class="tk-scroll alto"><table class="tk-tbl"><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th class="num">Tickets</th><th class="num">Prom. días</th><th>Tickets</th></tr></thead><tbody id="tb_a_con"></tbody></table></div>
+        </div>
+        <div class="tk-card">
+          <h2>Con cuenta y sin tickets abiertos</h2>
+          <p class="tk-note">Personas de tu listado que tienen cuenta pero ningún ticket de la vista asignado.</p>
+          <div class="tk-scroll alto"><table class="tk-tbl"><thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Último acceso</th></tr></thead><tbody id="tb_a_sint"></tbody></table></div>
+        </div>
+        <div class="tk-card">
+          <h2>Sin cuenta de agente</h2>
+          <p class="tk-note">Correos de tu listado que no coinciden con ninguna cuenta de agente o administrador. Revisa que estén bien escritos o que la persona tenga cuenta con otro correo.</p>
+          <div class="tk-scroll alto"><table class="tk-tbl"><thead><tr><th>Correo</th></tr></thead><tbody id="tb_a_sin"></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="tk-card" aria-label="Agentes por rol">
+        <h2>Por rol</h2>
+        <p class="tk-note">Haz clic en un rol para filtrar la lista. El rol es el rol personalizado de Zendesk y, si no tiene, su tipo de agente.</p>
+        <div class="tk-scroll"><table class="tk-tbl"><thead><tr>
+          <th>Rol</th><th class="num">Agentes</th><th class="num">Activos</th><th class="num">Con tickets</th><th class="num">Tickets</th><th class="num">Sin ingreso 90+ días</th>
+        </tr></thead><tbody id="tb_a_rol"></tbody></table></div>
+      </section>
+
+      <section class="tk-card" aria-label="Lista de agentes">
+        <h2>Lista de agentes</h2>
+        <p class="tk-note">Primero los que conviene revisar. Haz clic en un encabezado para ordenar y en «Ver tickets» para abrir sus tickets en la vista de Tickets. Si pegas un listado de correos, los que coinciden salen marcados en verde.</p>
+        <div class="tk-filters" style="margin-bottom: 12px">
+          <button class="tk-btn" type="button" id="btn_exportar_ag">Descargar esta lista (CSV)</button>
+          <span class="tk-msg" id="m_exportar_ag" role="status"></span>
+        </div>
+        <div class="tk-scroll"><table class="tk-tbl"><thead><tr>
+          <th data-ag-sort="nombre">Nombre</th><th data-ag-sort="correo">Correo</th><th data-ag-sort="en_lista">En mi listado</th><th data-ag-sort="rol">Rol</th>
+          <th data-ag-sort="estado">Estado</th><th data-ag-sort="dias_acceso">Último acceso</th><th data-ag-sort="licencia_pago">Licencia de pago</th>
+          <th class="num" data-ag-sort="tickets">Tickets</th><th class="num" data-ag-sort="prom_dias">Prom. días</th><th class="num" data-ag-sort="n_grupos">Grupos</th>
+          <th data-ag-sort="revisar">Por qué revisar</th><th>Tickets</th>
+        </tr></thead><tbody id="tb_a_lista"></tbody></table></div>
+      </section>
+
+      <section class="tk-card">
+        <details>
+          <summary>Cómo se decide qué conviene revisar</summary>
+          <ul>
+            <li><b>Tiene tickets pero la cuenta no está activa o está suspendida.</b></li>
+            <li><b>Tiene tickets y lleva más de 30 días sin ingresar</b> (o nunca ha ingresado): hay que reasignarlos.</li>
+            <li><b>Licencia de pago sin uso:</b> cuenta activa de pago, sin tickets en la vista y sin ingresar en más de 90 días o nunca.</li>
+            <li>La licencia de pago es una estimación por tipo de cuenta: agente, agente de chat y administrador ocupan una; el agente ligero no; colaborador de chat y administrador de facturación quedan «Por confirmar». Confírmalo en la facturación de Zendesk, porque depende de tu plan.</li>
+            <li>El último acceso cuenta inicios de sesión y también peticiones con token de API, así que una cuenta usada por una integración puede verse activa.</li>
+            <li>El cruce con tu listado compara el correo completo, sin distinguir mayúsculas.</li>
+            <li>«Tickets» cuenta solo los de la vista exportada, no todos los que pueda tener la persona en Zendesk.</li>
+          </ul>
+        </details>
+      </section>
+
+      <p class="tk-foot" id="a_pie"></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+'use strict';
+/* ═══════════════════════════ Configuración ═══════════════════════════ */
+// Huella PBKDF2 del correo y el PIN (no contiene ni el correo ni el PIN en claro).
+const AUTH = {"salt": "45021fe864bc349296294e15da7b373d", "iter": 310000, "hash": "5c7814c05006b605b9008ea363f0793d9b0a2b090c085b74bca4868607b5d854"};
+const ZD = 'https://familysearch.zendesk.com';
+const VISTA_ORIGINAL = '58628443607067';
+const SESION_MS = 12 * 3600 * 1000;
+const K = { sesion: 'tkcc_sesion', intentos: 'tkcc_intentos', tickets: 'tkcc_tickets', agentes: 'tkcc_agentes', vista: 'tkcc_vista' };
+const SCRIPT_EXPORTAR = "/* Exporta TODAS las p\u00e1ginas de una vista de Zendesk (con nombres de asignados y grupos).\n * Uso: abre familysearch.zendesk.com (sesi\u00f3n iniciada) en Edge -> F12 -> pesta\u00f1a \"Consola\"\n *      -> pega este script completo -> Enter. Al terminar se descarga \"zendesk_vista_completa.json\".\n * Solo guarda los campos necesarios (no incluye descripci\u00f3n ni tel\u00e9fonos/correos de usuarios finales).\n */\n(async () => {\n  const VIEW_ID = '58628443607067';\n  const BASE = location.origin;\n  const CF_COUNTRY = 29915353790875, CF_CAT = 12016162417435;\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n\n  async function getJSON(url, tries = 5) {\n    for (let i = 0; i < tries; i++) {\n      const r = await fetch(url, { credentials: 'include', headers: { Accept: 'application/json' } });\n      if (r.status === 429) { const w = (+r.headers.get('Retry-After') || 10) * 1000; console.warn('429, espero', w/1000, 's'); await sleep(w); continue; }\n      if (!r.ok) throw new Error(r.status + ' en ' + url);\n      return r.json();\n    }\n    throw new Error('Demasiados reintentos: ' + url);\n  }\n\n  // 1) Tickets de la vista (sigue next_page hasta el final)\n  let url = `${BASE}/api/v2/views/${VIEW_ID}/tickets.json?per_page=100`;\n  const raw = []; let page = 1, total = null;\n  while (url) {\n    const d = await getJSON(url);\n    total = d.count; raw.push(...d.tickets);\n    console.log(`P\u00e1gina ${page}: ${raw.length}/${total}`);\n    url = d.next_page; page++;\n    await sleep(400);\n  }\n\n  // 2) Reducir campos\n  const cf = (t, id) => (t.custom_fields.find(f => f.id === id) || {}).value ?? null;\n  const tickets = raw.map(t => ({\n    id: t.id, subject: t.subject, status: t.status, custom_status_id: t.custom_status_id,\n    created_at: t.created_at, updated_at: t.updated_at,\n    assignee_id: t.assignee_id, group_id: t.group_id, requester_id: t.requester_id,\n    priority: t.priority, type: t.type, via: { channel: t.via && t.via.channel },\n    tags: t.tags,\n    custom_fields: [\n      { id: CF_COUNTRY, value: cf(t, CF_COUNTRY) },\n      { id: CF_CAT, value: cf(t, CF_CAT) }\n    ]\n  }));\n\n  // 3) Nombres de asignados (show_many admite hasta 100 ids)\n  const users = {};\n  const ids = [...new Set(tickets.map(t => t.assignee_id).filter(Boolean))];\n  for (let i = 0; i < ids.length; i += 100) {\n    try {\n      const d = await getJSON(`${BASE}/api/v2/users/show_many.json?ids=${ids.slice(i, i + 100).join(',')}`);\n      d.users.forEach(u => users[u.id] = { name: u.name });\n    } catch (e) { console.warn('No pude leer usuarios:', e.message); }\n  }\n\n  // 4) Grupos\n  const groups = {};\n  try {\n    let g = `${BASE}/api/v2/groups.json?per_page=100`;\n    while (g) { const d = await getJSON(g); d.groups.forEach(x => groups[x.id] = x.name); g = d.next_page; }\n  } catch (e) { console.warn('No pude leer grupos:', e.message); }\n\n  // 5) Estados personalizados\n  const custom_statuses = {};\n  try {\n    const d = await getJSON(`${BASE}/api/v2/custom_statuses.json`);\n    d.custom_statuses.forEach(s => custom_statuses[s.id] = s.agent_label);\n  } catch (e) { console.warn('No pude leer estados personalizados:', e.message); }\n\n  // 6) Descargar\n  const out = { fetched_at: new Date().toISOString(), view_id: VIEW_ID, count: total, tickets, users, groups, custom_statuses };\n  const blob = new Blob([JSON.stringify(out)], { type: 'application/json' });\n  const a = document.createElement('a');\n  a.href = URL.createObjectURL(blob); a.download = 'zendesk_vista_completa.json';\n  document.body.appendChild(a); a.click(); a.remove();\n  console.log(`Listo: ${tickets.length} tickets, ${Object.keys(users).length} usuarios, ${Object.keys(groups).length} grupos.`);\n})();\n";
+const SCRIPT_AGENTES = "/* Exporta los agentes y administradores de Zendesk (con rol, \u00faltimo acceso y grupos).\n * Uso: abre familysearch.zendesk.com (sesi\u00f3n iniciada) en Edge -> F12 -> pesta\u00f1a \"Consola\"\n *      -> pega este script completo -> Enter. Al terminar se descarga \"zendesk_agentes.json\".\n * El archivo contiene nombres y correos: gu\u00e1rdalo en un lugar privado.\n */\n(async () => {\n  const BASE = location.origin;\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n\n  async function getJSON(url, tries = 5) {\n    for (let i = 0; i < tries; i++) {\n      const r = await fetch(url, { credentials: 'include', headers: { Accept: 'application/json' } });\n      if (r.status === 429) { const w = (+r.headers.get('Retry-After') || 10) * 1000; console.warn('429, espero', w / 1000, 's'); await sleep(w); continue; }\n      if (!r.ok) throw new Error(r.status + ' en ' + url);\n      return r.json();\n    }\n    throw new Error('Demasiados reintentos: ' + url);\n  }\n  async function todas(url, clave) {\n    const filas = []; let n = 1;\n    while (url) {\n      const d = await getJSON(url);\n      filas.push(...d[clave]);\n      console.log(`${clave}, p\u00e1gina ${n++}: ${filas.length}`);\n      url = d.next_page; await sleep(300);\n    }\n    return filas;\n  }\n\n  // 1) Agentes y administradores (los usuarios finales no se descargan)\n  const crudos = await todas(`${BASE}/api/v2/users.json?role[]=agent&role[]=admin&per_page=100`, 'users');\n  const users = crudos.map(u => ({\n    id: u.id, name: u.name, email: u.email, role: u.role, role_type: u.role_type, custom_role_id: u.custom_role_id,\n    active: u.active, suspended: u.suspended, last_login_at: u.last_login_at, created_at: u.created_at, updated_at: u.updated_at,\n    default_group_id: u.default_group_id, two_factor_auth_enabled: u.two_factor_auth_enabled, restricted_agent: u.restricted_agent,\n    shared_agent: u.shared_agent, locale: u.locale, time_zone: u.time_zone, verified: u.verified\n  }));\n\n  // 2) Grupos y pertenencia de cada agente a grupos\n  const groups = {};\n  try { (await todas(`${BASE}/api/v2/groups.json?per_page=100`, 'groups')).forEach(g => groups[g.id] = g.name); }\n  catch (e) { console.warn('No pude leer grupos:', e.message); }\n  const memberships = [];\n  try { (await todas(`${BASE}/api/v2/group_memberships.json?per_page=100`, 'group_memberships')).forEach(m => memberships.push({ user_id: m.user_id, group_id: m.group_id, default: m.default })); }\n  catch (e) { console.warn('No pude leer membres\u00edas:', e.message); }\n\n  // 3) Roles personalizados (solo planes Enterprise)\n  const custom_roles = {};\n  try { const d = await getJSON(`${BASE}/api/v2/custom_roles.json`); d.custom_roles.forEach(r => custom_roles[r.id] = r.name); }\n  catch (e) { console.warn('No pude leer roles personalizados:', e.message); }\n\n  // 4) Descargar\n  const out = { fetched_at: new Date().toISOString(), users, groups, memberships, custom_roles };\n  const a = document.createElement('a');\n  a.href = URL.createObjectURL(new Blob([JSON.stringify(out)], { type: 'application/json' }));\n  a.download = 'zendesk_agentes.json';\n  document.body.appendChild(a); a.click(); a.remove();\n  console.log(`Listo: ${users.length} agentes/administradores, ${Object.keys(groups).length} grupos.`);\n})();\n";
+
+/* ═══════════════════════════ Utilidades ═══════════════════════════ */
+const $ = (id) => document.getElementById(id);
+const h = (tag, props, ...kids) => {
+  const e = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') e.className = v; else if (k === 'text') e.textContent = v; else e.setAttribute(k, v === true ? '' : String(v));
+  }
+  for (const c of kids.flat()) if (c !== null && c !== undefined && c !== false) e.append(c && c.nodeType ? c : document.createTextNode(String(c)));
+  return e;
+};
+const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
+const lsDel = (k) => { try { localStorage.removeItem(k); } catch (e) { /* sin almacenamiento */ } };
+const txt = (v) => (v === null || v === undefined || (typeof v === 'number' && !Number.isFinite(v)) ? '—' : String(v));
+const redondear = (n) => Math.round(n * 10) / 10;
+const msg = (id, tipo, texto) => { const e = $(id); if (e) { e.textContent = texto; e.className = 'tk-msg ' + tipo; } };
+const descargarArchivo = (nombre, contenido, tipo) => {
+  const url = URL.createObjectURL(new Blob([contenido], { type: tipo }));
+  const a = h('a', { href: url, download: nombre }); document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+};
+const celdaCsv = (v) => {
+  let s = v === null || v === undefined ? '' : String(v);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return /[",;\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+};
+const csv = (cols, rows) => '\ufeffsep=,\r\n' + [cols.map((c) => celdaCsv(c[0])).join(',')].concat(rows.map((r) => cols.map((c) => celdaCsv(r[c[1]])).join(','))).join('\r\n');
+
+/* ═══════════════════════════ Acceso (correo + PIN) ═══════════════════════════ */
+const hex = (buf) => [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, '0')).join('');
+const unhex = (s) => Uint8Array.from(s.match(/../g).map((x) => parseInt(x, 16)));
+async function derivar(email, pin) {
+  const clave = await crypto.subtle.importKey('raw', new TextEncoder().encode(email.trim().toLowerCase() + ':' + pin.trim()), 'PBKDF2', false, ['deriveBits']);
+  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: unhex(AUTH.salt), iterations: AUTH.iter }, clave, 256));
+}
+const sesionValida = () => { try { const s = JSON.parse(lsGet(K.sesion) || 'null'); return !!(s && s.hasta > Date.now()); } catch (e) { return false; } };
+const leerIntentos = () => { try { return JSON.parse(lsGet(K.intentos) || '{}') || {}; } catch (e) { return {}; } };
+
+$('form_login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const aviso = $('l_msg'); aviso.textContent = '';
+  const intentos = leerIntentos();
+  if (intentos.hasta && intentos.hasta > Date.now()) { aviso.textContent = 'Demasiados intentos. Espera ' + Math.ceil((intentos.hasta - Date.now()) / 1000) + ' s.'; return; }
+  if (!window.crypto || !crypto.subtle) { aviso.textContent = 'Este navegador no permite verificar el acceso. Abre la página con https.'; return; }
+  $('l_btn').disabled = true;
+  try {
+    const d = await derivar($('l_email').value, $('l_pin').value);
+    if (d === AUTH.hash) {
+      lsDel(K.intentos);
+      lsSet(K.sesion, JSON.stringify({ hasta: Date.now() + SESION_MS }));
+      $('l_pin').value = '';
+      entrar();
+    } else {
+      const n = (intentos.n || 0) + 1;
+      if (n >= 5) { lsSet(K.intentos, JSON.stringify({ n: 0, hasta: Date.now() + 60000 })); aviso.textContent = 'Demasiados intentos. Espera 60 s.'; }
+      else { lsSet(K.intentos, JSON.stringify({ n })); aviso.textContent = 'Correo o PIN incorrectos.'; }
+      $('l_pin').value = '';
+    }
+  } catch (err) { aviso.textContent = 'No se pudo verificar el acceso.'; }
+  $('l_btn').disabled = false;
+});
+
+/* ═══════════════════════════ Datos: lectura y cálculo ═══════════════════════════ */
+/*==DATOS==*/
+const ISO = { mex: 'México', gtm: 'Guatemala', ven: 'Venezuela', ecu: 'Ecuador', chl: 'Chile', nic: 'Nicaragua', arg: 'Argentina', hnd: 'Honduras',
+  usa: 'Estados Unidos', esp: 'España', pan: 'Panamá', bol: 'Bolivia', ury: 'Uruguay', lca: 'Santa Lucía', per: 'Perú', cri: 'Costa Rica',
+  dom: 'República Dominicana', vct: 'San Vicente y las Granadinas', brb: 'Barbados', abw: 'Aruba', bes: 'Bonaire, San Eustaquio y Saba',
+  cuw: 'Curazao', atg: 'Antigua y Barbuda', bhs: 'Bahamas', kna: 'San Cristóbal y Nieves', slv: 'El Salvador', wsm: 'Samoa', col: 'Colombia',
+  pry: 'Paraguay', cub: 'Cuba', hti: 'Haití', jam: 'Jamaica', tto: 'Trinidad y Tobago', blz: 'Belice', guy: 'Guyana', sur: 'Surinam', bra: 'Brasil',
+  pri: 'Puerto Rico', can: 'Canadá', fra: 'Francia', prt: 'Portugal', grd: 'Granada', dma: 'Dominica', aut: 'Austria', deu: 'Alemania',
+  glp: 'Guadalupe', ita: 'Italia', gbr: 'Reino Unido', nld: 'Países Bajos', che: 'Suiza', bel: 'Bélgica' };
+const AREAS = { central_america_area: 'Centroamérica', south_america_northwest_area: 'Sudamérica Noroeste', south_america_south_area: 'Sudamérica Sur',
+  mexico_area: 'México', caribbean_area: 'Caribe', north_america_area: 'Norteamérica', north_america_southwest_area: 'Norteamérica Suroeste',
+  north_america_central_area: 'Norteamérica Central', north_america_northeast_area: 'Norteamérica Noreste', north_america_southeast_area: 'Norteamérica Sureste',
+  europe_central_area: 'Europa Central', europe_area: 'Europa', pacific_area: 'Pacífico', brazil_area: 'Brasil', utah_area: 'Utah' };
+const ESTADO = { new: 'Nuevo', open: 'Abierto', pending: 'Pendiente', hold: 'En espera', solved: 'Resuelto', closed: 'Cerrado' };
+const TIPOS = ['Agente', 'Agente ligero', 'Agente de chat', 'Colaborador de chat', 'Administrador', 'Administrador de facturación'];
+const RANGOS = ['0-7 días', '8-14 días', '15-30 días', '31-60 días', 'Más de 60 días'];
+const tiene = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+const msDia = (s) => Date.UTC(Number(s.slice(0, 4)), Number(s.slice(5, 7)) - 1, Number(s.slice(8, 10)));
+const rangoDe = (d) => (d <= 7 ? RANGOS[0] : d <= 14 ? RANGOS[1] : d <= 30 ? RANGOS[2] : d <= 60 ? RANGOS[3] : RANGOS[4]);
+const bonito = (tag) => tag.split('__').join(' › ').split('_').join(' ').replace('familysearch centers', 'FS Centers').trim();
+const campoCf = (t, id) => { const f = (t.custom_fields || []).find((x) => x.id === id); return f && f.value ? String(f.value) : ''; };
+const lista = (arr) => (arr || []);
+
+// Lee la exportación de la consola (tickets) y la deja reducida para guardarla en el navegador.
+function reformarTickets(d) {
+  const users = d.users || {}, groups = d.groups || {}, estados = d.custom_statuses || {};
+  const rows = lista(d.tickets).map((t) => ({
+    id: t.id, asunto: String(t.subject || '').trim(), status: t.status, estado_zendesk: estados[String(t.custom_status_id)] || '',
+    creado_iso: t.created_at, actualizado_iso: t.updated_at,
+    agente_id: t.assignee_id || 0,
+    agente: t.assignee_id ? ((users[String(t.assignee_id)] || {}).name || 'ID ' + t.assignee_id) : 'Sin asignar',
+    grupo: t.group_id ? (groups[String(t.group_id)] || 'Grupo ' + t.group_id) : 'Sin grupo',
+    pais_cod: campoCf(t, 29915353790875), categoria_zendesk: campoCf(t, 12016162417435),
+    tags: lista(t.tags).filter((g) => tiene(AREAS, g) || g === 'escalated' || (g.includes('__') && !g.startsWith('language') && !g.startsWith('sentiment'))).join(','),
+    canal: (t.via && t.via.channel) || ''
+  }));
+  return { meta: { corte: String(d.fetched_at || '').slice(0, 10), exportado: String(d.fetched_at || ''), vista: String(d.view_id || '') }, rows };
+}
+// Lee la exportación de la consola (agentes).
+function reformarAgentes(d) {
+  const grupos = d.groups || {}, roles = d.custom_roles || {};
+  const porUsuario = new Map();
+  for (const m of lista(d.memberships)) {
+    if (!porUsuario.has(m.user_id)) porUsuario.set(m.user_id, []);
+    porUsuario.get(m.user_id).push(grupos[String(m.group_id)] || 'Grupo ' + m.group_id);
+  }
+  const rows = lista(d.users).map((u) => ({
+    id: u.id, nombre: String(u.name || '').trim(), correo: String(u.email || '').trim().toLowerCase(), role: u.role, role_type: u.role_type,
+    rol_personalizado: u.custom_role_id ? roles[String(u.custom_role_id)] || '' : '', activo: u.active !== false, suspendido: u.suspended === true,
+    ultimo_acceso_iso: u.last_login_at || '', grupos: (porUsuario.get(u.id) || []).join(' · '), n_grupos: (porUsuario.get(u.id) || []).length
+  }));
+  return { meta: { corte: String(d.fetched_at || '').slice(0, 10), exportado: String(d.fetched_at || '') }, rows };
+}
+
+// Traduce estados y países, saca la categoría principal, completa el área que falta con la de su país y cuenta los días.
+function prepTickets(crudos, corte) {
+  const filas = crudos.map((t) => {
+    const tags = t.tags ? t.tags.split(',') : [];
+    const cat0 = t.categoria_zendesk || tags.find((g) => g.includes('__')) || '';
+    const categoria = cat0 ? bonito(cat0) : 'Sin categoría';
+    const areaTag = tags.find((g) => tiene(AREAS, g));
+    const dias = Math.max(0, Math.round((msDia(corte) - msDia(t.actualizado_iso)) / 86400000));
+    return {
+      id: t.id, asunto: t.asunto, estado: ESTADO[t.status] || t.status, estado_zendesk: t.estado_zendesk, grupo: t.grupo, agente: t.agente, agente_id: t.agente_id,
+      area: areaTag ? AREAS[areaTag] : 'Sin área', area_origen: areaTag ? 'Tag' : 'Sin dato',
+      categoria, categoria_principal: categoria.split(' › ')[0],
+      pais: t.pais_cod ? (ISO[t.pais_cod] || t.pais_cod.toUpperCase()) : 'Sin país', canal: t.canal,
+      escalado: t.estado_zendesk === 'Escalated' || tags.includes('escalated') ? 'Sí' : 'No',
+      creado: t.creado_iso.slice(0, 10), actualizado: t.actualizado_iso.slice(0, 10), dias_sin_actualizar: dias, rango: rangoDe(dias),
+      url: ZD + '/agent/tickets/' + t.id, corte, _cc: t.pais_cod
+    };
+  });
+  const freq = new Map();
+  for (const f of filas) {
+    if (f.area_origen !== 'Tag' || !f._cc) continue;
+    if (!freq.has(f._cc)) freq.set(f._cc, new Map());
+    const m = freq.get(f._cc); m.set(f.area, (m.get(f.area) || 0) + 1);
+  }
+  for (const f of filas) {
+    if (f.area_origen === 'Sin dato' && freq.has(f._cc)) { f.area = [...freq.get(f._cc)].sort((a, b) => b[1] - a[1])[0][0]; f.area_origen = 'Inferida por país'; }
+  }
+  return filas.map((f) => { const { _cc, ...resto } = f; return resto; });
+}
+
+// Cruza cada agente con los tickets de la vista (por id) y calcula rol, estado, acceso, licencia y motivos de revisión.
+function prepAgentes(agentes, tickets, corte) {
+  const porId = new Map();
+  for (const t of tickets) { if (!t.agente_id) continue; if (!porId.has(t.agente_id)) porId.set(t.agente_id, []); porId.get(t.agente_id).push(t); }
+  return agentes.map((a) => {
+    const mis = porId.get(a.id) || [];
+    const tipo = Number.isInteger(a.role_type) ? (TIPOS[a.role_type] || 'Otro') : a.role === 'admin' ? 'Administrador' : 'Agente';
+    const rol = a.rol_personalizado || tipo;
+    const licencia = a.role_type === 1 ? 'No' : a.role_type === 3 || a.role_type === 5 ? 'Por confirmar' : 'Sí';
+    const estado = a.suspendido ? 'Suspendido' : !a.activo ? 'Inactivo' : 'Activo';
+    const dias = a.ultimo_acceso_iso ? Math.max(0, Math.round((msDia(corte) - msDia(a.ultimo_acceso_iso)) / 86400000)) : null;
+    const acceso = dias === null ? 'Nunca ha ingresado' : dias <= 30 ? '0-30 días' : dias <= 90 ? '31-90 días' : 'Más de 90 días';
+    const n = mis.length;
+    const motivos = [];
+    if (n > 0 && estado !== 'Activo') motivos.push('Tiene tickets y la cuenta no está activa');
+    if (n > 0 && estado === 'Activo' && (dias === null || dias > 30)) motivos.push(dias === null ? 'Tiene tickets y nunca ha ingresado' : 'Tiene tickets y lleva más de 30 días sin ingresar');
+    if (n === 0 && licencia === 'Sí' && estado === 'Activo' && (dias === null || dias > 90)) motivos.push('Licencia de pago sin uso');
+    return {
+      id: a.id, nombre: a.nombre, correo: a.correo, tipo, rol, estado, licencia_pago: licencia,
+      ultimo_acceso: a.ultimo_acceso_iso ? a.ultimo_acceso_iso.slice(0, 10) : 'Nunca', dias_acceso: dias, acceso,
+      tickets: n, prom_dias: n ? redondear(mis.reduce((s, t) => s + t.dias_sin_actualizar, 0) / n) : 0,
+      agente_ticket: n ? mis[0].agente : a.nombre, n_grupos: a.n_grupos, grupos: a.grupos,
+      revisar: motivos.join(' · '), n_revisar: motivos.length
+    };
+  });
+}
+
+/* Estado de la pantalla y filtros */
+const S = {
+  vista: 'tickets',
+  t: { q: '', estado: '', rango: '', umbral: 14, accion: false, area: '', cat: '', agente: '', orden: 'prioridad', dir: 'desc' },
+  a: { q: '', tipo: '', estado: '', acceso: '', tickets: '', listado: '', revisar: false, orden: 'revisar', dir: 'desc', correos: [], pegados: 0 }
+};
+const D = { metaT: null, metaA: null, crudosT: [], crudosA: [], tickets: [], agentes: [] };
+
+const cuenta = (xs, f) => xs.filter(f).length;
+const media = (xs, f) => (xs.length ? redondear(xs.reduce((s, x) => s + f(x), 0) / xs.length) : 0);
+const agrupar = (xs, f) => { const g = new Map(); for (const x of xs) { const k = f(x); if (!g.has(k)) g.set(k, []); g.get(k).push(x); } return g; };
+
+function baseTickets() {
+  const p = S.t, umbral = p.umbral > 0 ? p.umbral : 14;
+  const palabras = p.q.toLowerCase().split(/\s+/).filter(Boolean);
+  const out = [];
+  for (const t of D.tickets) {
+    if (p.estado && t.estado !== p.estado) continue;
+    if (p.rango && t.rango !== p.rango) continue;
+    if (palabras.length) {
+      const texto = [t.id, t.asunto, t.agente, t.area, t.categoria, t.pais, t.grupo, t.estado].join(' ').toLowerCase();
+      if (!palabras.every((w) => texto.includes(w))) continue;
+    }
+    const motivos = [];
+    if (t.agente === 'Sin asignar') motivos.push('Sin asignar');
+    if (t.dias_sin_actualizar > umbral) motivos.push('Sin actualizar > ' + umbral + ' días');
+    if (t.escalado === 'Sí' && t.dias_sin_actualizar > 7) motivos.push('Escalado sin movimiento');
+    if (p.accion && !motivos.length) continue;
+    out.push(Object.assign({}, t, { motivos: motivos.join(' · '), n_motivos: motivos.length, estancado: t.dias_sin_actualizar > umbral }));
+  }
+  return out;
+}
+const dentro = (base) => base.filter((t) => (!S.t.area || t.area === S.t.area) && (!S.t.cat || t.categoria_principal === S.t.cat) && (!S.t.agente || t.agente === S.t.agente));
+const sinAsig = (t) => t.agente === 'Sin asignar';
+const distintos = (xs) => new Set(xs.filter((t) => !sinAsig(t)).map((t) => t.agente)).size;
+
+function kpisTickets(sel) {
+  const n = sel.length, pct = (x) => (n ? Math.round((100 * x) / n) : 0);
+  const sin = cuenta(sel, sinAsig), acc = cuenta(sel, (t) => t.n_motivos > 0);
+  return { total: n, sin_asignar: sin, pct_sin: pct(sin), estancados: cuenta(sel, (t) => t.estancado), escalados: cuenta(sel, (t) => t.escalado === 'Sí'), requieren_accion: acc, pct_accion: pct(acc), prom_dias: media(sel, (t) => t.dias_sin_actualizar) };
+}
+function porArea(base) {
+  return [...agrupar(base, (t) => t.area)].map(([area, a]) => {
+    const n = a.length, sin = cuenta(a, sinAsig), ag = distintos(a);
+    return { area, n, sin_asignar: sin, estancados: cuenta(a, (t) => t.estancado), agentes: ag, carga: ag ? redondear((n - sin) / ag) : 0 };
+  }).sort((x, y) => y.n - x.n);
+}
+function porCat(base) {
+  return [...agrupar(base.filter((t) => !S.t.area || t.area === S.t.area), (t) => t.categoria_principal)].map(([cat, a]) => ({
+    cat, n: a.length, sin_asignar: cuenta(a, sinAsig), estancados: cuenta(a, (t) => t.estancado), agentes: distintos(a), prom_dias: media(a, (t) => t.dias_sin_actualizar)
+  })).sort((x, y) => y.n - x.n);
+}
+function porAgente(base) {
+  return [...agrupar(base.filter((t) => (!S.t.area || t.area === S.t.area) && (!S.t.cat || t.categoria_principal === S.t.cat)), (t) => t.agente)].map(([agente, a]) => ({
+    agente, n: a.length, estancados: cuenta(a, (t) => t.estancado), escalados: cuenta(a, (t) => t.escalado === 'Sí'), prom_dias: media(a, (t) => t.dias_sin_actualizar),
+    max_dias: Math.max(...a.map((t) => t.dias_sin_actualizar)), areas: new Set(a.map((t) => t.area)).size
+  })).sort((x, y) => y.n - x.n);
+}
+function porEstado(sel) { return [...agrupar(sel, (t) => t.estado)].map(([estado, a]) => ({ estado, n: a.length })).sort((x, y) => y.n - x.n); }
+function porRango(sel) { const g = agrupar(sel, (t) => t.rango); return RANGOS.map((rango) => ({ rango, n: (g.get(rango) || []).length })); }
+function listaTickets(sel) {
+  const p = S.t, dir = p.dir === 'asc' ? 1 : -1;
+  const permitidas = ['id', 'asunto', 'estado', 'agente', 'area', 'categoria', 'pais', 'dias_sin_actualizar'];
+  const k = permitidas.includes(p.orden) ? p.orden : 'prioridad';
+  const cmp = k === 'prioridad' ? (a, b) => (b.n_motivos - a.n_motivos) || (b.dias_sin_actualizar - a.dias_sin_actualizar)
+    : (a, b) => (typeof a[k] === 'number' ? a[k] - b[k] : String(a[k]).localeCompare(String(b[k]), 'es')) * dir;
+  return sel.slice().sort(cmp);
+}
+
+/* Agentes: marcas del listado de correos, filtros y agregados */
+function marcados() {
+  const set = new Set(S.a.correos);
+  return D.agentes.map((a) => Object.assign({}, a, { en_lista: set.size ? (set.has(a.correo) ? 'Sí' : 'No') : '' }));
+}
+function baseAgentes(ms) {
+  const p = S.a, palabras = p.q.toLowerCase().split(/\s+/).filter(Boolean);
+  return ms.filter((a) => {
+    if (p.estado && a.estado !== p.estado) return false;
+    if (p.acceso && a.acceso !== p.acceso) return false;
+    if (p.tickets === 'con' && a.tickets === 0) return false;
+    if (p.tickets === 'sin' && a.tickets > 0) return false;
+    if (p.revisar && a.n_revisar === 0) return false;
+    if (p.listado === 'si' && a.en_lista !== 'Sí') return false;
+    if (p.listado === 'no' && a.en_lista !== 'No') return false;
+    if (palabras.length) { const texto = [a.nombre, a.correo, a.grupos, a.rol, a.tipo, a.estado].join(' ').toLowerCase(); if (!palabras.every((w) => texto.includes(w))) return false; }
+    return true;
+  });
+}
+const sinAcceso = (a) => a.acceso === 'Nunca ha ingresado' || a.acceso === 'Más de 90 días';
+function kpisAgentes(sel) {
+  return { total: sel.length, activos: cuenta(sel, (a) => a.estado === 'Activo'), con_tickets: cuenta(sel, (a) => a.tickets > 0), sin_tickets: cuenta(sel, (a) => a.tickets === 0),
+    sin_acceso: cuenta(sel, sinAcceso), licencias: cuenta(sel, (a) => a.licencia_pago === 'Sí'), revisar: cuenta(sel, (a) => a.n_revisar > 0) };
+}
+function porTipoAg(base) {
+  return [...agrupar(base, (a) => a.rol)].map(([rol, xs]) => ({ rol, n: xs.length, activos: cuenta(xs, (a) => a.estado === 'Activo'), con_tickets: cuenta(xs, (a) => a.tickets > 0), tickets: xs.reduce((s, a) => s + a.tickets, 0), sin_acceso: cuenta(xs, sinAcceso) })).sort((x, y) => y.n - x.n);
+}
+function listaAgentes(sel) {
+  const p = S.a, dir = p.dir === 'asc' ? 1 : -1;
+  const permitidas = ['nombre', 'correo', 'en_lista', 'rol', 'estado', 'dias_acceso', 'licencia_pago', 'tickets', 'prom_dias', 'n_grupos'];
+  const k = permitidas.includes(p.orden) ? p.orden : 'revisar';
+  const valor = (a) => (k === 'dias_acceso' && a.dias_acceso === null ? 1e9 : a[k]);
+  const cmp = k === 'revisar' ? (a, b) => (b.n_revisar - a.n_revisar) || (b.tickets - a.tickets) || a.nombre.localeCompare(b.nombre, 'es')
+    : (a, b) => (typeof valor(a) === 'number' ? valor(a) - valor(b) : String(valor(a)).localeCompare(String(valor(b)), 'es')) * dir;
+  return sel.slice().sort(cmp);
+}
+function statsListado(ms) {
+  const set = new Set(S.a.correos), cuentas = new Set(ms.map((a) => a.correo));
+  const coinciden = [...set].filter((c) => cuentas.has(c)).length, marc = ms.filter((a) => a.en_lista === 'Sí');
+  const pegados = Math.max(S.a.pegados, set.size);
+  return { pegados, correos: set.size, repetidos: pegados - set.size, coinciden, sin_cuenta: set.size - coinciden, con_tickets: cuenta(marc, (a) => a.tickets > 0), sin_tickets: cuenta(marc, (a) => a.tickets === 0), fuera: set.size ? cuenta(ms, (a) => a.en_lista === 'No') : 0 };
+}
+const leerCorreos = (texto) => {
+  const todos = (String(texto).toLowerCase().match(/[^\s,;<>"'()\[\]]+@[^\s,;<>"'()\[\]]+\.[^\s,;<>"'()\[\]]+/g) || []).map((c) => c.replace(/[.:]+$/, ''));
+  return { distintos: [...new Set(todos)], total: todos.length };
+};
+/*==FIN DATOS==*/
+
+/* ═══════════════════════════ Dibujo ═══════════════════════════ */
+const td = (v, c) => h('td', { class: c || null, text: txt(v) });
+const filaVacia = (n, m) => h('tr', null, h('td', { class: 'empty', colspan: n, text: m }));
+const razon = (m) => h('span', { class: 'tk-reason', text: m });
+const tarjeta = (cls, l, v, s) => h('div', { class: 'tk-kpi ' + cls }, h('div', { class: 'l', text: l }), h('div', { class: 'v', text: txt(v) }), h('div', { class: 's', text: s }));
+const chip = (texto, clave) => h('span', { class: 'tk-chip' }, h('span', { text: texto }), h('button', { type: 'button', 'data-clear': clave, 'aria-label': 'Quitar ' + texto }, '✕'));
+
+function nivel(tb, rows, atributo, claveCampo, seleccionado, celdas, cols) {
+  if (!rows.length) { tb.replaceChildren(filaVacia(cols, 'Sin tickets con estos filtros')); return; }
+  const max = Math.max(...rows.map((r) => r.n));
+  tb.replaceChildren(...rows.map((r) => {
+    const tr = h('tr', { [atributo]: r[claveCampo], tabindex: 0 });
+    if (seleccionado === r[claveCampo]) tr.classList.add('is-on');
+    if (r[claveCampo] === 'Sin asignar') tr.classList.add('is-none');
+    const cs = celdas(r); cs[1].classList.add('tk-bar'); cs[1].style.setProperty('--w', (100 * r.n / max) + '%');
+    tr.append(...cs); return tr;
+  }));
+}
+function simple(tb, rows, campo) {
+  if (!rows.length) { tb.replaceChildren(filaVacia(2, 'Sin tickets con estos filtros')); return; }
+  const max = Math.max(1, ...rows.map((r) => r.n));
+  tb.replaceChildren(...rows.map((r) => { const c = td(r.n, 'num tk-bar'); c.style.setProperty('--w', (100 * r.n / max) + '%'); return h('tr', null, td(r[campo], 'k'), c); }));
+}
+
+function pintarTickets() {
+  const hay = D.tickets.length > 0;
+  $('t_vacio').hidden = hay; $('t_contenido').hidden = !hay;
+  if (!hay) return;
+  const p = S.t, base = baseTickets(), sel = dentro(base), k = kpisTickets(sel);
+  $('t_umbral_txt').textContent = String(p.umbral);
+  $('t_lede').replaceChildren(h('b', { text: k.total }), ' tickets en la selección: ', h('b', { text: k.sin_asignar }), ' sin asignar (', h('b', { text: k.pct_sin }), '%), ',
+    h('b', { text: k.estancados }), ' estancados con más de ', h('b', { text: p.umbral }), ' días sin actualizar y ', h('b', { text: k.requieren_accion }), ' que requieren una acción.');
+  const chips = [['area', 'Área', p.area], ['cat', 'Categoría', p.cat], ['agente', 'Agente', p.agente]].filter((x) => x[2]).map(([c, et, v]) => chip(et + ': ' + v, c));
+  $('t_crumbs').replaceChildren(...(chips.length ? chips : [h('span', { text: 'Toda la operación' })]));
+  $('t_kpis').replaceChildren(
+    tarjeta('', 'Tickets', k.total, 'en la selección actual'), tarjeta('bad', 'Sin asignar', k.sin_asignar, k.pct_sin + '% de la selección'),
+    tarjeta('warn', 'Estancados', k.estancados, 'más de ' + p.umbral + ' días sin actualizar'), tarjeta('', 'Escalados', k.escalados, 'estado Escalated o tag escalated'),
+    tarjeta('', 'Requieren acción', k.requieren_accion, k.pct_accion + '% de la selección'), tarjeta('', 'Días promedio sin actualizar', k.prom_dias, 'desde la última actualización'));
+  const alerta = (n, tot, lim, base_) => 'num' + (tot && n / tot > lim ? base_ : '');
+  nivel($('tb_area'), porArea(base), 'data-pick-area', 'area', p.area, (r) => [td(r.area, 'k'), td(r.n, 'num'), td(r.sin_asignar, alerta(r.sin_asignar, r.n, 0.6, ' bad')), td(r.estancados, alerta(r.estancados, r.n, 0.2, ' warn')), td(r.agentes, 'num'), td(r.carga, 'num')], 6);
+  nivel($('tb_cat'), porCat(base), 'data-pick-cat', 'cat', p.cat, (r) => [td(r.cat, 'k'), td(r.n, 'num'), td(r.sin_asignar, alerta(r.sin_asignar, r.n, 0.6, ' bad')), td(r.estancados, alerta(r.estancados, r.n, 0.2, ' warn')), td(r.agentes, 'num'), td(r.prom_dias, 'num')], 6);
+  nivel($('tb_agente'), porAgente(base), 'data-pick-agente', 'agente', p.agente, (r) => [td(r.agente, 'k'), td(r.n, 'num'), td(r.estancados, alerta(r.estancados, r.n, 0.2, ' warn')), td(r.escalados, 'num'), td(r.prom_dias, 'num'), td(r.max_dias, 'num'), td(r.areas, 'num')], 7);
+  simple($('tb_estado'), porEstado(sel), 'estado'); simple($('tb_rango'), porRango(sel), 'rango');
+  const filas = listaTickets(sel);
+  $('tb_lista').replaceChildren(...(filas.length ? filas.map((r) => {
+    const cId = h('td', null, h('a', { href: r.url, target: '_blank', rel: 'noopener noreferrer' }, String(r.id)));
+    return h('tr', null, cId, td(r.asunto), td(r.estado), td(r.agente, sinAsig(r) ? 'bad' : ''), td(r.area), td(r.categoria), td(r.pais), td(r.dias_sin_actualizar, 'num'),
+      h('td', null, ...(r.motivos ? r.motivos.split(' · ') : []).map(razon)));
+  }) : [filaVacia(9, 'Ningún ticket coincide con la selección y los filtros')]));
+  document.querySelectorAll('th[data-sort]').forEach((th) => th.setAttribute('aria-sort', th.dataset.sort === p.orden ? (p.dir === 'asc' ? 'ascending' : 'descending') : 'none'));
+  $('t_pie').textContent = 'Datos de la vista de Zendesk ' + (D.metaT.vista || '—') + ', exportados el ' + D.metaT.corte + '. Los días sin actualizar se cuentan hasta esa fecha.';
+}
+
+function pintarAgentes() {
+  const hay = D.agentes.length > 0;
+  $('a_vacio').hidden = hay; $('a_contenido').hidden = !hay;
+  if (!hay) return;
+  const p = S.a, ms = marcados(), base = baseAgentes(ms), sel = base.filter((a) => !p.tipo || a.rol === p.tipo), k = kpisAgentes(sel);
+  $('a_lede').replaceChildren(h('b', { text: k.total }), ' agentes y administradores en la selección: ', h('b', { text: k.activos }), ' activos, ', h('b', { text: k.con_tickets }),
+    ' con tickets asignados en la vista y ', h('b', { text: k.sin_acceso }), ' sin ingresar en más de 90 días o nunca.' + (D.tickets.length ? '' : ' (Carga también el JSON de tickets para ver sus tickets.)'));
+  $('a_crumbs').replaceChildren(p.tipo ? chip('Rol: ' + p.tipo, 'ag-tipo') : h('span', { text: 'Todos los roles' }));
+  $('a_kpis').replaceChildren(
+    tarjeta('', 'Agentes', k.total, 'en la selección actual'), tarjeta('', 'Activos', k.activos, 'cuenta activa y sin suspender'), tarjeta('', 'Con tickets', k.con_tickets, 'tienen tickets de la vista asignados'),
+    tarjeta('', 'Sin tickets', k.sin_tickets, 'sin tickets en la vista'), tarjeta('warn', 'Sin ingreso 90+ días', k.sin_acceso, 'incluye los que nunca ingresaron'),
+    tarjeta('', 'Licencia de pago probable', k.licencias, 'todos menos agentes ligeros'), tarjeta('bad', 'Conviene revisar', k.revisar, 'cumplen algún criterio de revisión'));
+  const conLista = S.a.correos.length > 0;
+  $('a_listado_kpis').hidden = !conLista; $('a_resumen_listado').hidden = !conLista;
+  if (conLista) {
+    const s = statsListado(ms);
+    $('a_listado_kpis').replaceChildren(
+      tarjeta('', 'Correos pegados', s.pegados, s.correos + ' distintos y ' + s.repetidos + ' repetidos ignorados'), tarjeta('', 'Con cuenta de agente', s.coinciden, 'de los correos distintos'),
+      tarjeta('bad', 'Sin cuenta', s.sin_cuenta, 'no coinciden con ninguna cuenta'), tarjeta('', 'Con tickets abiertos', s.con_tickets, 'de los que tienen cuenta'),
+      tarjeta('', 'Sin tickets abiertos', s.sin_tickets, 'de los que tienen cuenta'), tarjeta('warn', 'Fuera de tu listado', s.fuera, 'cuentas de Zendesk que no están en tu listado'));
+    const marc = ms.filter((a) => a.en_lista === 'Sí');
+    const con = marc.filter((a) => a.tickets > 0).sort((x, y) => y.tickets - x.tickets || x.nombre.localeCompare(y.nombre, 'es'));
+    const sint = marc.filter((a) => a.tickets === 0).sort((x, y) => x.nombre.localeCompare(y.nombre, 'es'));
+    const cuentas = new Set(ms.map((a) => a.correo)), sin = S.a.correos.filter((c) => !cuentas.has(c)).sort();
+    $('tb_a_con').replaceChildren(...(con.length ? con.map((a) => h('tr', null, td(a.nombre, 'k'), td(a.correo), td(a.rol), td(a.tickets, 'num'), td(a.prom_dias, 'num'),
+      h('td', null, h('button', { type: 'button', class: 'tk-btn small', 'data-ver-tickets': a.agente_ticket }, 'Ver tickets')))) : [filaVacia(6, 'Ninguna persona de tu listado tiene tickets asignados')]));
+    $('tb_a_sint').replaceChildren(...(sint.length ? sint.map((a) => h('tr', null, td(a.nombre, 'k'), td(a.correo), td(a.rol), td(a.estado, a.estado === 'Activo' ? '' : 'bad'),
+      td(a.dias_acceso === null ? 'Nunca' : a.ultimo_acceso + ' (' + a.dias_acceso + ' d)'))) : [filaVacia(5, 'Todas las personas de tu listado con cuenta tienen tickets asignados')]));
+    $('tb_a_sin').replaceChildren(...(sin.length ? sin.map((c) => h('tr', null, td(c))) : [filaVacia(1, 'Todos los correos de tu listado tienen cuenta de agente')]));
+  }
+  const filasRol = porTipoAg(base);
+  if (!filasRol.length) $('tb_a_rol').replaceChildren(filaVacia(6, 'Sin agentes con estos filtros'));
+  else {
+    const max = Math.max(...filasRol.map((r) => r.n));
+    $('tb_a_rol').replaceChildren(...filasRol.map((r) => {
+      const tr = h('tr', { 'data-ag-pick': r.rol, tabindex: 0 }); if (p.tipo === r.rol) tr.classList.add('is-on');
+      const cn = td(r.n, 'num tk-bar'); cn.style.setProperty('--w', (100 * r.n / max) + '%');
+      tr.append(td(r.rol, 'k'), cn, td(r.activos, 'num'), td(r.con_tickets, 'num'), td(r.tickets, 'num'), td(r.sin_acceso, 'num' + (r.n && r.sin_acceso / r.n > 0.3 ? ' warn' : ''))); return tr;
+    }));
+  }
+  const filas = listaAgentes(sel);
+  $('tb_a_lista').replaceChildren(...(filas.length ? filas.map((r) => {
+    const tr = h('tr', null, td(r.nombre, 'k'), td(r.correo), td(r.en_lista || '—', r.en_lista === 'Sí' ? 'ok' : ''), td(r.rol), td(r.estado, r.estado === 'Activo' ? '' : 'bad'),
+      td(r.dias_acceso === null ? 'Nunca' : r.ultimo_acceso + ' (' + r.dias_acceso + ' d)', sinAcceso(r) ? 'warn' : ''), td(r.licencia_pago), td(r.tickets, 'num'), td(r.tickets ? r.prom_dias : '—', 'num'), td(r.n_grupos, 'num'),
+      h('td', null, ...(r.revisar ? r.revisar.split(' · ') : []).map(razon)), h('td', null, r.tickets > 0 ? h('button', { type: 'button', class: 'tk-btn small', 'data-ver-tickets': r.agente_ticket }, 'Ver tickets') : null));
+    if (r.en_lista === 'Sí') tr.classList.add('tk-match');
+    return tr;
+  }) : [filaVacia(12, 'Ningún agente coincide con los filtros')]));
+  document.querySelectorAll('th[data-ag-sort]').forEach((th) => th.setAttribute('aria-sort', th.dataset.agSort === p.orden ? (p.dir === 'asc' ? 'ascending' : 'descending') : 'none'));
+  $('a_pie').textContent = 'Agentes exportados el ' + D.metaA.corte + '. Los días sin ingresar se cuentan hasta esa fecha.';
+}
+
+// Opciones de los selectores que dependen de los datos y valores de todos los controles
+function llenarSelectores() {
+  const estados = [...new Set(D.tickets.map((t) => t.estado))].sort((a, b) => a.localeCompare(b, 'es'));
+  $('f_estado').replaceChildren(new Option('Todos', ''), ...estados.map((e) => new Option(e, e)));
+  const roles = [...new Set(D.agentes.map((a) => a.rol))].sort((a, b) => a.localeCompare(b, 'es'));
+  $('ag_tipo').replaceChildren(new Option('Todos', ''), ...roles.map((e) => new Option(e, e)));
+}
+function sincronizar() {
+  const set = (id, v) => { const e = $(id); if (e && document.activeElement !== e) e.value = v; };
+  set('f_q', S.t.q); set('f_estado', S.t.estado); set('f_rango', S.t.rango); set('f_umbral', String(S.t.umbral)); $('f_accion').checked = S.t.accion;
+  set('ag_q', S.a.q); set('ag_tipo', S.a.tipo); set('ag_estado', S.a.estado); set('ag_acceso', S.a.acceso); set('ag_tickets', S.a.tickets); set('ag_listado', S.a.listado); $('ag_revisar').checked = S.a.revisar;
+  if (!S.a.correos.length && document.activeElement !== $('ag_correos')) $('ag_correos').value = '';
+  set('f_vista', vistaActual());
+}
+function pintar() { sincronizar(); if (S.vista === 'tickets') pintarTickets(); else pintarAgentes(); }
+function mostrarVista(v) {
+  S.vista = v; $('vista_tickets').hidden = v !== 'tickets'; $('vista_agentes').hidden = v !== 'agentes';
+  document.querySelectorAll('[data-vista]').forEach((b) => { b.classList.toggle('is-on', b.dataset.vista === v); b.setAttribute('aria-pressed', b.dataset.vista === v ? 'true' : 'false'); });
+  pintar();
+}
+
+/* ═══════════════════════════ Datos guardados en este navegador ═══════════════════════════ */
+function cargarDatosGuardados() {
+  try {
+    const t = JSON.parse(lsGet(K.tickets) || 'null'); D.metaT = t ? t.meta : null; D.crudosT = t ? t.rows : [];
+    const a = JSON.parse(lsGet(K.agentes) || 'null'); D.metaA = a ? a.meta : null; D.crudosA = a ? a.rows : [];
+  } catch (e) { D.metaT = D.metaA = null; D.crudosT = D.crudosA = []; }
+  recalcularDatos();
+}
+function recalcularDatos() {
+  D.tickets = D.metaT && D.crudosT.length ? prepTickets(D.crudosT, D.metaT.corte) : [];
+  D.agentes = D.metaA && D.crudosA.length ? prepAgentes(D.crudosA, D.tickets, D.metaA.corte) : [];
+  llenarSelectores();
+}
+async function leerArchivo(file, tipo) {
+  const idMsg = tipo === 'tickets' ? 'm_cargar' : 'm_cargar_ag';
+  if (!file) return;
+  msg(idMsg, '', 'Leyendo ' + file.name + '…');
+  let d;
+  try { d = JSON.parse(await file.text()); } catch (e) { msg(idMsg, 'bad', 'El archivo no es un JSON válido.'); return; }
+  const arr = tipo === 'tickets' ? d && d.tickets : d && d.users;
+  const valido = tipo === 'tickets' ? (t) => t && t.id && t.status && t.created_at && t.updated_at : (u) => u && u.id && u.role;
+  if (!Array.isArray(arr) || !arr.length || !d.fetched_at || !arr.every(valido)) { msg(idMsg, 'bad', 'Este archivo no parece la exportación correcta del script de consola (faltan los ' + tipo + ' o la fecha de exportación).'); return; }
+  const r = tipo === 'tickets' ? reformarTickets(d) : reformarAgentes(d);
+  if (!lsSet(tipo === 'tickets' ? K.tickets : K.agentes, JSON.stringify(r))) { msg(idMsg, 'bad', 'No cupo en el almacenamiento del navegador. Libera espacio (por ejemplo, borra los datos y vuelve a cargar) o usa otro navegador.'); return; }
+  if (tipo === 'tickets') { D.metaT = r.meta; D.crudosT = r.rows; S.t.area = S.t.cat = S.t.agente = ''; } else { D.metaA = r.meta; D.crudosA = r.rows; S.a.tipo = ''; }
+  recalcularDatos(); pintar();
+  msg(idMsg, 'ok', 'Listo: ' + arr.length + ' ' + tipo + ' cargados (exportación del ' + r.meta.corte + '). Se guardaron solo en este navegador.');
+}
+
+/* ═══════════════════════════ Script de consola ═══════════════════════════ */
+const vistaActual = () => { const v = String(lsGet(K.vista) || '').trim(); return /^\d{4,20}$/.test(v) ? v : VISTA_ORIGINAL; };
+const scriptPara = (id) => SCRIPT_EXPORTAR.replace("const VIEW_ID = '" + VISTA_ORIGINAL + "';", "const VIEW_ID = '" + id + "';");
+function actualizarScript() {
+  const id = vistaActual();
+  $('lnk_api').href = ZD + '/api/v2/views/' + id + '/tickets.json';
+  $('txt_script').value = scriptPara(id);
+  $('txt_script_ag').value = SCRIPT_AGENTES;
+}
+async function copiar(texto, idMsg, detalle, ok) {
+  try { await navigator.clipboard.writeText(texto); msg(idMsg, 'ok', ok); }
+  catch (e) { const d = $(detalle); if (d) d.open = true; msg(idMsg, 'bad', 'No se pudo copiar automáticamente: abre «Ver el script y los pasos», selecciona todo el texto y cópialo.'); }
+}
+
+/* ═══════════════════════════ Eventos ═══════════════════════════ */
+const fijarT = (o) => { Object.assign(S.t, o); pintar(); };
+const fijarA = (o) => { Object.assign(S.a, o); pintar(); };
+const ordenar = (st, k, dirInicial) => (st.orden === k ? { dir: st.dir === 'asc' ? 'desc' : 'asc' } : { orden: k, dir: dirInicial });
+const quitar = (c) => (c === 'area' ? { area: '', cat: '', agente: '' } : c === 'cat' ? { cat: '', agente: '' } : { agente: '' });
+const elegirT = (nivelClave, valor) => {
+  const nuevo = S.t[nivelClave] === valor ? '' : valor;
+  fijarT(nivelClave === 'area' ? { area: nuevo, cat: '', agente: '' } : nivelClave === 'cat' ? { cat: nuevo, agente: '' } : { agente: nuevo });
+};
+
+document.addEventListener('click', (e) => {
+  const t = e.target;
+  if (!(t instanceof Element)) return;
+  const q = (s) => t.closest(s);
+  if (q('#btn_salir')) { lsDel(K.sesion); location.reload(); return; }
+  if (q('#btn_borrar')) {
+    if (confirm('¿Borrar los datos de tickets y agentes guardados en este navegador? Tendrás que volver a cargar los JSON.')) { lsDel(K.tickets); lsDel(K.agentes); cargarDatosGuardados(); pintar(); }
+    return;
+  }
+  if (q('[data-vista]')) { mostrarVista(q('[data-vista]').dataset.vista); return; }
+  if (q('#btn_cargar')) { $('f_json').value = ''; $('f_json').click(); return; }
+  if (q('#btn_cargar_ag')) { $('f_json_ag').value = ''; $('f_json_ag').click(); return; }
+  if (q('#btn_copiar_script')) { copiar(scriptPara(vistaActual()), 'm_script', 'det_script', 'Script copiado para la vista ' + vistaActual() + '. Pégalo en la consola de Edge (F12) estando en familysearch.zendesk.com.'); return; }
+  if (q('#btn_copiar_script_ag')) { copiar(SCRIPT_AGENTES, 'm_script_ag', 'det_script_ag', 'Script copiado. Pégalo en la consola de Edge (F12) estando en familysearch.zendesk.com.'); return; }
+  if (q('#btn_descargar_script')) { descargarArchivo('zendesk_exportar_vista_' + vistaActual() + '.js', scriptPara(vistaActual()), 'text/javascript'); msg('m_script', 'ok', 'Archivo descargado. Ábrelo, copia todo su contenido y pégalo en la consola de Zendesk.'); return; }
+  if (q('#btn_descargar_script_ag')) { descargarArchivo('zendesk_exportar_agentes.js', SCRIPT_AGENTES, 'text/javascript'); msg('m_script_ag', 'ok', 'Archivo descargado. Ábrelo, copia todo su contenido y pégalo en la consola de Zendesk.'); return; }
+  if (q('#btn_exportar')) {
+    const filas = listaTickets(dentro(baseTickets()));
+    if (!filas.length) { msg('m_exportar', 'bad', 'No hay tickets para descargar con la selección actual.'); return; }
+    const cols = [['ID', 'id'], ['Enlace', 'url'], ['Asunto', 'asunto'], ['Estado', 'estado'], ['Agente', 'agente'], ['Área', 'area'], ['Categoría', 'categoria'], ['País', 'pais'], ['Días sin actualizar', 'dias_sin_actualizar'], ['Última actualización', 'actualizado'], ['Por qué requiere acción', 'motivos']];
+    descargarArchivo('tickets_' + (D.metaT.corte || 'lista') + '.csv', csv(cols, filas), 'text/csv;charset=utf-8');
+    msg('m_exportar', 'ok', 'Archivo con ' + filas.length + ' tickets. La primera línea «sep=,» es para que Excel separe bien las columnas; bórrala si lo abres en otra herramienta.'); return;
+  }
+  if (q('#btn_exportar_ag')) {
+    const ms = marcados(), filas = listaAgentes(baseAgentes(ms).filter((a) => !S.a.tipo || a.rol === S.a.tipo));
+    if (!filas.length) { msg('m_exportar_ag', 'bad', 'No hay agentes para descargar con la selección actual.'); return; }
+    const cols = [['Nombre', 'nombre'], ['Correo', 'correo'], ['En mi listado', 'en_lista'], ['Rol', 'rol'], ['Estado', 'estado'], ['Último acceso', 'ultimo_acceso'], ['Días sin ingresar', 'dias_acceso'], ['Licencia de pago', 'licencia_pago'], ['Tickets', 'tickets'], ['Promedio días sin actualizar', 'prom_dias'], ['Grupos', 'n_grupos'], ['Por qué revisar', 'revisar']];
+    descargarArchivo('agentes_' + (D.metaA.corte || 'lista') + '.csv', csv(cols, filas), 'text/csv;charset=utf-8');
+    msg('m_exportar_ag', 'ok', 'Archivo con ' + filas.length + ' agentes. La primera línea «sep=,» es para Excel; bórrala si lo abres en otra herramienta.'); return;
+  }
+  const ver = q('[data-ver-tickets]');
+  if (ver) { Object.assign(S.t, { agente: ver.dataset.verTickets, area: '', cat: '', q: '', estado: '', rango: '', accion: false }); mostrarVista('tickets'); return; }
+  if (q('[data-reset]')) { Object.assign(S.t, { q: '', estado: '', rango: '', umbral: 14, accion: false, area: '', cat: '', agente: '', orden: 'prioridad', dir: 'desc' }); pintar(); return; }
+  if (q('[data-clear="ag-tipo"]')) { fijarA({ tipo: '' }); return; }
+  const clr = q('[data-clear]'); if (clr) { fijarT(quitar(clr.dataset.clear)); return; }
+  const th = q('th[data-sort]'); if (th) { fijarT(ordenar(S.t, th.dataset.sort, th.dataset.sort === 'dias_sin_actualizar' || th.dataset.sort === 'prioridad' ? 'desc' : 'asc')); return; }
+  const fa = q('tr[data-pick-area]'); if (fa && !q('a')) { elegirT('area', fa.getAttribute('data-pick-area')); return; }
+  const fc = q('tr[data-pick-cat]'); if (fc && !q('a')) { elegirT('cat', fc.getAttribute('data-pick-cat')); return; }
+  const fg = q('tr[data-pick-agente]'); if (fg && !q('a')) { elegirT('agente', fg.getAttribute('data-pick-agente')); return; }
+  if (q('[data-ag-reset]')) { Object.assign(S.a, { q: '', tipo: '', estado: '', acceso: '', tickets: '', listado: '', correos: [], pegados: 0, revisar: false, orden: 'revisar', dir: 'desc' }); pintar(); return; }
+  if (q('[data-ag-limpiar-listado]')) { fijarA({ correos: [], pegados: 0, listado: '' }); return; }
+  const aso = q('th[data-ag-sort]'); if (aso) { const k = aso.dataset.agSort; fijarA(ordenar(S.a, k, k === 'tickets' || k === 'prom_dias' || k === 'n_grupos' ? 'desc' : 'asc')); return; }
+  const afila = q('tr[data-ag-pick]'); if (afila) { const v = afila.getAttribute('data-ag-pick'); fijarA({ tipo: S.a.tipo === v ? '' : v }); }
+});
+document.addEventListener('keydown', (e) => {
+  const t = e.target;
+  if ((e.key !== 'Enter' && e.key !== ' ') || !(t instanceof Element)) return;
+  if (t.matches('tr[data-pick-area]')) { e.preventDefault(); elegirT('area', t.getAttribute('data-pick-area')); }
+  else if (t.matches('tr[data-pick-cat]')) { e.preventDefault(); elegirT('cat', t.getAttribute('data-pick-cat')); }
+  else if (t.matches('tr[data-pick-agente]')) { e.preventDefault(); elegirT('agente', t.getAttribute('data-pick-agente')); }
+  else if (t.matches('tr[data-ag-pick]')) { e.preventDefault(); const v = t.getAttribute('data-ag-pick'); fijarA({ tipo: S.a.tipo === v ? '' : v }); }
+});
+let esperaQ, esperaAq, esperaCorreos;
+document.addEventListener('input', (e) => {
+  const el = e.target;
+  if (!(el instanceof HTMLElement)) return;
+  if (el.id === 'f_q') { clearTimeout(esperaQ); esperaQ = setTimeout(() => fijarT({ q: el.value.trim() }), 250); }
+  else if (el.id === 'ag_q') { clearTimeout(esperaAq); esperaAq = setTimeout(() => fijarA({ q: el.value.trim() }), 250); }
+  else if (el.id === 'ag_correos') { clearTimeout(esperaCorreos); esperaCorreos = setTimeout(() => { const r = leerCorreos(el.value); fijarA({ correos: r.distintos, pegados: r.total }); }, 400); }
+});
+document.addEventListener('change', (e) => {
+  const el = e.target;
+  if (!(el instanceof HTMLElement)) return;
+  const id = el.id;
+  if (id === 'f_estado') fijarT({ estado: el.value });
+  else if (id === 'f_rango') fijarT({ rango: el.value });
+  else if (id === 'f_accion') fijarT({ accion: el.checked });
+  else if (id === 'f_umbral') { const n = Math.round(Number(el.value)); if (n >= 1 && n <= 365) fijarT({ umbral: n }); }
+  else if (id === 'f_vista') {
+    const v = String(el.value || '').trim();
+    if (/^\d{4,20}$/.test(v)) { lsSet(K.vista, v); actualizarScript(); msg('m_script', '', 'Vista ' + v + ': el script y el enlace de la API ya están actualizados.'); }
+    else msg('m_script', 'bad', 'Escribe solo el número de la vista (solo dígitos).');
+  }
+  else if (id === 'f_json') leerArchivo(el.files && el.files[0], 'tickets');
+  else if (id === 'f_json_ag') leerArchivo(el.files && el.files[0], 'agentes');
+  else if (id === 'ag_tipo') fijarA({ tipo: el.value });
+  else if (id === 'ag_estado') fijarA({ estado: el.value });
+  else if (id === 'ag_acceso') fijarA({ acceso: el.value });
+  else if (id === 'ag_tickets') fijarA({ tickets: el.value });
+  else if (id === 'ag_listado') fijarA({ listado: el.value });
+  else if (id === 'ag_revisar') fijarA({ revisar: el.checked });
+});
+
+/* ═══════════════════════════ Arranque ═══════════════════════════ */
+let appIniciada = false;
+function entrar() {
+  $('login').hidden = true; $('app').hidden = false;
+  if (!appIniciada) { appIniciada = true; actualizarScript(); cargarDatosGuardados(); }
+  pintar();
+}
+function revisarSesion() { if (appIniciada && !sesionValida()) location.reload(); }
+setInterval(revisarSesion, 60000);
+window.addEventListener('storage', (e) => { if (e.key === K.sesion && !sesionValida()) location.reload(); });
+if (sesionValida()) entrar(); else { $('login').hidden = false; $('app').hidden = true; }
+</script>
 </body>
 </html>
