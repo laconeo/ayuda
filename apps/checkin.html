@@ -1363,6 +1363,21 @@
       display: none !important
     }
 
+    body.is-guest .user-only {
+      display: none !important
+    }
+
+    .ev-code {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      letter-spacing: .08em;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 2px 7px;
+      color: var(--ink)
+    }
+
     /* Auth */
     .pin-view {
       min-height: 100vh;
@@ -1405,7 +1420,7 @@
 
     .auth-tabs {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 4px;
       width: 100%;
       border: 1px solid #ffffff2a;
@@ -1417,11 +1432,11 @@
       background: none;
       border: 0;
       border-radius: 7px;
-      padding: 8px 12px;
+      padding: 8px 6px;
       font-family: var(--f-display);
       font-weight: 600;
-      font-size: 17px;
-      letter-spacing: .06em;
+      font-size: 15px;
+      letter-spacing: .05em;
       text-transform: uppercase;
       color: var(--board-dim)
     }
@@ -1704,17 +1719,23 @@
       <div class="auth-tabs" role="tablist">
         <button type="button" id="tabLogin" role="tab" aria-selected="true">Iniciar sesión</button>
         <button type="button" id="tabRegister" role="tab" aria-selected="false">Registrarse</button>
+        <button type="button" id="tabCode" role="tab" aria-selected="false">Código</button>
       </div>
       <form class="auth-form" id="authForm">
+        <div id="codeField" hidden>
+          <label for="authCode">Código del evento</label>
+          <input type="text" id="authCode" placeholder="Ej: K7M2P9" autocomplete="off"
+            style="font-family:var(--f-mono);font-size:20px;letter-spacing:.18em;text-transform:uppercase;text-align:center">
+        </div>
         <div id="regNameField" hidden>
           <label for="authName">Nombre completo</label>
           <input type="text" id="authName" placeholder="Ej: Juan Pérez" autocomplete="name">
         </div>
-        <div>
+        <div id="emailField">
           <label for="authEmail">Email</label>
           <input type="email" id="authEmail" placeholder="tu@email.com" required autocomplete="email">
         </div>
-        <div>
+        <div id="passField">
           <label for="authPassword">Contraseña</label>
           <input type="password" id="authPassword" placeholder="Mínimo 6 caracteres" required minlength="6"
             autocomplete="current-password">
@@ -1764,6 +1785,7 @@
       </div>
       <div class="flight" id="flight"></div>
       <div class="board-actions"><button class="board-btn" id="backBtn">← Todos los eventos</button><button
+          class="board-btn" id="shareCodeBtn" hidden>Copiar código</button><button
           class="board-btn owner-only" id="editTripBtn">Editar evento, horarios y lugares</button></div>
       <div class="stats" id="stats"></div>
     </header>
@@ -1774,7 +1796,7 @@
       <section style="display:flex;flex-direction:column;gap:14px;min-width:0">
         <div class="section-head">
           <h2 id="carsTitle">Autos · Ida</h2>
-          <div class="tools">
+          <div class="tools user-only">
             <button class="btn" id="copyBtn">Copiar ida → vuelta</button>
             <button class="btn primary" id="addCarBtn">+ Agregar auto</button>
           </div>
@@ -1794,7 +1816,7 @@
         <div class="section-head">
           <h2>Pasajeros</h2><span class="note" id="paxCount"></span>
         </div>
-        <form class="add-row" id="addPersonForm">
+        <form class="add-row user-only" id="addPersonForm">
           <input type="text" id="newPerson" placeholder="Nombre del joven" autocomplete="off"
             aria-label="Nombre del pasajero">
           <button class="btn primary" type="submit">Agregar</button>
@@ -1975,7 +1997,12 @@
     const SUPABASE_KEY = 'sb_publishable_NHMpuCIW7vA2Xi4iIFhirw_-3Eo72E2';
     const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    const S = { db: sb, user: null, cars: [], seats: {}, people: [], trip: {}, leg: 'ida', ready: { cars: false, seats: false, people: false, events: false }, editSeat: null, editCar: null, allCars: [], allPeople: [], events: [], ev: null, view: null, filter: 'all' };
+    const S = { db: sb, user: null, guest: null, cars: [], seats: {}, people: [], trip: {}, leg: 'ida', ready: { cars: false, seats: false, people: false, events: false }, editSeat: null, editCar: null, allCars: [], allPeople: [], events: [], ev: null, view: null, filter: 'all' };
+    try { S.guest = JSON.parse(localStorage.getItem('checkinGuest') || 'null'); } catch { S.guest = null; }
+    const saveGuest = () => { try { S.guest ? localStorage.setItem('checkinGuest', JSON.stringify(S.guest)) : localStorage.removeItem('checkinGuest'); } catch {} };
+    const isGuest = () => !!(!S.user && S.guest);
+    const canModifySeat = s => !isGuest() || !s || !!(S.guest?.personId && s.personId === S.guest.personId);
+    const genCode = () => { const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)]; return s; };
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const first = n => String(n || '').trim().split(/\s+/)[0] || '';
@@ -1991,14 +2018,14 @@
     function codesOf(car) { const L = LAYOUTS[car.layout] || LAYOUTS['5']; const out = []; L.rows.forEach((r, i) => r.forEach(l => { if (l) out.push((i + 1) + l); })); return out; }
 
     /* Mappers between JS state and Supabase tables */
-    const fromEvRow = r => ({ id: r.id, user_id: r.user_id, owner_name: r.owner_name || '', title: r.title, type: r.type || 'Templo', date: r.date || '', meet: r.meet || '', from: r.from_place || '', depart: r.depart || '', to: r.to_place || '', show: r.show_time || '', backPlace: r.back_place || '', backTime: r.back_time || '', createdAt: r.created_at });
-    const toEvRow = (id, d) => ({ id, user_id: d.user_id || S.user?.id, owner_name: d.owner_name ?? userLabel(S.user), title: d.title, type: d.type || 'Templo', date: d.date || '', meet: d.meet || '', from_place: d.from || '', depart: d.depart || '', to_place: d.to || '', show_time: d.show || '', back_place: d.backPlace || '', back_time: d.backTime || '', created_at: d.createdAt || Date.now() });
+    const fromEvRow = r => ({ id: r.id, code: r.code || '', user_id: r.user_id, owner_name: r.owner_name || '', title: r.title, type: r.type || 'Templo', date: r.date || '', meet: r.meet || '', from: r.from_place || '', depart: r.depart || '', to: r.to_place || '', show: r.show_time || '', backPlace: r.back_place || '', backTime: r.back_time || '', createdAt: r.created_at });
+    const toEvRow = (id, d) => ({ id, code: d.code || genCode(), user_id: d.user_id || S.user?.id, owner_name: d.owner_name ?? userLabel(S.user), title: d.title, type: d.type || 'Templo', date: d.date || '', meet: d.meet || '', from_place: d.from || '', depart: d.depart || '', to_place: d.to || '', show_time: d.show || '', back_place: d.backPlace || '', back_time: d.backTime || '', created_at: d.createdAt || Date.now() });
     const fromCarRow = r => ({ id: r.id, event: r.event_id, user_id: r.user_id, model: r.model, driver: r.driver, layout: r.layout || '5', order: r.sort_order ?? 0 });
-    const toCarRow = (id, d) => ({ id, event_id: d.event, user_id: S.user?.id, model: d.model, driver: d.driver, layout: d.layout || '5', sort_order: d.order ?? Date.now() });
+    const toCarRow = (id, d) => ({ id, event_id: d.event, user_id: S.user?.id || null, model: d.model, driver: d.driver, layout: d.layout || '5', sort_order: d.order ?? Date.now() });
     const fromPersonRow = r => ({ id: r.id, event: r.event_id, user_id: r.user_id, name: r.name, createdAt: r.created_at });
-    const toPersonRow = (id, d) => ({ id, event_id: d.event, user_id: S.user?.id, name: d.name, created_at: d.createdAt || Date.now() });
+    const toPersonRow = (id, d) => ({ id, event_id: d.event, user_id: S.user?.id || null, name: d.name, created_at: d.createdAt || Date.now() });
     const fromSeatRow = r => ({ id: r.id, event: r.event_id, car: r.car_id, leg: r.leg, code: r.code, personId: r.person_id, name: r.name, confirmed: !!r.confirmed, at: r.updated_at });
-    const toSeatRow = (id, d) => ({ id, event_id: d.event, car_id: d.car, leg: d.leg, code: d.code, person_id: d.personId, name: d.name, confirmed: !!d.confirmed, user_id: S.user?.id, updated_at: d.at || Date.now() });
+    const toSeatRow = (id, d) => ({ id, event_id: d.event, car_id: d.car, leg: d.leg, code: d.code, person_id: d.personId, name: d.name, confirmed: !!d.confirmed, user_id: S.user?.id || null, updated_at: d.at || Date.now() });
 
     let toastT;
     function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2800); }
@@ -2035,7 +2062,11 @@
       $('#legVuelta').setAttribute('aria-pressed', S.leg === 'vuelta');
       $('#carsTitle').textContent = 'Autos · ' + (S.leg === 'ida' ? 'Ida' : 'Vuelta');
       const T = S.trip;
-      $('#tripDate').textContent = T.date ? 'Check-in · ' + fmtDate(T.date) : 'Check-in · salida y regreso';
+      const evCode = T.code || T.id || '';
+      $('#tripDate').textContent = (T.date ? 'Check-in · ' + fmtDate(T.date) : 'Check-in · salida y regreso') + (evCode ? ' · CÓDIGO: ' + evCode : '');
+      $('#backBtn').textContent = isGuest() ? '← Salir del evento' : '← Todos los eventos';
+      const scb = $('#shareCodeBtn');
+      if (scb) { scb.hidden = !evCode; scb.textContent = `Copiar código (${evCode})`; }
       const cell = (lbl, time, place, empty) => `<div class="fi"><span class="lbl">${lbl}</span><span class="t">${esc(time || '--:--')}</span><span class="p ${place ? '' : 'dim'}">${esc(place || empty)}</span></div>`;
       $('#flight').innerHTML =
         cell('HORA PARA ESTAR', T.meet, T.from ? 'en ' + T.from : '', 'Lugar sin cargar') +
@@ -2081,7 +2112,7 @@
         }).join('') + '</div>').join('');
         return `<article class="car-card${L.bus ? ' bus-card' : ''}">
       <div class="car-head"><div><h3>${esc(car.model)}</h3><div class="sub">Conduce ${esc(car.driver)}</div></div>
-        <div class="car-tools"><button class="icon-btn" data-editcar="${esc(car.id)}" aria-label="Editar ${esc(car.model)}">${PENCIL}</button></div></div>
+        <div class="car-tools user-only"><button class="icon-btn" data-editcar="${esc(car.id)}" aria-label="Editar ${esc(car.model)}">${PENCIL}</button></div></div>
       <div class="car-body${L.bus ? ' bus' : ''}"><span class="front-tag">FRENTE</span>${rows}</div>
       <div class="car-foot">${legName(S.leg)} · ${total - free}/${total} ocupados · ${free} libres</div>
     </article>`;
@@ -2100,23 +2131,37 @@
       const ul = $('#manifest');
       $('#paxCount').textContent = S.people.length ? `${S.people.length} anotados` : '';
       if (!S.ready.people) { ul.innerHTML = '<li class="note">Cargando…</li>'; return; }
-      if (!S.people.length) { ul.innerHTML = '<li class="note" style="display:block">Agregá a los jóvenes que van, o escribí el nombre directo al tocar un asiento.</li>'; }
-      else ul.innerHTML = S.people.map(p => `<li><span class="pname">${esc(p.name)}</span>${chip(p.id, 'ida')}${chip(p.id, 'vuelta')}
+      if (!S.people.length) { ul.innerHTML = '<li class="note" style="display:block">Todavía no hay pasajeros anotados. Tocá un asiento libre para reservar tu lugar.</li>'; }
+      else ul.innerHTML = S.people.map(p => `<li><span class="pname">${esc(p.name)}${isGuest() && S.guest?.personId === p.id ? ' (vos)' : ''}</span>${chip(p.id, 'ida')}${chip(p.id, 'vuelta')}
       <button class="pass-btn" data-pass="${esc(p.id)}" aria-label="Boarding pass de ${esc(p.name)}" title="Boarding pass" ${seatOf(p.id, 'ida') || seatOf(p.id, 'vuelta') ? '' : 'disabled'}>${TICKET}</button>
-      <button class="icon-btn" data-delperson="${esc(p.id)}" aria-label="Quitar a ${esc(p.name)}" title="Quitar">✕</button></li>`).join('');
-      $('#peopleList').innerHTML = S.people.map(p => `<option value="${esc(p.name)}">`).join('');
+      ${isGuest() ? '<span></span>' : `<button class="icon-btn" data-delperson="${esc(p.id)}" aria-label="Quitar a ${esc(p.name)}" title="Quitar">✕</button>`}</li>`).join('');
+      $('#peopleList').innerHTML = isGuest() ? '' : S.people.map(p => `<option value="${esc(p.name)}">`).join('');
+      const mn = $('#manifestNote');
+      if (mn) mn.textContent = isGuest() ? 'Tocá un asiento libre para reservar tu lugar. Solo podés modificar tu propio asiento.' : 'Tocá un asiento libre para reservarlo. Tocá un chip para ir a ese asiento.';
     }
 
     /* ---------- Seat modal ---------- */
     function openSeat(carId, code) {
       const car = carOf(carId); if (!car) return;
-      S.editSeat = { car: carId, code };
       const s = S.seats[seatId(carId, S.leg, code)];
       const p = s && person(s.personId);
+      const curName = p ? p.name : (s ? s.name : '');
+      if (!canModifySeat(s)) {
+        toast(`Ese asiento es de ${curName}. Solo podés modificar tu propio asiento.`);
+        return;
+      }
+      S.editSeat = { car: carId, code };
       $('#seatCode').textContent = code;
       $('#seatCar').innerHTML = `<b>${esc(car.model)}</b> · ${esc(car.driver)}`;
       $('#seatLeg').textContent = legName(S.leg) + (s ? (s.confirmed ? ' · CONFIRMADO' : ' · RESERVADO') : ' · LIBRE');
-      $('#seatName').value = p ? p.name : (s ? s.name : '');
+      const nameInp = $('#seatName');
+      if (isGuest() && S.guest?.personId) {
+        nameInp.value = S.guest.name || curName;
+        nameInp.readOnly = true;
+      } else {
+        nameInp.value = curName;
+        nameInp.readOnly = false;
+      }
       $('#seatConfirm').checked = !!(s && s.confirmed);
       $('#seatClear').hidden = !s;
       $('#seatPass').hidden = !s;
@@ -2182,11 +2227,24 @@
       const { car, code } = S.editSeat;
       const confirmed = $('#seatConfirm').checked;
       let p = r.p;
+      if (isGuest()) {
+        if (S.guest.personId) {
+          p = person(S.guest.personId) || { id: S.guest.personId, name: S.guest.name || name };
+        } else if (p && (seatOf(p.id, 'ida') || seatOf(p.id, 'vuelta'))) {
+          $('#seatHint').textContent = `Ya hay un pasajero "${p.name}" con asiento asignado. Usá tu nombre completo o elegí otro.`;
+          return;
+        }
+      }
       if (!p) {
         const id = rid('p');
         const row = toPersonRow(id, { name, event: S.ev, createdAt: Date.now() });
         if (!await safe(sb.from('people').upsert(row))) return;
         p = fromPersonRow(row); S.allPeople.push(p); scope();
+      }
+      if (isGuest() && !S.guest.personId) {
+        S.guest.personId = p.id;
+        S.guest.name = p.name;
+        saveGuest();
       }
       for (const l of ['ida', 'vuelta']) {
         const prev = seatOf(p.id, l);
@@ -2241,7 +2299,8 @@
       const data = evData(old);
       for (const [id, k] of Object.entries(TRIP_FIELDS)) data[k] = $('#' + id).value.trim();
       if (!data.title) return;
-      if (!old) { data.createdAt = Date.now(); data.user_id = S.user.id; data.owner_name = userLabel(S.user); }
+      if (!old) { data.createdAt = Date.now(); data.user_id = S.user.id; data.owner_name = userLabel(S.user); data.code = genCode(); }
+      else if (!data.code) { data.code = genCode(); }
       const id = editEv || rid('ev');
       const row = toEvRow(id, data);
       if (await safe(sb.from('events').upsert(row))) {
@@ -2282,6 +2341,7 @@
       const mine = isOwner(ev);
       return `<article class="ev-card${past ? ' past' : ''}">
     <div class="ev-top"><span class="ev-type">${esc((ev.type || 'Evento').toUpperCase())}</span><span class="ev-date">${esc(ev.date ? fmtDate(ev.date) : 'Fecha a definir')}</span>
+      ${ev.code ? `<span class="ev-code" title="Código para compartir">${esc(ev.code)}</span>` : ''}
       ${mine ? `<button class="icon-btn" data-editev="${esc(ev.id)}" aria-label="Editar ${esc(ev.title)}">${PENCIL}</button>` : ''}</div>
     <h3 class="ev-title">${esc(ev.title || 'Evento')}</h3>
     ${ev.owner_name ? `<div class="ev-owner">Organiza: ${esc(ev.owner_name)}${mine ? ' (vos)' : ''}</div>` : ''}
@@ -2317,7 +2377,23 @@
       if (ac) { const id = ac.dataset.addcar; enterEvent(id); history.replaceState(null, '', '#' + id); openCar(null); }
     });
     $('#newEvBtn').addEventListener('click', () => openTrip(null));
-    $('#backBtn').addEventListener('click', () => { location.hash = ''; });
+    $('#backBtn').addEventListener('click', () => {
+      if (isGuest()) {
+        S.guest = null; saveGuest();
+        if (rtChannel) { sb.removeChannel(rtChannel); rtChannel = null; }
+        S.events = []; S.allCars = []; S.allPeople = []; S.seats = {};
+        history.replaceState(null, '', location.pathname);
+        route();
+      } else {
+        location.hash = '';
+      }
+    });
+    $('#shareCodeBtn').addEventListener('click', () => {
+      const code = S.trip?.code || S.trip?.id; if (!code) return;
+      const url = location.origin + location.pathname + '?code=' + encodeURIComponent(code);
+      const txt = `Sumate al viaje "${S.trip.title}" con el código ${code}: ${url}`;
+      try { navigator.clipboard.writeText(txt).then(() => toast(`Código ${code} y link copiados`), () => fallbackCopy(txt)); } catch { fallbackCopy(txt); }
+    });
     $('#evFilter').addEventListener('change', e => { S.filter = e.target.value; renderHome(); });
 
     /* ---------- Views & routing ---------- */
@@ -2330,13 +2406,20 @@
       S.people = S.allPeople.filter(p => evOf(p) === S.ev).sort((a, b) => a.name.localeCompare(b.name, 'es'));
       S.trip = S.events.find(e => e.id === S.ev) || {};
       document.body.classList.toggle('is-owner', isOwner(S.trip));
+      document.body.classList.toggle('is-guest', isGuest());
     }
     function enterEvent(id) {
       if (S.ev !== id) { S.ev = id; S.leg = 'ida'; closeModals(); }
       scope(); showView('app'); render();
     }
     function route() {
+      if (!S.user && isGuest()) {
+        const ev = S.events.find(e => e.id === S.guest.eventId);
+        if (ev) { enterEvent(ev.id); return; }
+        if (!S.ready.events) return;
+      }
       if (!S.user) {
+        document.body.classList.remove('is-guest', 'is-owner');
         if (S.view !== 'auth') { closeModals(); S.ev = null; showView('auth'); }
         return;
       }
@@ -2349,17 +2432,24 @@
     window.addEventListener('hashchange', route);
     function refresh() { scope(); route(); }
 
-    /* ---------- Auth (Supabase Login / Registro) ---------- */
+    /* ---------- Auth (Supabase Login / Registro / Código) ---------- */
     let authMode = 'login';
     function setAuthMode(mode) {
       authMode = mode;
-      const reg = mode === 'register';
-      $('#tabLogin').setAttribute('aria-selected', String(!reg));
+      const reg = mode === 'register', code = mode === 'code';
+      $('#tabLogin').setAttribute('aria-selected', String(mode === 'login'));
       $('#tabRegister').setAttribute('aria-selected', String(reg));
+      $('#tabCode').setAttribute('aria-selected', String(code));
+      $('#codeField').hidden = !code;
       $('#regNameField').hidden = !reg;
+      $('#emailField').hidden = code;
+      $('#passField').hidden = code;
+      $('#authCode').required = code;
       $('#authName').required = reg;
+      $('#authEmail').required = !code;
+      $('#authPassword').required = !code;
       $('#authPassword').autocomplete = reg ? 'new-password' : 'current-password';
-      $('#authSubmit').textContent = reg ? 'Crear cuenta' : 'Entrar';
+      $('#authSubmit').textContent = code ? 'Entrar al evento' : (reg ? 'Crear cuenta' : 'Entrar');
       setAuthMsg('');
     }
     function setAuthMsg(msg, cls = '') {
@@ -2369,15 +2459,44 @@
     }
     $('#tabLogin').addEventListener('click', () => setAuthMode('login'));
     $('#tabRegister').addEventListener('click', () => setAuthMode('register'));
+    $('#tabCode').addEventListener('click', () => setAuthMode('code'));
+
+    async function enterWithCode(rawCode) {
+      if (!sb) { setAuthMsg('No se pudo inicializar Supabase.', 'err'); return false; }
+      const c = String(rawCode || '').trim().toUpperCase();
+      if (!c) { setAuthMsg('Escribí el código del evento.', 'err'); return false; }
+      let { data, error } = await sb.from('events').select('*').eq('code', c).maybeSingle();
+      if (!data && !error) {
+        const res2 = await sb.from('events').select('*').eq('id', rawCode.trim()).maybeSingle();
+        data = res2.data; error = res2.error;
+      }
+      if (error || !data) {
+        setAuthMsg('Código de evento no encontrado.', 'err');
+        return false;
+      }
+      const prev = (S.guest && S.guest.eventId === data.id) ? S.guest : {};
+      S.guest = { eventId: data.id, code: data.code || data.id, personId: prev.personId || null, name: prev.name || '' };
+      saveGuest();
+      await loadGuestEvent(fromEvRow(data));
+      route();
+      return true;
+    }
 
     $('#authForm').addEventListener('submit', async e => {
       e.preventDefault();
       if (!sb) { setAuthMsg('No se pudo inicializar Supabase.', 'err'); return; }
+      const btn = $('#authSubmit');
+      btn.disabled = true;
+      if (authMode === 'code') {
+        setAuthMsg('Buscando evento…');
+        const ok = await enterWithCode($('#authCode').value);
+        if (!ok) { const c = $('#authCard'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); }
+        btn.disabled = false;
+        return;
+      }
       const email = $('#authEmail').value.trim();
       const password = $('#authPassword').value;
       const fullName = $('#authName').value.trim();
-      const btn = $('#authSubmit');
-      btn.disabled = true;
       setAuthMsg(authMode === 'register' ? 'Creando cuenta…' : 'Ingresando…');
       try {
         if (authMode === 'register') {
@@ -2689,6 +2808,26 @@
       subscribeRealtime();
       refresh();
     }
+    async function loadGuestEvent(ev) {
+      if (!sb || !ev) return;
+      const [cars, ppl, sts] = await Promise.all([
+        sb.from('cars').select('*').eq('event_id', ev.id),
+        sb.from('people').select('*').eq('event_id', ev.id),
+        sb.from('seats').select('*').eq('event_id', ev.id)
+      ]);
+      if (cars.error || ppl.error || sts.error) {
+        console.error(cars.error || ppl.error || sts.error);
+        toast('Error al cargar el evento. Verificá los permisos de Supabase.');
+        return;
+      }
+      S.events = [ev]; S.ready.events = true;
+      S.allCars = (cars.data || []).map(fromCarRow); S.ready.cars = true;
+      S.allPeople = (ppl.data || []).map(fromPersonRow); S.ready.people = true;
+      const m = {}; (sts.data || []).forEach(r => { m[r.id] = fromSeatRow(r); });
+      S.seats = m; S.ready.seats = true;
+      subscribeRealtime();
+      refresh();
+    }
     function subscribeRealtime() {
       if (rtChannel || !sb) return;
       rtChannel = sb.channel('checkin-live')
@@ -2699,8 +2838,10 @@
         .subscribe();
     }
     async function loadTable(tbl) {
-      if (!sb || !S.user) return;
-      const { data, error } = await sb.from(tbl).select('*');
+      if (!sb || (!S.user && !isGuest())) return;
+      let q = sb.from(tbl).select('*');
+      if (isGuest()) q = tbl === 'events' ? q.eq('id', S.guest.eventId) : q.eq('event_id', S.guest.eventId);
+      const { data, error } = await q;
       if (error) return;
       if (tbl === 'events') { S.events = (data || []).map(fromEvRow); S.ready.events = true; }
       if (tbl === 'cars') { S.allCars = (data || []).map(fromCarRow); S.ready.cars = true; }
@@ -2716,9 +2857,18 @@
         return;
       }
       const { data: { session } } = await sb.auth.getSession();
+      const urlCode = new URLSearchParams(location.search).get('code');
       if (session?.user) {
         S.user = session.user;
         await loadAllData();
+      } else if (urlCode) {
+        setAuthMode('code');
+        $('#authCode').value = urlCode.toUpperCase();
+        await enterWithCode(urlCode);
+        return;
+      } else if (S.guest?.code) {
+        await enterWithCode(S.guest.code);
+        return;
       }
       route();
       sb.auth.onAuthStateChange(async (event, sess) => {

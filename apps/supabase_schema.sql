@@ -5,6 +5,7 @@
 -- 1. Tabla de eventos
 create table if not exists public.events (
   id text primary key,
+  code text unique,
   user_id uuid references auth.users(id) on delete cascade not null default auth.uid(),
   owner_name text,
   title text not null,
@@ -62,6 +63,8 @@ create index if not exists idx_seats_event on public.seats(event_id);
 -- 6. Permisos de rol y Row Level Security (RLS)
 grant usage on schema public to anon, authenticated;
 grant select, insert, update, delete on table public.events, public.cars, public.people, public.seats to authenticated;
+grant select on table public.events, public.cars to anon;
+grant select, insert, update, delete on table public.people, public.seats to anon;
 
 alter table public.events enable row level security;
 alter table public.cars enable row level security;
@@ -92,6 +95,19 @@ create policy "people_all_auth" on public.people
 -- Asientos: usuarios autenticados pueden reservar, confirmar y liberar asientos
 create policy "seats_all_auth" on public.seats
   for all to authenticated using (true) with check (true);
+
+-- Invitados con código de evento (anon): lectura de eventos/autos y gestión de su propio asiento/pasajero
+create policy "events_select_anon" on public.events
+  for select to anon using (true);
+
+create policy "cars_select_anon" on public.cars
+  for select to anon using (true);
+
+create policy "people_all_anon" on public.people
+  for all to anon using (true) with check (true);
+
+create policy "seats_all_anon" on public.seats
+  for all to anon using (true) with check (true);
 
 -- 7. Habilitar Realtime para sincronización en vivo
 alter publication supabase_realtime add table public.events;
