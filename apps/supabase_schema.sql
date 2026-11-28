@@ -59,7 +59,10 @@ create index if not exists idx_cars_event on public.cars(event_id);
 create index if not exists idx_people_event on public.people(event_id);
 create index if not exists idx_seats_event on public.seats(event_id);
 
--- 6. Row Level Security (RLS)
+-- 6. Permisos de rol y Row Level Security (RLS)
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on table public.events, public.cars, public.people, public.seats to authenticated;
+
 alter table public.events enable row level security;
 alter table public.cars enable row level security;
 alter table public.people enable row level security;

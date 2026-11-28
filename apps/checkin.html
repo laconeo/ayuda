@@ -520,6 +520,36 @@
       position: relative
     }
 
+    .car-card.bus-card {
+      flex: 1 1 310px;
+    }
+
+    .car-body.bus {
+      border-radius: 36px 36px 20px 20px;
+      padding: 62px 14px 22px;
+      gap: 8px;
+    }
+
+    .car-body.bus .row {
+      grid-template-columns: 52px 52px 14px 52px 52px;
+      gap: 5px;
+    }
+
+    .car-body.bus .row.back4 {
+      grid-template-columns: repeat(4, 56px);
+      justify-content: space-between;
+    }
+
+    .car-body.bus .seat {
+      height: 54px;
+      border-radius: 10px 10px 6px 6px;
+    }
+
+    .car-body.bus .row-num {
+      left: -12px;
+      font-size: 9px;
+    }
+
     .row-num {
       position: absolute;
       left: -14px;
@@ -1831,6 +1861,8 @@
           <input type="text" id="carModel" list="modelList" placeholder="Ej: Renault Sandero" required
             autocomplete="off">
           <datalist id="modelList">
+            <option value="Colectivo 1">
+            <option value="Colectivo">
             <option value="Renault Sandero">
             <option value="Chrysler Caravan">
             <option value="Toyota Corolla">
@@ -1924,6 +1956,15 @@
       'suv7': { label: '7 asientos · SUV (2 + 3 + 2)', rows: [['A', null, 'C'], ['A', 'B', 'C'], ['A', null, 'C']] },
       'v8': { label: '8 asientos · minivan (2 + 3 + 3)', rows: [['A', null, 'C'], ['A', 'B', 'C'], ['A', 'B', 'C']] },
       '4': { label: '4 asientos · chico (2 + 2)', rows: [['A', null, 'C'], ['A', null, 'C']] },
+      'bus41': {
+        label: '41 lugares · colectivo (2 + 2 y 4 al fondo)',
+        bus: true,
+        rows: [
+          ['A', null, null, null, 'E'],
+          ...Array.from({ length: 9 }, () => ['A', 'B', null, 'D', 'E']),
+          ['A', 'B', 'C', 'D']
+        ]
+      },
     };
     const WHEEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M3.5 10.5h6M14.5 10.5h6M12 14.5V21"/></svg>';
     const PENCIL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
@@ -2024,7 +2065,7 @@
       wrap.innerHTML = S.cars.map(car => {
         const L = LAYOUTS[car.layout] || LAYOUTS['5'];
         let free = 0, total = 0;
-        const rows = L.rows.map((row, ri) => `<div class="row"><span class="row-num">${ri + 1}</span>` + row.map(letter => {
+        const rows = L.rows.map((row, ri) => `<div class="row${L.bus && row.length === 4 ? ' back4' : ''}"><span class="row-num">${ri + 1}</span>` + row.map(letter => {
           if (!letter) return '<span class="aisle"></span>';
           const code = (ri + 1) + letter;
           if (code === '1A') return `<button class="seat driver" disabled aria-label="Conductor: ${esc(car.driver)}">${WHEEL}<span class="nm">${esc(first(car.driver))}</span></button>`;
@@ -2038,10 +2079,10 @@
           const lab = `Asiento ${code}` + (s ? `, ${name}, ${s.confirmed ? 'confirmado' : 'reservado'}` : ', libre');
           return `<button class="seat ${cls}${sel}" data-car="${esc(car.id)}" data-code="${code}" aria-label="${esc(lab)}"><span class="code">${code}</span>${s ? `<span class="nm">${esc(first(name))}</span>` : ''}</button>`;
         }).join('') + '</div>').join('');
-        return `<article class="car-card">
+        return `<article class="car-card${L.bus ? ' bus-card' : ''}">
       <div class="car-head"><div><h3>${esc(car.model)}</h3><div class="sub">Conduce ${esc(car.driver)}</div></div>
         <div class="car-tools"><button class="icon-btn" data-editcar="${esc(car.id)}" aria-label="Editar ${esc(car.model)}">${PENCIL}</button></div></div>
-      <div class="car-body"><span class="front-tag">FRENTE</span>${rows}</div>
+      <div class="car-body${L.bus ? ' bus' : ''}"><span class="front-tag">FRENTE</span>${rows}</div>
       <div class="car-foot">${legName(S.leg)} · ${total - free}/${total} ocupados · ${free} libres</div>
     </article>`;
       }).join('');
@@ -2512,7 +2553,8 @@
     $('#carModel').addEventListener('change', () => {
       if (S.editCar) return;
       const m = norm($('#carModel').value);
-      if (/caravan|spin|sw4|sharan|odyssey|sienna|town/.test(m)) $('#carLayout').value = /sw4/.test(m) ? 'suv7' : 'mv7';
+      if (/colectivo|bus|micro|omnibus|ómnibus|bondi/.test(m)) $('#carLayout').value = 'bus41';
+      else if (/caravan|spin|sw4|sharan|odyssey|sienna|town/.test(m)) $('#carLayout').value = /sw4/.test(m) ? 'suv7' : 'mv7';
     });
     $('#carForm').addEventListener('submit', async e => {
       e.preventDefault();
