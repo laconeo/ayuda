@@ -308,6 +308,10 @@
       align-items: start
     }
 
+    body.is-guest .main {
+      grid-template-columns: minmax(0, 1fr)
+    }
+
     @media (max-width:900px) {
       .main {
         grid-template-columns: minmax(0, 1fr)
@@ -1727,6 +1731,10 @@
           <input type="text" id="authCode" placeholder="Ej: K7M2P9" autocomplete="off"
             style="font-family:var(--f-mono);font-size:20px;letter-spacing:.18em;text-transform:uppercase;text-align:center">
         </div>
+        <div id="guestNameField" hidden>
+          <label for="authGuestName">Tu nombre</label>
+          <input type="text" id="authGuestName" placeholder="Ej: María López" autocomplete="name">
+        </div>
         <div id="regNameField" hidden>
           <label for="authName">Nombre completo</label>
           <input type="text" id="authName" placeholder="Ej: Juan Pérez" autocomplete="name">
@@ -1812,7 +1820,7 @@
         </div>
       </section>
 
-      <aside class="panel" aria-label="Pasajeros">
+      <aside class="panel user-only" aria-label="Pasajeros">
         <div class="section-head">
           <h2>Pasajeros</h2><span class="note" id="paxCount"></span>
         </div>
@@ -2104,11 +2112,14 @@
           const s = S.seats[seatId(car.id, S.leg, code)];
           const p = s && person(s.personId);
           const name = p ? p.name : (s ? s.name : '');
+          const mine = !!(s && isGuest() && S.guest?.personId && s.personId === S.guest.personId);
+          const showName = !isGuest() || mine;
+          const seatTxt = !s ? '' : (showName ? first(name) : (s.confirmed ? 'Confirmado' : 'Reservado'));
           if (!s) free++;
           const cls = !s ? '' : (s.confirmed ? 'ok' : 'held');
           const sel = S.editSeat && S.editSeat.car === car.id && S.editSeat.code === code ? ' sel' : '';
-          const lab = `Asiento ${code}` + (s ? `, ${name}, ${s.confirmed ? 'confirmado' : 'reservado'}` : ', libre');
-          return `<button class="seat ${cls}${sel}" data-car="${esc(car.id)}" data-code="${code}" aria-label="${esc(lab)}"><span class="code">${code}</span>${s ? `<span class="nm">${esc(first(name))}</span>` : ''}</button>`;
+          const lab = `Asiento ${code}` + (s ? `${showName ? ', ' + name : ''}, ${s.confirmed ? 'confirmado' : 'reservado'}` : ', libre');
+          return `<button class="seat ${cls}${sel}" data-car="${esc(car.id)}" data-code="${code}" aria-label="${esc(lab)}"><span class="code">${code}</span>${s ? `<span class="nm">${esc(seatTxt)}</span>` : ''}</button>`;
         }).join('') + '</div>').join('');
         return `<article class="car-card${L.bus ? ' bus-card' : ''}">
       <div class="car-head"><div><h3>${esc(car.model)}</h3><div class="sub">Conduce ${esc(car.driver)}</div></div>
@@ -2147,7 +2158,7 @@
       const p = s && person(s.personId);
       const curName = p ? p.name : (s ? s.name : '');
       if (!canModifySeat(s)) {
-        toast(`Ese asiento es de ${curName}. Solo podés modificar tu propio asiento.`);
+        toast(`Ese asiento está ${s.confirmed ? 'confirmado' : 'reservado'}. Solo podés modificar tu propio asiento.`);
         return;
       }
       S.editSeat = { car: carId, code };
@@ -2155,8 +2166,8 @@
       $('#seatCar').innerHTML = `<b>${esc(car.model)}</b> · ${esc(car.driver)}`;
       $('#seatLeg').textContent = legName(S.leg) + (s ? (s.confirmed ? ' · CONFIRMADO' : ' · RESERVADO') : ' · LIBRE');
       const nameInp = $('#seatName');
-      if (isGuest() && S.guest?.personId) {
-        nameInp.value = S.guest.name || curName;
+      if (isGuest()) {
+        nameInp.value = S.guest?.name || curName;
         nameInp.readOnly = true;
       } else {
         nameInp.value = curName;
@@ -2198,7 +2209,9 @@
         if (legs.includes(l)) {
           if (l !== S.leg && occ && (!p || occ.personId !== p.id)) {
             const op = person(occ.personId);
-            conflict = `El ${code} de la ${l} ya es de ${op ? op.name : occ.name}. Elegí "Solo ${S.leg}" o liberá ese asiento primero.`;
+            conflict = isGuest()
+              ? `El ${code} de la ${l} ya está ocupado. Elegí "Solo ${S.leg}" o elegí otro asiento.`
+              : `El ${code} de la ${l} ya es de ${op ? op.name : occ.name}. Elegí "Solo ${S.leg}" o liberá ese asiento primero.`;
           }
           if (prev && prev.id !== target) { const c = carOf(prev.car); lines.push(`${legName(l)}: se cambia del ${prev.code}${c ? ' (' + c.model + ')' : ''} a este asiento.`); }
         } else if (prev) {
@@ -2441,10 +2454,12 @@
       $('#tabRegister').setAttribute('aria-selected', String(reg));
       $('#tabCode').setAttribute('aria-selected', String(code));
       $('#codeField').hidden = !code;
+      $('#guestNameField').hidden = !code;
       $('#regNameField').hidden = !reg;
       $('#emailField').hidden = code;
       $('#passField').hidden = code;
       $('#authCode').required = code;
+      $('#authGuestName').required = code;
       $('#authName').required = reg;
       $('#authEmail').required = !code;
       $('#authPassword').required = !code;
@@ -2461,10 +2476,12 @@
     $('#tabRegister').addEventListener('click', () => setAuthMode('register'));
     $('#tabCode').addEventListener('click', () => setAuthMode('code'));
 
-    async function enterWithCode(rawCode) {
+    async function enterWithCode(rawCode, rawName) {
       if (!sb) { setAuthMsg('No se pudo inicializar Supabase.', 'err'); return false; }
       const c = String(rawCode || '').trim().toUpperCase();
+      const guestName = String(rawName || '').trim().replace(/\s+/g, ' ');
       if (!c) { setAuthMsg('Escribí el código del evento.', 'err'); return false; }
+      if (!guestName) { setAuthMsg('Escribí tu nombre para ingresar.', 'err'); return false; }
       let { data, error } = await sb.from('events').select('*').eq('code', c).maybeSingle();
       if (!data && !error) {
         const res2 = await sb.from('events').select('*').eq('id', rawCode.trim()).maybeSingle();
@@ -2474,10 +2491,14 @@
         setAuthMsg('Código de evento no encontrado.', 'err');
         return false;
       }
-      const prev = (S.guest && S.guest.eventId === data.id) ? S.guest : {};
-      S.guest = { eventId: data.id, code: data.code || data.id, personId: prev.personId || null, name: prev.name || '' };
-      saveGuest();
+      S.guest = { eventId: data.id, code: data.code || data.id, personId: null, name: guestName };
       await loadGuestEvent(fromEvRow(data));
+      const matched = S.allPeople.find(p => p.event === data.id && norm(p.name) === norm(guestName));
+      if (matched) {
+        S.guest.personId = matched.id;
+        S.guest.name = matched.name;
+      }
+      saveGuest();
       route();
       return true;
     }
@@ -2489,7 +2510,7 @@
       btn.disabled = true;
       if (authMode === 'code') {
         setAuthMsg('Buscando evento…');
-        const ok = await enterWithCode($('#authCode').value);
+        const ok = await enterWithCode($('#authCode').value, $('#authGuestName').value);
         if (!ok) { const c = $('#authCard'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); }
         btn.disabled = false;
         return;
@@ -2862,12 +2883,15 @@
         S.user = session.user;
         await loadAllData();
       } else if (urlCode) {
+        if (S.guest?.code?.toUpperCase() === urlCode.toUpperCase() && S.guest?.name) {
+          await enterWithCode(urlCode, S.guest.name);
+          return;
+        }
         setAuthMode('code');
         $('#authCode').value = urlCode.toUpperCase();
-        await enterWithCode(urlCode);
-        return;
-      } else if (S.guest?.code) {
-        await enterWithCode(S.guest.code);
+        setTimeout(() => $('#authGuestName').focus(), 30);
+      } else if (S.guest?.code && S.guest?.name) {
+        await enterWithCode(S.guest.code, S.guest.name);
         return;
       }
       route();
