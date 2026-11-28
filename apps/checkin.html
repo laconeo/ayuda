@@ -1,1003 +1,2423 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Check-in de Viajes</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-<style>
-/* Layout: departure-board header, cars seen from above (front at top) on the left, passenger manifest on the right. */
-:root{
-  --bg:#edf1f5; --surface:#ffffff; --ink:#101c30; --muted:#5a6a80; --line:#d4dce6;
-  --accent:#0a5bb0; --accent-ink:#ffffff;
-  --board:#101c30; --board-ink:#f4c64a; --board-dim:#8ea0b8;
-  --car:#e3e9f0; --car-edge:#b9c5d3; --glass:#c4d6e8;
-  --free:#ffffff; --free-edge:#a9b7c8;
-  --held:#f2b632; --held-ink:#3a2700; --held-soft:#fdf1d3;
-  --ok:#1e9356; --ok-ink:#ffffff; --ok-soft:#dcf2e5;
-  --driver:#2b3a52; --driver-ink:#e7eef8;
-  --danger:#c23a2b;
-  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
-  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0a121e; --surface:#111c2c; --ink:#e6edf6; --muted:#94a4ba; --line:#22324a;
-  --accent:#5ea6f2; --accent-ink:#06121f;
-  --board:#04090f; --board-ink:#f4c64a; --board-dim:#7d8ea6;
-  --car:#18263a; --car-edge:#2c3e58; --glass:#20354f;
-  --free:#0f1a29; --free-edge:#3b506d;
-  --held:#e7a91f; --held-ink:#2a1c00; --held-soft:#3a2d0c;
-  --ok:#2bb06a; --ok-ink:#04140b; --ok-soft:#10301f;
-  --driver:#33465f; --driver-ink:#e6edf6;
-  --danger:#ef6b5c; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0a121e; --surface:#111c2c; --ink:#e6edf6; --muted:#94a4ba; --line:#22324a;
-  --accent:#5ea6f2; --accent-ink:#06121f;
-  --board:#04090f; --board-ink:#f4c64a; --board-dim:#7d8ea6;
-  --car:#18263a; --car-edge:#2c3e58; --glass:#20354f;
-  --free:#0f1a29; --free-edge:#3b506d;
-  --held:#e7a91f; --held-ink:#2a1c00; --held-soft:#3a2d0c;
-  --ok:#2bb06a; --ok-ink:#04140b; --ok-soft:#10301f;
-  --driver:#33465f; --driver-ink:#e6edf6;
-  --danger:#ef6b5c; color-scheme:dark}
+<!doctype html>
+<html>
 
-*{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
-.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;display:flex;flex-direction:column;gap:20px}
-button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-h1,h2,h3{margin:0;text-wrap:balance}
+<head>
+  <meta charset=utf8>
+  <meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <style>
+    :root {
+      color-scheme: light;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
 
-/* Board */
-.board{background:var(--board);color:var(--board-ink);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
-.board-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
-.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--board-dim)}
-.trip-title{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1;letter-spacing:.02em;text-transform:uppercase;background:none;border:0;padding:0;color:var(--board-ink);text-align:left}
-.trip-title:hover{text-decoration:underline dotted;text-underline-offset:6px}
-.trip-input{font-family:var(--f-display);font-weight:700;font-size:32px;text-transform:uppercase;background:transparent;color:var(--board-ink);border:0;border-bottom:2px solid var(--board-ink);width:min(100%,520px)}
-.legs{display:inline-flex;border:1px solid var(--board-dim);border-radius:10px;padding:3px;gap:3px}
-.legs button{background:none;border:0;border-radius:7px;padding:8px 18px;font-family:var(--f-display);font-weight:600;font-size:18px;letter-spacing:.08em;color:var(--board-dim)}
-.legs button[aria-pressed="true"]{background:var(--board-ink);color:var(--board)}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.stat{border-top:1px solid #ffffff22;padding-top:10px;display:flex;flex-direction:column;gap:4px;min-width:0}
-.stat .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--board-dim)}
-.stat .val{font-family:var(--f-mono);font-size:15px;font-variant-numeric:tabular-nums;color:var(--board-ink)}
-.stat .val b{font-size:22px}
-.done-flag{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;padding:3px 8px;border-radius:5px;background:var(--ok);color:var(--ok-ink);align-self:flex-start}
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
 
-/* Main */
-.main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
-@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.section-head h2{font-family:var(--f-display);font-weight:600;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
-.btn{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 14px;font-weight:500;font-size:14px}
-.btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn.ghost{background:none;border-color:transparent;color:var(--muted)}
-.btn.danger{color:var(--danger)}
-.btn.armed{background:var(--danger);border-color:var(--danger);color:#fff}
-.btn:disabled{opacity:.5;cursor:default}
+    body {
+      margin: 0;
+      padding: 0;
+      font: 14px -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff;
+      color: #000
+    }
 
-.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.sw{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--free-edge);background:var(--free)}
-.sw.h{background:var(--held);border-color:var(--held)}
-.sw.o{background:var(--ok);border-color:var(--ok)}
-.sw.d{background:var(--driver);border-color:var(--driver)}
+    img {
+      max-width: 100%
+    }
 
-.cars{display:flex;flex-wrap:wrap;gap:18px}
-.car-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px;align-items:center;flex:1 1 260px;max-width:100%}
-.car-head{align-self:stretch;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.car-head h3{font-family:var(--f-display);font-weight:600;font-size:22px;line-height:1.05}
-.car-head .sub{font-size:13px;color:var(--muted)}
-.car-tools{display:flex;gap:4px}
-.icon-btn{border:0;background:none;color:var(--muted);padding:6px;border-radius:7px;line-height:0}
-.icon-btn:hover{background:var(--bg);color:var(--ink)}
+    [hidden]:not([hidden=until-found i]) {
+      display: none !important
+    }
+  </style>
+</head>
 
-.car-body{position:relative;background:var(--car);border:2px solid var(--car-edge);border-radius:70px 70px 30px 30px;padding:62px 16px 22px;display:flex;flex-direction:column;gap:12px}
-.car-body::before{content:"";position:absolute;left:22px;right:22px;top:20px;height:22px;border-radius:40px 40px 6px 6px;background:var(--glass)}
-.car-body::after{content:"";position:absolute;left:28px;right:28px;bottom:8px;height:6px;border-radius:4px;background:var(--glass)}
-.front-tag{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;background:var(--surface);color:var(--muted);padding:1px 8px;border-radius:5px;border:1px solid var(--line)}
-.row{display:grid;grid-template-columns:repeat(3,62px);gap:8px;position:relative}
-.row-num{position:absolute;left:-14px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);font-size:10px;color:var(--muted)}
-.aisle{display:block}
-.seat{height:66px;border-radius:12px 12px 8px 8px;border:2px solid var(--free-edge);background:var(--free);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 3px;position:relative;transition:transform .12s ease}
-.seat:hover:not(:disabled){transform:translateY(-2px);border-color:var(--accent)}
-.seat .code{font-family:var(--f-mono);font-weight:600;font-size:12px;color:var(--muted)}
-.seat .nm{font-size:11.5px;font-weight:600;line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.seat.held{background:var(--held);border-color:var(--held);color:var(--held-ink)}
-.seat.held .code{color:var(--held-ink);opacity:.75}
-.seat.ok{background:var(--ok);border-color:var(--ok);color:var(--ok-ink)}
-.seat.ok .code{color:var(--ok-ink);opacity:.8}
-.seat.ok::after{content:"✓";position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;background:var(--surface);color:var(--ok);font-size:12px;font-weight:700;display:grid;place-items:center;border:2px solid var(--ok)}
-.seat.driver{background:var(--driver);border-color:var(--driver);color:var(--driver-ink);cursor:default}
-.seat.driver svg{width:20px;height:20px}
-.seat.sel{outline:3px solid var(--accent);outline-offset:2px}
-.car-foot{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+<body>
+  <title>Check-in de Viajes</title>
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    /* Layout: departure-board header, cars seen from above (front at top) on the left, passenger manifest on the right. */
+    :root {
+      --bg: #edf1f5;
+      --surface: #ffffff;
+      --ink: #101c30;
+      --muted: #5a6a80;
+      --line: #d4dce6;
+      --accent: #0a5bb0;
+      --accent-ink: #ffffff;
+      --board: #101c30;
+      --board-ink: #f4c64a;
+      --board-dim: #8ea0b8;
+      --car: #e3e9f0;
+      --car-edge: #b9c5d3;
+      --glass: #c4d6e8;
+      --free: #ffffff;
+      --free-edge: #a9b7c8;
+      --held: #f2b632;
+      --held-ink: #3a2700;
+      --held-soft: #fdf1d3;
+      --ok: #1e9356;
+      --ok-ink: #ffffff;
+      --ok-soft: #dcf2e5;
+      --driver: #2b3a52;
+      --driver-ink: #e7eef8;
+      --danger: #c23a2b;
+      --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+      --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    }
 
-.empty{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:28px;color:var(--muted);text-align:center;flex:1}
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0a121e;
+        --surface: #111c2c;
+        --ink: #e6edf6;
+        --muted: #94a4ba;
+        --line: #22324a;
+        --accent: #5ea6f2;
+        --accent-ink: #06121f;
+        --board: #04090f;
+        --board-ink: #f4c64a;
+        --board-dim: #7d8ea6;
+        --car: #18263a;
+        --car-edge: #2c3e58;
+        --glass: #20354f;
+        --free: #0f1a29;
+        --free-edge: #3b506d;
+        --held: #e7a91f;
+        --held-ink: #2a1c00;
+        --held-soft: #3a2d0c;
+        --ok: #2bb06a;
+        --ok-ink: #04140b;
+        --ok-soft: #10301f;
+        --driver: #33465f;
+        --driver-ink: #e6edf6;
+        --danger: #ef6b5c;
+        color-scheme: dark
+      }
+    }
 
-/* Manifest */
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.add-row{display:flex;gap:8px}
-.add-row input{flex:1;min-width:0}
-input[type=text],select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%}
-.manifest{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.manifest li{display:grid;grid-template-columns:minmax(0,1fr) 80px 80px 28px 28px;gap:6px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
-.manifest li:first-child{border-top:0}
-.manifest .pname{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mhead{display:grid;grid-template-columns:minmax(0,1fr) 80px 80px 28px 28px;gap:6px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
-.chip{width:80px;font-family:var(--f-mono);font-size:11.5px;font-weight:600;border-radius:6px;padding:4px 6px;border:1px solid var(--line);background:none;color:var(--muted);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chip.h{background:var(--held-soft);border-color:var(--held);color:var(--ink)}
-.chip.o{background:var(--ok-soft);border-color:var(--ok);color:var(--ink)}
-.note{font-size:13px;color:var(--muted)}
-.tools{display:flex;flex-wrap:wrap;gap:8px}
+    :root[data-theme="dark"] {
+      --bg: #0a121e;
+      --surface: #111c2c;
+      --ink: #e6edf6;
+      --muted: #94a4ba;
+      --line: #22324a;
+      --accent: #5ea6f2;
+      --accent-ink: #06121f;
+      --board: #04090f;
+      --board-ink: #f4c64a;
+      --board-dim: #7d8ea6;
+      --car: #18263a;
+      --car-edge: #2c3e58;
+      --glass: #20354f;
+      --free: #0f1a29;
+      --free-edge: #3b506d;
+      --held: #e7a91f;
+      --held-ink: #2a1c00;
+      --held-soft: #3a2d0c;
+      --ok: #2bb06a;
+      --ok-ink: #04140b;
+      --ok-soft: #10301f;
+      --driver: #33465f;
+      --driver-ink: #e6edf6;
+      --danger: #ef6b5c;
+      color-scheme: dark
+    }
 
-/* Modal */
-.overlay{position:fixed;inset:0;background:#0a1220a8;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.sheet{background:var(--surface);color:var(--ink);border-radius:16px;width:min(440px,100%);max-height:100%;overflow:auto;display:flex;flex-direction:column}
-@media (max-width:520px){.overlay{align-items:flex-end;padding:0}.sheet{border-radius:16px 16px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}}
-.pass-top{background:var(--board);color:var(--board-ink);padding:16px 20px;display:flex;justify-content:space-between;gap:12px;align-items:flex-end;border-radius:16px 16px 0 0}
-.pass-top .big{font-family:var(--f-display);font-weight:700;font-size:44px;line-height:.9}
-.pass-top .meta{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-align:right;color:var(--board-dim)}
-.pass-top .meta b{color:var(--board-ink);font-weight:600}
-.perf{height:0;border-top:2px dashed var(--line);margin:0 14px}
-.sheet-body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field label{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.check{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
-.check input{width:20px;height:20px;accent-color:var(--ok);margin:0;flex:none}
-.check small{display:block;color:var(--muted)}
-.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
-.actions .right{display:flex;gap:8px;margin-left:auto}
-.hint{font-size:13px;color:var(--muted);min-height:1em}
+    * {
+      box-sizing: border-box
+    }
 
-.banner{background:var(--held-soft);border:1px solid var(--held);border-radius:10px;padding:10px 14px;font-size:14px}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:60;max-width:calc(100% - 32px)}
-/* Flight info */
-.flight{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-top:1px solid #ffffff22;padding-top:12px}
-@media (max-width:700px){.flight{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.fi{display:flex;flex-direction:column;gap:3px;min-width:0}
-.fi .lbl{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--board-dim)}
-.fi .t{font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1;color:var(--board-ink);font-variant-numeric:tabular-nums}
-.fi .p{font-size:13.5px;color:#e6edf6;overflow-wrap:anywhere}
-.fi .p.dim{color:var(--board-dim);font-style:italic}
-.board-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.board-btn{background:none;border:1px solid var(--board-dim);color:var(--board-ink);border-radius:8px;padding:6px 12px;font-size:13px}
-.board-btn:hover{border-color:var(--board-ink)}
-.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
-.fs-title{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
-input[type=date],input[type=time]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 10px;width:100%}
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-body);
+      font-size: 15px;
+      line-height: 1.45
+    }
 
-/* Leg choice */
-.seg{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
-.seg legend{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:0;margin-bottom:6px}
-.seg-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.seg label{position:relative}
-.seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.seg span{display:block;text-align:center;padding:9px 4px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-weight:500}
-.seg input:checked + span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+      padding-block: 20px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
 
-/* Boarding pass */
-.pass-sheet{width:min(560px,100%)}
-.bp-wrap{padding:16px}
-.bp{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-.bp-head{background:var(--board);color:var(--board-ink);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.bp-head .brand{font-family:var(--f-display);font-weight:700;font-size:20px;letter-spacing:.14em}
-.bp-head .trip{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;color:var(--board-dim);text-align:right;text-transform:uppercase}
-.bp-body{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
-.bp-route{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
-.bp-route .end:last-child{text-align:right}
-.iata{font-family:var(--f-display);font-weight:700;font-size:46px;line-height:.9;letter-spacing:.02em}
-.place{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
-.bp-route svg{width:44px;height:24px;color:var(--accent)}
-.k{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.v{font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.bp-name .v{font-family:var(--f-display);font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
-.bp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.bp-grid > div,.bp-name{display:flex;flex-direction:column;gap:2px;min-width:0}
-.bp-legs{display:flex;flex-direction:column;gap:8px}
-.bp-leg{display:grid;grid-template-columns:70px 60px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
-.bp-leg .lg{font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:.06em}
-.bp-leg .st{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1;color:var(--accent)}
-.bp-leg .info{font-size:12.5px;color:var(--muted);min-width:0}
-.bp-leg .info b{color:var(--ink);font-weight:600}
-.badge{font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;padding:3px 7px;border-radius:5px;white-space:nowrap}
-.badge.o{background:var(--ok);color:var(--ok-ink)}
-.badge.h{background:var(--held);color:var(--held-ink)}
-.badge.n{border:1px solid var(--line);color:var(--muted)}
-.bp-tear{border-top:2px dashed var(--line);margin:0 12px;position:relative}
-.bp-foot{padding:12px 18px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.bp-foot svg{height:44px;width:200px;max-width:60%;color:var(--ink)}
-.bp-foot .ref{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;color:var(--muted);text-align:right}
-@media (max-width:480px){.bp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bp-leg{grid-template-columns:56px 48px minmax(0,1fr)}.bp-leg .badge{grid-column:3}.iata{font-size:38px}}
-.pass-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;padding:0 16px 16px}
-.pass-btn{border:0;background:none;color:var(--accent);padding:4px;border-radius:6px;line-height:0}
-.pass-btn:hover{background:var(--bg)}
-.pass-btn:disabled{color:var(--line);cursor:default;background:none}
-body:not(.is-admin) .admin-only{display:none!important}
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer
+    }
 
-/* PIN */
-.pin-view{min-height:100%;display:flex;align-items:center;justify-content:center;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px}
-.pin-card{background:var(--board);color:var(--board-ink);border-radius:18px;padding:28px 24px;width:min(360px,100%);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
-.pin-title{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1;text-transform:uppercase;letter-spacing:.03em}
-.pin-sub{margin:0;color:var(--board-dim);font-size:14px;max-width:30ch}
-.pin-dots{display:flex;gap:14px;margin-top:8px}
-.pin-dots span{width:18px;height:18px;border-radius:50%;border:2px solid var(--board-ink)}
-.pin-dots span.on{background:var(--board-ink)}
-.pin-msg{margin:0;min-height:2.6em;font-size:13.5px;color:var(--board-dim)}
-.keypad{display:grid;grid-template-columns:repeat(3,72px);gap:10px}
-.keypad button{height:58px;border-radius:12px;border:1px solid #ffffff2a;background:#ffffff0d;color:var(--board-ink);font-family:var(--f-display);font-size:28px;font-weight:600}
-.keypad button:hover:not(:disabled){background:#ffffff1f}
-.keypad button:disabled{opacity:.35;cursor:default}
-.shake{animation:shake .35s}
-.login-step{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
-.ward-list{display:flex;flex-direction:column;gap:8px;width:100%}
-.ward-list button{background:#ffffff0d;border:1px solid #ffffff2a;border-radius:12px;padding:12px 14px;color:var(--board-ink);text-align:left;display:flex;flex-direction:column;gap:2px}
-.ward-list button:hover{background:#ffffff1f}
-.ward-list b{font-family:var(--f-display);font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:1}
-.ward-list small{color:var(--board-dim);font-size:12.5px}
-.ward-chosen{background:none;border:1px solid var(--board-dim);border-radius:999px;color:var(--board-ink);padding:5px 14px;font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
-.ward-chosen::after{content:"  · cambiar";font-family:var(--f-body);font-size:12px;text-transform:none;letter-spacing:0;color:var(--board-dim)}
-.link-btn{background:none;border:0;color:var(--board-dim);font-size:13px;text-decoration:underline;text-underline-offset:3px;padding:4px}
-.board-select{font:inherit;font-size:13px;background:var(--board);color:var(--board-ink);border:1px solid var(--board-dim);border-radius:8px;padding:6px 10px;width:auto;max-width:100%}
-.ward-rows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.ward-rows li{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
-.ward-rows li:first-child{border-top:0}
-.ward-rows .wn{font-weight:600;overflow-wrap:anywhere}
-.ward-rows .wn small{display:block;font-weight:400;color:var(--muted)}
-.ward-rows .wp{font-family:var(--f-mono);font-size:14px;letter-spacing:.2em;background:var(--bg);border-radius:6px;padding:3px 8px}
-@keyframes shake{25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px
+    }
 
-/* Home */
-.home-sub{margin:0;color:var(--board-dim);font-size:14px;max-width:62ch}
-.board-btn.solid{background:var(--board-ink);color:var(--board);border-color:var(--board-ink);font-weight:600}
-.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-@media (max-width:420px){.ev-grid{grid-template-columns:minmax(0,1fr)}}
-.ev-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.ev-card.past{opacity:.65}
-.ev-top{display:flex;align-items:center;gap:8px}
-.ev-type{font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;padding:3px 7px;border-radius:5px;background:var(--board);color:var(--board-ink)}
-.ev-date{font-size:13px;color:var(--muted);flex:1;min-width:0}
-.ev-title{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1.05;text-transform:uppercase;letter-spacing:.02em}
-.ev-route{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);align-items:center;gap:8px;font-size:13.5px}
-.ev-route span:last-child{text-align:right}
-.ev-route svg{width:36px;height:20px;color:var(--accent)}
-.ev-times{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-block:1px solid var(--line);padding-block:10px}
-.ev-times > div{display:flex;flex-direction:column;gap:2px}
-.ev-times .v{font-family:var(--f-display);font-size:22px;font-weight:700}
-.ev-stats{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
-.ev-stats b{color:var(--ink);font-variant-numeric:tabular-nums}
-.ev-actions{display:flex;flex-wrap:wrap;gap:8px}
-.ev-actions .btn{flex:1 1 140px}
-.past-h{font-family:var(--f-display);font-weight:600;font-size:20px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:12px 0 10px}
-@media (prefers-reduced-motion:reduce){.seat{transition:none}.shake{animation:none}}
-</style>
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      text-wrap: balance
+    }
 
-<div class="pin-view" id="pinView">
-  <div class="pin-card" id="pinCard">
-    <span class="eyebrow">Iniciar sesión</span>
-    <h1 class="pin-title">Check-in de viajes</h1>
-    <div class="login-step" id="stepWard">
-      <p class="pin-sub">Elegí tu barrio</p>
-      <div class="ward-list" id="wardList"></div>
-    </div>
-    <div class="login-step" id="stepPin" hidden>
-      <button class="ward-chosen" id="wardChosen" title="Cambiar de barrio"></button>
-      <p class="pin-sub">Ingresá el PIN de 4 números de tu barrio</p>
-      <div class="pin-dots" id="pinDots" aria-live="polite"></div>
-      <div class="keypad" id="keypad">
-        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
-        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
-        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
-        <span></span><button data-k="0">0</button><button data-k="del" aria-label="Borrar">⌫</button>
+    /* Board */
+    .board {
+      background: var(--board);
+      color: var(--board-ink);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .board-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px
+    }
+
+    .eyebrow {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--board-dim)
+    }
+
+    .trip-title {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: clamp(28px, 5vw, 40px);
+      line-height: 1;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      background: none;
+      border: 0;
+      padding: 0;
+      color: var(--board-ink);
+      text-align: left
+    }
+
+    .trip-title:hover {
+      text-decoration: underline dotted;
+      text-underline-offset: 6px
+    }
+
+    .trip-input {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 32px;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--board-ink);
+      border: 0;
+      border-bottom: 2px solid var(--board-ink);
+      width: min(100%, 520px)
+    }
+
+    .legs {
+      display: inline-flex;
+      border: 1px solid var(--board-dim);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 3px
+    }
+
+    .legs button {
+      background: none;
+      border: 0;
+      border-radius: 7px;
+      padding: 8px 18px;
+      font-family: var(--f-display);
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: .08em;
+      color: var(--board-dim)
+    }
+
+    .legs button[aria-pressed="true"] {
+      background: var(--board-ink);
+      color: var(--board)
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px
+    }
+
+    .stat {
+      border-top: 1px solid #ffffff22;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0
+    }
+
+    .stat .lbl {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: var(--board-dim)
+    }
+
+    .stat .val {
+      font-family: var(--f-mono);
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      color: var(--board-ink)
+    }
+
+    .stat .val b {
+      font-size: 22px
+    }
+
+    .done-flag {
+      font-family: var(--f-mono);
+      font-size: 12px;
+      letter-spacing: .1em;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--ok);
+      color: var(--ok-ink);
+      align-self: flex-start
+    }
+
+    /* Main */
+    .main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 20px;
+      align-items: start
+    }
+
+    @media (max-width:900px) {
+      .main {
+        grid-template-columns: minmax(0, 1fr)
+      }
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .section-head h2 {
+      font-family: var(--f-display);
+      font-weight: 600;
+      font-size: 22px;
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 9px;
+      padding: 8px 14px;
+      font-weight: 500;
+      font-size: 14px
+    }
+
+    .btn:hover {
+      border-color: var(--accent)
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink)
+    }
+
+    .btn.ghost {
+      background: none;
+      border-color: transparent;
+      color: var(--muted)
+    }
+
+    .btn.danger {
+      color: var(--danger)
+    }
+
+    .btn.armed {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: default
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .sw {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1.5px solid var(--free-edge);
+      background: var(--free)
+    }
+
+    .sw.h {
+      background: var(--held);
+      border-color: var(--held)
+    }
+
+    .sw.o {
+      background: var(--ok);
+      border-color: var(--ok)
+    }
+
+    .sw.d {
+      background: var(--driver);
+      border-color: var(--driver)
+    }
+
+    .cars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px
+    }
+
+    .car-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+      flex: 1 1 260px;
+      max-width: 100%
+    }
+
+    .car-head {
+      align-self: stretch;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px
+    }
+
+    .car-head h3 {
+      font-family: var(--f-display);
+      font-weight: 600;
+      font-size: 22px;
+      line-height: 1.05
+    }
+
+    .car-head .sub {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .car-tools {
+      display: flex;
+      gap: 4px
+    }
+
+    .icon-btn {
+      border: 0;
+      background: none;
+      color: var(--muted);
+      padding: 6px;
+      border-radius: 7px;
+      line-height: 0
+    }
+
+    .icon-btn:hover {
+      background: var(--bg);
+      color: var(--ink)
+    }
+
+    .car-body {
+      position: relative;
+      background: var(--car);
+      border: 2px solid var(--car-edge);
+      border-radius: 70px 70px 30px 30px;
+      padding: 62px 16px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .car-body::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 20px;
+      height: 22px;
+      border-radius: 40px 40px 6px 6px;
+      background: var(--glass)
+    }
+
+    .car-body::after {
+      content: "";
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 8px;
+      height: 6px;
+      border-radius: 4px;
+      background: var(--glass)
+    }
+
+    .front-tag {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--f-mono);
+      font-size: 10px;
+      letter-spacing: .16em;
+      background: var(--surface);
+      color: var(--muted);
+      padding: 1px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--line)
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(3, 62px);
+      gap: 8px;
+      position: relative
+    }
+
+    .row-num {
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--f-mono);
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    .aisle {
+      display: block
+    }
+
+    .seat {
+      height: 66px;
+      border-radius: 12px 12px 8px 8px;
+      border: 2px solid var(--free-edge);
+      background: var(--free);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px 3px;
+      position: relative;
+      transition: transform .12s ease
+    }
+
+    .seat:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: var(--accent)
+    }
+
+    .seat .code {
+      font-family: var(--f-mono);
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .seat .nm {
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.1;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .seat.held {
+      background: var(--held);
+      border-color: var(--held);
+      color: var(--held-ink)
+    }
+
+    .seat.held .code {
+      color: var(--held-ink);
+      opacity: .75
+    }
+
+    .seat.ok {
+      background: var(--ok);
+      border-color: var(--ok);
+      color: var(--ok-ink)
+    }
+
+    .seat.ok .code {
+      color: var(--ok-ink);
+      opacity: .8
+    }
+
+    .seat.ok::after {
+      content: "✓";
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--ok);
+      font-size: 12px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--ok)
+    }
+
+    .seat.driver {
+      background: var(--driver);
+      border-color: var(--driver);
+      color: var(--driver-ink);
+      cursor: default
+    }
+
+    .seat.driver svg {
+      width: 20px;
+      height: 20px
+    }
+
+    .seat.sel {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px
+    }
+
+    .car-foot {
+      font-family: var(--f-mono);
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums
+    }
+
+    .empty {
+      background: var(--surface);
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      color: var(--muted);
+      text-align: center;
+      flex: 1
+    }
+
+    /* Manifest */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0
+    }
+
+    .add-row {
+      display: flex;
+      gap: 8px
+    }
+
+    .add-row input {
+      flex: 1;
+      min-width: 0
+    }
+
+    input[type=text],
+    select {
+      font: inherit;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 11px;
+      width: 100%
+    }
+
+    .manifest {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column
+    }
+
+    .manifest li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 80px 80px 28px 28px;
+      gap: 6px;
+      align-items: center;
+      padding: 8px 0;
+      border-top: 1px solid var(--line)
+    }
+
+    .manifest li:first-child {
+      border-top: 0
+    }
+
+    .manifest .pname {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .mhead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 80px 80px 28px 28px;
+      gap: 6px;
+      font-family: var(--f-mono);
+      font-size: 10.5px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase
+    }
+
+    .chip {
+      width: 80px;
+      font-family: var(--f-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 6px;
+      padding: 4px 6px;
+      border: 1px solid var(--line);
+      background: none;
+      color: var(--muted);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .chip.h {
+      background: var(--held-soft);
+      border-color: var(--held);
+      color: var(--ink)
+    }
+
+    .chip.o {
+      background: var(--ok-soft);
+      border-color: var(--ok);
+      color: var(--ink)
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    /* Modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: #0a1220a8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))
+    }
+
+    .sheet {
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 16px;
+      width: min(440px, 100%);
+      max-height: 100%;
+      overflow: auto;
+      display: flex;
+      flex-direction: column
+    }
+
+    @media (max-width:520px) {
+      .overlay {
+        align-items: flex-end;
+        padding: 0
+      }
+
+      .sheet {
+        border-radius: 16px 16px 0 0;
+        padding-bottom: env(safe-area-inset-bottom, 0px)
+      }
+    }
+
+    .pass-top {
+      background: var(--board);
+      color: var(--board-ink);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-end;
+      border-radius: 16px 16px 0 0
+    }
+
+    .pass-top .big {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 44px;
+      line-height: .9
+    }
+
+    .pass-top .meta {
+      font-family: var(--f-mono);
+      font-size: 11.5px;
+      letter-spacing: .08em;
+      text-align: right;
+      color: var(--board-dim)
+    }
+
+    .pass-top .meta b {
+      color: var(--board-ink);
+      font-weight: 600
+    }
+
+    .perf {
+      height: 0;
+      border-top: 2px dashed var(--line);
+      margin: 0 14px
+    }
+
+    .sheet-body {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .field label {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    .check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer
+    }
+
+    .check input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--ok);
+      margin: 0;
+      flex: none
+    }
+
+    .check small {
+      display: block;
+      color: var(--muted)
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between
+    }
+
+    .actions .right {
+      display: flex;
+      gap: 8px;
+      margin-left: auto
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 1em
+    }
+
+    .banner {
+      background: var(--held-soft);
+      border: 1px solid var(--held);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: var(--bg);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      z-index: 60;
+      max-width: calc(100% - 32px)
+    }
+
+    /* Flight info */
+    .flight {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      border-top: 1px solid #ffffff22;
+      padding-top: 12px
+    }
+
+    @media (max-width:700px) {
+      .flight {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+    }
+
+    .fi {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0
+    }
+
+    .fi .lbl {
+      font-family: var(--f-mono);
+      font-size: 10.5px;
+      letter-spacing: .14em;
+      color: var(--board-dim)
+    }
+
+    .fi .t {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 28px;
+      line-height: 1;
+      color: var(--board-ink);
+      font-variant-numeric: tabular-nums
+    }
+
+    .fi .p {
+      font-size: 13.5px;
+      color: #e6edf6;
+      overflow-wrap: anywhere
+    }
+
+    .fi .p.dim {
+      color: var(--board-dim);
+      font-style: italic
+    }
+
+    .board-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center
+    }
+
+    .board-btn {
+      background: none;
+      border: 1px solid var(--board-dim);
+      color: var(--board-ink);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px
+    }
+
+    .board-btn:hover {
+      border-color: var(--board-ink)
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px
+    }
+
+    .fs-title {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      margin-top: 2px
+    }
+
+    input[type=date],
+    input[type=time] {
+      font: inherit;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 8px 10px;
+      width: 100%
+    }
+
+    /* Leg choice */
+    .seg {
+      border: 0;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .seg legend {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0;
+      margin-bottom: 6px
+    }
+
+    .seg-opts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px
+    }
+
+    .seg label {
+      position: relative
+    }
+
+    .seg input {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      margin: 0;
+      cursor: pointer
+    }
+
+    .seg span {
+      display: block;
+      text-align: center;
+      padding: 9px 4px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 500
+    }
+
+    .seg input:checked+span {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink)
+    }
+
+    .seg input:focus-visible+span {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px
+    }
+
+    /* Boarding pass */
+    .pass-sheet {
+      width: min(560px, 100%)
+    }
+
+    .bp-wrap {
+      padding: 16px
+    }
+
+    .bp {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column
+    }
+
+    .bp-head {
+      background: var(--board);
+      color: var(--board-ink);
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px
+    }
+
+    .bp-head .brand {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: .14em
+    }
+
+    .bp-head .trip {
+      font-family: var(--f-mono);
+      font-size: 11.5px;
+      letter-spacing: .08em;
+      color: var(--board-dim);
+      text-align: right;
+      text-transform: uppercase
+    }
+
+    .bp-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .bp-route {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 10px
+    }
+
+    .bp-route .end:last-child {
+      text-align: right
+    }
+
+    .iata {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 46px;
+      line-height: .9;
+      letter-spacing: .02em
+    }
+
+    .place {
+      font-size: 12.5px;
+      color: var(--muted);
+      overflow-wrap: anywhere
+    }
+
+    .bp-route svg {
+      width: 44px;
+      height: 24px;
+      color: var(--accent)
+    }
+
+    .k {
+      font-family: var(--f-mono);
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted)
+    }
+
+    .v {
+      font-weight: 600;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere
+    }
+
+    .bp-name .v {
+      font-family: var(--f-display);
+      font-size: 26px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .03em
+    }
+
+    .bp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px
+    }
+
+    .bp-grid>div,
+    .bp-name {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0
+    }
+
+    .bp-legs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .bp-leg {
+      display: grid;
+      grid-template-columns: 70px 60px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px
+    }
+
+    .bp-leg .lg {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: .06em
+    }
+
+    .bp-leg .st {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 1;
+      color: var(--accent)
+    }
+
+    .bp-leg .info {
+      font-size: 12.5px;
+      color: var(--muted);
+      min-width: 0
+    }
+
+    .bp-leg .info b {
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    .badge {
+      font-family: var(--f-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      padding: 3px 7px;
+      border-radius: 5px;
+      white-space: nowrap
+    }
+
+    .badge.o {
+      background: var(--ok);
+      color: var(--ok-ink)
+    }
+
+    .badge.h {
+      background: var(--held);
+      color: var(--held-ink)
+    }
+
+    .badge.n {
+      border: 1px solid var(--line);
+      color: var(--muted)
+    }
+
+    .bp-tear {
+      border-top: 2px dashed var(--line);
+      margin: 0 12px;
+      position: relative
+    }
+
+    .bp-foot {
+      padding: 12px 18px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px
+    }
+
+    .bp-foot svg {
+      height: 44px;
+      width: 200px;
+      max-width: 60%;
+      color: var(--ink)
+    }
+
+    .bp-foot .ref {
+      font-family: var(--f-mono);
+      font-size: 12px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-align: right
+    }
+
+    @media (max-width:480px) {
+      .bp-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+
+      .bp-leg {
+        grid-template-columns: 56px 48px minmax(0, 1fr)
+      }
+
+      .bp-leg .badge {
+        grid-column: 3
+      }
+
+      .iata {
+        font-size: 38px
+      }
+    }
+
+    .pass-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      padding: 0 16px 16px
+    }
+
+    .pass-btn {
+      border: 0;
+      background: none;
+      color: var(--accent);
+      padding: 4px;
+      border-radius: 6px;
+      line-height: 0
+    }
+
+    .pass-btn:hover {
+      background: var(--bg)
+    }
+
+    .pass-btn:disabled {
+      color: var(--line);
+      cursor: default;
+      background: none
+    }
+
+    body:not(.is-owner) .owner-only {
+      display: none !important
+    }
+
+    /* Auth */
+    .pin-view {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+      padding-block: 40px
+    }
+
+    .pin-card {
+      background: var(--board);
+      color: var(--board-ink);
+      border-radius: 18px;
+      padding: 28px 24px;
+      width: min(400px, 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center
+    }
+
+    .pin-title {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 34px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: .03em
+    }
+
+    .pin-sub {
+      margin: 0;
+      color: var(--board-dim);
+      font-size: 14px;
+      max-width: 34ch
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      width: 100%;
+      border: 1px solid #ffffff2a;
+      border-radius: 10px;
+      padding: 3px
+    }
+
+    .auth-tabs button {
+      background: none;
+      border: 0;
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-family: var(--f-display);
+      font-weight: 600;
+      font-size: 17px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--board-dim)
+    }
+
+    .auth-tabs button[aria-selected="true"] {
+      background: var(--board-ink);
+      color: var(--board)
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      text-align: left
+    }
+
+    .auth-form label {
+      font-family: var(--f-mono);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--board-dim);
+      display: block;
+      margin-bottom: 4px
+    }
+
+    .auth-form input {
+      font: inherit;
+      color: #ffffff;
+      background: #ffffff12;
+      border: 1px solid #ffffff2a;
+      border-radius: 9px;
+      padding: 10px 12px;
+      width: 100%
+    }
+
+    .auth-form input::placeholder {
+      color: #ffffff55
+    }
+
+    .auth-form input:focus {
+      border-color: var(--board-ink);
+      outline: none
+    }
+
+    .auth-submit {
+      margin-top: 4px;
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      background: var(--board-ink);
+      color: var(--board);
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: .06em;
+      text-transform: uppercase
+    }
+
+    .auth-submit:disabled {
+      opacity: .5;
+      cursor: default
+    }
+
+    .pin-msg {
+      margin: 0;
+      min-height: 1.4em;
+      font-size: 13.5px;
+      color: var(--board-dim);
+      text-align: center
+    }
+
+    .pin-msg.err {
+      color: #ff8a80
+    }
+
+    .pin-msg.ok {
+      color: #7dd3a0
+    }
+
+    .shake {
+      animation: shake .35s
+    }
+
+    .board-select {
+      font: inherit;
+      font-size: 13px;
+      background: var(--board);
+      color: var(--board-ink);
+      border: 1px solid var(--board-dim);
+      border-radius: 8px;
+      padding: 6px 10px;
+      width: auto;
+      max-width: 100%
+    }
+
+    .ev-owner {
+      font-family: var(--f-mono);
+      font-size: 10.5px;
+      color: var(--muted)
+    }
+
+    @keyframes shake {
+      25% {
+        transform: translateX(-8px)
+      }
+
+      50% {
+        transform: translateX(8px)
+      }
+
+      75% {
+        transform: translateX(-4px)
+      }
+    }
+
+    /* Home */
+    .home-sub {
+      margin: 0;
+      color: var(--board-dim);
+      font-size: 14px;
+      max-width: 62ch
+    }
+
+    .board-btn.solid {
+      background: var(--board-ink);
+      color: var(--board);
+      border-color: var(--board-ink);
+      font-weight: 600
+    }
+
+    .ev-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px
+    }
+
+    @media (max-width:420px) {
+      .ev-grid {
+        grid-template-columns: minmax(0, 1fr)
+      }
+    }
+
+    .ev-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0
+    }
+
+    .ev-card.past {
+      opacity: .65
+    }
+
+    .ev-top {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .ev-type {
+      font-family: var(--f-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: var(--board);
+      color: var(--board-ink)
+    }
+
+    .ev-date {
+      font-size: 13px;
+      color: var(--muted);
+      flex: 1;
+      min-width: 0
+    }
+
+    .ev-title {
+      font-family: var(--f-display);
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: .02em
+    }
+
+    .ev-route {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px
+    }
+
+    .ev-route span:last-child {
+      text-align: right
+    }
+
+    .ev-route svg {
+      width: 36px;
+      height: 20px;
+      color: var(--accent)
+    }
+
+    .ev-times {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      border-block: 1px solid var(--line);
+      padding-block: 10px
+    }
+
+    .ev-times>div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    .ev-times .v {
+      font-family: var(--f-display);
+      font-size: 22px;
+      font-weight: 700
+    }
+
+    .ev-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .ev-stats b {
+      color: var(--ink);
+      font-variant-numeric: tabular-nums
+    }
+
+    .ev-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .ev-actions .btn {
+      flex: 1 1 140px
+    }
+
+    .past-h {
+      font-family: var(--f-display);
+      font-weight: 600;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted);
+      margin: 12px 0 10px
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .seat {
+        transition: none
+      }
+
+      .shake {
+        animation: none
+      }
+    }
+  </style>
+
+  <div class="pin-view" id="authView">
+    <div class="pin-card" id="authCard">
+      <span class="eyebrow">Check-in de viajes</span>
+      <h1 class="pin-title">Acceso</h1>
+      <div class="auth-tabs" role="tablist">
+        <button type="button" id="tabLogin" role="tab" aria-selected="true">Iniciar sesión</button>
+        <button type="button" id="tabRegister" role="tab" aria-selected="false">Registrarse</button>
       </div>
-    </div>
-    <p class="pin-msg" id="pinMsg" role="status">Cargando…</p>
-    <button class="link-btn admin-only" id="adminEnter">Entrar como administrador</button>
-  </div>
-</div>
-
-<div class="wrap" id="homeView" hidden>
-  <header class="board home-board">
-    <div class="board-top">
-      <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
-        <span class="eyebrow" id="homeWard">Barrio</span>
-        <h1 class="trip-title" style="cursor:default">Eventos</h1>
-      </div>
-      <div class="board-actions">
-        <select class="board-select admin-only" id="wardSwitch" aria-label="Ver barrio"></select>
-        <button class="board-btn admin-only" id="wardsBtn">Barrios</button>
-        <button class="board-btn solid admin-only" id="newEvBtn">+ Nuevo evento</button>
-        <button class="board-btn" id="logoutBtn">Salir</button>
-      </div>
-    </div>
-    <p class="home-sub">Elegí el evento al que vas a ir para reservar tu asiento, o registrá tu auto si podés ayudar con el transporte.</p>
-  </header>
-  <div class="banner admin-only" id="pinBanner" hidden>Todavía no hay barrios: los miembros no pueden entrar. <button class="btn" id="pinBannerBtn" style="margin-left:8px">Crear barrio</button></div>
-  <div id="evList"><div class="empty">Cargando eventos…</div></div>
-</div>
-
-<div class="wrap" id="appView" hidden>
-  <header class="board" aria-label="Resumen del viaje">
-    <div class="board-top">
-      <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
-        <span class="eyebrow" id="tripDate">Check-in · salida y regreso</span>
-        <div id="titleBox"><button class="trip-title" id="tripTitle" title="Cambiar nombre del viaje">Viaje al cine</button></div>
-      </div>
-      <div class="legs" role="group" aria-label="Tramo">
-        <button id="legIda" aria-pressed="true">IDA</button>
-        <button id="legVuelta" aria-pressed="false">VUELTA</button>
-      </div>
-    </div>
-    <div class="flight" id="flight"></div>
-    <div class="board-actions"><button class="board-btn" id="backBtn">← Todos los eventos</button><button class="board-btn admin-only" id="editTripBtn">Editar evento, horarios y lugares</button></div>
-    <div class="stats" id="stats"></div>
-  </header>
-
-  <div id="banner" class="banner" hidden></div>
-
-  <div class="main">
-    <section style="display:flex;flex-direction:column;gap:14px;min-width:0">
-      <div class="section-head">
-        <h2 id="carsTitle">Autos · Ida</h2>
-        <div class="tools">
-          <button class="btn" id="copyBtn">Copiar ida → vuelta</button>
-          <button class="btn primary" id="addCarBtn">+ Agregar auto</button>
+      <form class="auth-form" id="authForm">
+        <div id="regNameField" hidden>
+          <label for="authName">Nombre completo</label>
+          <input type="text" id="authName" placeholder="Ej: Juan Pérez" autocomplete="name">
         </div>
-      </div>
-      <div class="legend">
-        <span><i class="sw"></i>Libre</span>
-        <span><i class="sw h"></i>Reservado (falta confirmar)</span>
-        <span><i class="sw o"></i>Confirmado</span>
-        <span><i class="sw d"></i>Conductor</span>
-      </div>
-      <div class="cars" id="cars"><div class="empty">Cargando autos…</div></div>
-    </section>
-
-    <aside class="panel" aria-label="Pasajeros">
-      <div class="section-head"><h2>Pasajeros</h2><span class="note" id="paxCount"></span></div>
-      <form class="add-row" id="addPersonForm">
-        <input type="text" id="newPerson" placeholder="Nombre del joven" autocomplete="off" aria-label="Nombre del pasajero">
-        <button class="btn primary" type="submit">Agregar</button>
+        <div>
+          <label for="authEmail">Email</label>
+          <input type="email" id="authEmail" placeholder="tu@email.com" required autocomplete="email">
+        </div>
+        <div>
+          <label for="authPassword">Contraseña</label>
+          <input type="password" id="authPassword" placeholder="Mínimo 6 caracteres" required minlength="6"
+            autocomplete="current-password">
+        </div>
+        <button type="submit" class="auth-submit" id="authSubmit">Entrar</button>
       </form>
-      <div class="mhead"><span>Nombre</span><span style="text-align:center">Ida</span><span style="text-align:center">Vuelta</span><span>Pase</span><span></span></div>
-      <ul class="manifest" id="manifest"></ul>
-      <p class="note" id="manifestNote">Tocá un asiento libre para reservarlo. Tocá un chip para ir a ese asiento.</p>
-    </aside>
-  </div>
-</div>
-
-<div class="overlay" id="seatModal" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="seatCode">
-    <div class="pass-top">
-      <div><div class="eyebrow">Asiento</div><div class="big" id="seatCode">2B</div></div>
-      <div class="meta"><div id="seatCar"><b>—</b></div><div id="seatLeg">IDA</div></div>
-    </div>
-    <div class="perf"></div>
-    <form class="sheet-body" id="seatForm">
-      <div class="field">
-        <label for="seatName">Pasajero</label>
-        <input type="text" id="seatName" list="peopleList" placeholder="Escribí o elegí un nombre" autocomplete="off">
-        <datalist id="peopleList"></datalist>
-      </div>
-      <fieldset class="seg"><legend>Viaja en este asiento</legend>
-        <div class="seg-opts">
-          <label><input type="radio" name="legs" value="ambos" id="legsBoth" checked><span>Ida y vuelta</span></label>
-          <label><input type="radio" name="legs" value="ida" id="legsIda"><span>Solo ida</span></label>
-          <label><input type="radio" name="legs" value="vuelta" id="legsVuelta"><span>Solo vuelta</span></label>
-        </div>
-      </fieldset>
-      <label class="check" for="seatConfirm">
-        <input type="checkbox" id="seatConfirm">
-        <span><b>Confirmado</b><small>Está 100% seguro que viaja en este asiento.</small></span>
-      </label>
-      <p class="hint" id="seatHint"></p>
-      <div class="actions">
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn danger" id="seatClear">Liberar asiento</button>
-          <button type="button" class="btn" id="seatPass">Boarding pass</button>
-        </div>
-        <div class="right">
-          <button type="button" class="btn ghost" data-close>Cancelar</button>
-          <button type="submit" class="btn primary">Guardar</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div class="overlay" id="carModal" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="carModalTitle">
-    <form class="sheet-body" id="carForm">
-      <h3 id="carModalTitle" style="font-family:var(--f-display);font-size:26px;font-weight:600">Agregar auto</h3>
-      <div class="field"><label for="carModel">Modelo</label>
-        <input type="text" id="carModel" list="modelList" placeholder="Ej: Renault Sandero" required autocomplete="off">
-        <datalist id="modelList"><option value="Renault Sandero"><option value="Chrysler Caravan"><option value="Toyota Corolla"><option value="Volkswagen Gol"><option value="Chevrolet Spin"><option value="Toyota SW4"></datalist>
-      </div>
-      <div class="field"><label for="carDriver">Conductor</label>
-        <input type="text" id="carDriver" placeholder="Ej: Pablo" required autocomplete="off"></div>
-      <div class="field"><label for="carLayout">Asientos</label><select id="carLayout"></select></div>
-      <p class="hint" id="carHint"></p>
-      <div class="actions">
-        <button type="button" class="btn danger" id="carDelete">Quitar auto</button>
-        <div class="right">
-          <button type="button" class="btn ghost" data-close>Cancelar</button>
-          <button type="submit" class="btn primary">Guardar</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div class="overlay" id="tripModal" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tripModalTitle">
-    <form class="sheet-body" id="tripForm">
-      <h3 id="tripModalTitle" style="font-family:var(--f-display);font-size:26px;font-weight:600">Evento</h3>
-      <div class="grid2">
-        <div class="field" style="grid-column:1/-1"><label for="tTitle">Nombre del evento</label><input type="text" id="tTitle" placeholder="Ej: Viaje al templo" required autocomplete="off"></div>
-        <div class="field" style="grid-column:1/-1"><label for="tType">Tipo</label><select id="tType"><option value="Templo">Templo</option><option value="Estaca">Estaca</option><option value="Actividad">Actividad</option><option value="Conferencia">Conferencia</option><option value="Otro">Otro</option></select></div>
-        <div class="field"><label for="tDate">Fecha</label><input type="date" id="tDate"></div>
-        <div class="field"><label for="tMeet">Hora para estar</label><input type="time" id="tMeet"></div>
-      </div>
-      <div class="fs-title">Salida</div>
-      <div class="grid2">
-        <div class="field"><label for="tFrom">Lugar de salida</label><input type="text" id="tFrom" placeholder="Ej: la capilla" autocomplete="off"></div>
-        <div class="field"><label for="tDepart">Hora de salida</label><input type="time" id="tDepart"></div>
-      </div>
-      <div class="fs-title">Destino</div>
-      <div class="grid2">
-        <div class="field"><label for="tTo">Destino</label><input type="text" id="tTo" placeholder="Ej: el cine del shopping" autocomplete="off"></div>
-        <div class="field"><label for="tShow">Hora de la función</label><input type="time" id="tShow"></div>
-      </div>
-      <div class="fs-title">Regreso</div>
-      <div class="grid2">
-        <div class="field"><label for="tBackPlace">Lugar de regreso</label><input type="text" id="tBackPlace" placeholder="Dónde los dejamos" autocomplete="off"></div>
-        <div class="field"><label for="tBackTime">Hora de regreso</label><input type="time" id="tBackTime"></div>
-      </div>
-      <div class="actions"><button type="button" class="btn danger" id="tripDelete">Borrar evento</button><div class="right">
-        <button type="button" class="btn ghost" data-close>Cancelar</button>
-        <button type="submit" class="btn primary">Guardar</button>
-      </div></div>
-    </form>
-  </div>
-</div>
-
-<div class="overlay" id="wardsModal" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="wardsTitle">
-    <div class="sheet-body">
-      <div class="section-head"><h3 id="wardsTitle" style="font-family:var(--f-display);font-size:26px;font-weight:600">Barrios</h3>
-        <button class="btn primary" id="wardNewBtn">+ Nuevo barrio</button></div>
-      <ul class="ward-rows" id="wardRows"></ul>
-      <p class="hint">Cada barrio tiene su propio PIN y sus propios eventos. Para dar de baja un barrio, primero borrá sus eventos.</p>
-      <div class="actions"><div class="right"><button type="button" class="btn ghost" data-close>Cerrar</button></div></div>
+      <p class="pin-msg" id="authMsg" role="status"></p>
     </div>
   </div>
-</div>
 
-<div class="overlay" id="pinModal" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pinModalTitle">
-    <form class="sheet-body" id="pinForm">
-      <h3 id="pinModalTitle" style="font-family:var(--f-display);font-size:26px;font-weight:600">Nuevo barrio</h3>
-      <div class="field"><label for="wName">Nombre del barrio</label><input type="text" id="wName" placeholder="Ej: Barrio Cañuelas" required autocomplete="off"></div>
-      <div class="field"><label for="wChapel">Capilla</label><input type="text" id="wChapel" placeholder="Ej: Capilla Cañuelas" autocomplete="off"></div>
-      <div class="field"><label for="newPin">PIN de acceso (4 números)</label>
-        <input type="text" id="newPin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="0000" style="font-family:var(--f-mono);font-size:28px;letter-spacing:.4em;text-align:center"></div>
-      <p class="hint" id="pinHint"></p>
-      <div class="actions"><div class="right">
-        <button type="button" class="btn ghost" data-close>Cancelar</button>
-        <button type="submit" class="btn primary">Guardar</button>
-      </div></div>
-    </form>
-  </div>
-</div>
-  <div class="sheet pass-sheet" role="dialog" aria-modal="true" aria-label="Boarding pass">
-    <div class="bp-wrap"><div id="passHolder"></div></div>
-    <div class="pass-actions">
-      <button type="button" class="btn ghost" data-close>Cerrar</button>
-      <button type="button" class="btn" id="passCopy">Copiar para WhatsApp</button>
-      <button type="button" class="btn primary" id="passSave" hidden>Descargar imagen</button>
+  <div class="wrap" id="homeView" hidden>
+    <header class="board home-board">
+      <div class="board-top">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <span class="eyebrow" id="homeUser">Usuario</span>
+          <h1 class="trip-title" style="cursor:default">Eventos</h1>
+        </div>
+        <div class="board-actions">
+          <select class="board-select" id="evFilter" aria-label="Filtrar eventos">
+            <option value="all">Todos los eventos</option>
+            <option value="mine">Mis eventos</option>
+          </select>
+          <button class="board-btn solid" id="newEvBtn">+ Nuevo evento</button>
+          <button class="board-btn" id="logoutBtn">Salir</button>
+        </div>
+      </div>
+      <p class="home-sub">Elegí un evento para reservar tu asiento, registrá tu auto si podés ayudar con el transporte,
+        o creá tu propio evento.</p>
+    </header>
+    <div id="evList">
+      <div class="empty">Cargando eventos…</div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast" hidden></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <div class="wrap" id="appView" hidden>
+    <header class="board" aria-label="Resumen del viaje">
+      <div class="board-top">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <span class="eyebrow" id="tripDate">Check-in · salida y regreso</span>
+          <div id="titleBox"><button class="trip-title" id="tripTitle" title="Cambiar nombre del viaje">Viaje al
+              cine</button></div>
+        </div>
+        <div class="legs" role="group" aria-label="Tramo">
+          <button id="legIda" aria-pressed="true">IDA</button>
+          <button id="legVuelta" aria-pressed="false">VUELTA</button>
+        </div>
+      </div>
+      <div class="flight" id="flight"></div>
+      <div class="board-actions"><button class="board-btn" id="backBtn">← Todos los eventos</button><button
+          class="board-btn owner-only" id="editTripBtn">Editar evento, horarios y lugares</button></div>
+      <div class="stats" id="stats"></div>
+    </header>
 
-<script>
-const LAYOUTS = {
-  '5':   {label:'5 asientos · auto (2 + 3)',          rows:[['A',null,'C'],['A','B','C']]},
-  'mv7': {label:'7 asientos · minivan (2 + 2 + 3)',   rows:[['A',null,'C'],['A',null,'C'],['A','B','C']]},
-  'suv7':{label:'7 asientos · SUV (2 + 3 + 2)',       rows:[['A',null,'C'],['A','B','C'],['A',null,'C']]},
-  'v8':  {label:'8 asientos · minivan (2 + 3 + 3)',   rows:[['A',null,'C'],['A','B','C'],['A','B','C']]},
-  '4':   {label:'4 asientos · chico (2 + 2)',         rows:[['A',null,'C'],['A',null,'C']]},
-};
-const WHEEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M3.5 10.5h6M14.5 10.5h6M12 14.5V21"/></svg>';
-const PENCIL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
+    <div id="banner" class="banner" hidden></div>
 
-const TICKET = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2"/></svg>';
-const CARICON = '<svg viewBox="0 0 44 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12h30M26 5l8 7-8 7"/><circle cx="40" cy="12" r="2" fill="currentColor"/></svg>';
-let DL = null;
-const S = {db:null, cars:[], seats:{}, people:[], trip:{}, leg:'ida', ready:{cars:false,seats:false,people:false}, editSeat:null, editCar:null};
-const $ = s => document.querySelector(s);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const first = n => String(n||'').trim().split(/\s+/)[0] || '';
-const seatId = (car, leg, code) => `${car}.${leg}.${code}`;
-const legName = l => l === 'ida' ? 'IDA' : 'VUELTA';
-const norm = s => String(s||'').trim().toLowerCase();
-const rid = p => p + '-' + Math.random().toString(36).slice(2, 9);
-const person = id => S.people.find(p => p.id === id);
-function seatOf(pid, leg){ for (const [id, s] of Object.entries(S.seats)) if (s.leg === leg && s.personId === pid) return {id, ...s}; return null; }
-function carOf(id){ return S.cars.find(c => c.id === id); }
-function codesOf(car){ const L = LAYOUTS[car.layout] || LAYOUTS['5']; const out=[]; L.rows.forEach((r,i)=>r.forEach(l=>{ if(l) out.push((i+1)+l); })); return out; }
+    <div class="main">
+      <section style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div class="section-head">
+          <h2 id="carsTitle">Autos · Ida</h2>
+          <div class="tools">
+            <button class="btn" id="copyBtn">Copiar ida → vuelta</button>
+            <button class="btn primary" id="addCarBtn">+ Agregar auto</button>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="sw"></i>Libre</span>
+          <span><i class="sw h"></i>Reservado (falta confirmar)</span>
+          <span><i class="sw o"></i>Confirmado</span>
+          <span><i class="sw d"></i>Conductor</span>
+        </div>
+        <div class="cars" id="cars">
+          <div class="empty">Cargando autos…</div>
+        </div>
+      </section>
 
-let toastT;
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true, 2800); }
-function arm(btn, label, fn){
-  if (btn.dataset.armed){ delete btn.dataset.armed; btn.classList.remove('armed'); btn.textContent = btn.dataset.orig; fn(); return; }
-  btn.dataset.orig = btn.textContent; btn.dataset.armed = '1'; btn.classList.add('armed'); btn.textContent = label;
-  setTimeout(()=>{ if(btn.dataset.armed){ delete btn.dataset.armed; btn.classList.remove('armed'); btn.textContent = btn.dataset.orig; } }, 3500);
-}
-async function safe(p){ try { await p; return true; } catch(e){ console.error(e); toast(e?.code === 'quota_exceeded' ? 'Se llenó el espacio de datos.' : 'No se pudo guardar. Probá de nuevo.'); return false; } }
+      <aside class="panel" aria-label="Pasajeros">
+        <div class="section-head">
+          <h2>Pasajeros</h2><span class="note" id="paxCount"></span>
+        </div>
+        <form class="add-row" id="addPersonForm">
+          <input type="text" id="newPerson" placeholder="Nombre del joven" autocomplete="off"
+            aria-label="Nombre del pasajero">
+          <button class="btn primary" type="submit">Agregar</button>
+        </form>
+        <div class="mhead"><span>Nombre</span><span style="text-align:center">Ida</span><span
+            style="text-align:center">Vuelta</span><span>Pase</span><span></span></div>
+        <ul class="manifest" id="manifest"></ul>
+        <p class="note" id="manifestNote">Tocá un asiento libre para reservarlo. Tocá un chip para ir a ese asiento.</p>
+      </aside>
+    </div>
+  </div>
 
-/* ---------- Render ---------- */
-function render(){ renderBoard(); renderCars(); renderManifest(); }
+  <div class="overlay" id="seatModal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="seatCode">
+      <div class="pass-top">
+        <div>
+          <div class="eyebrow">Asiento</div>
+          <div class="big" id="seatCode">2B</div>
+        </div>
+        <div class="meta">
+          <div id="seatCar"><b>—</b></div>
+          <div id="seatLeg">IDA</div>
+        </div>
+      </div>
+      <div class="perf"></div>
+      <form class="sheet-body" id="seatForm">
+        <div class="field">
+          <label for="seatName">Pasajero</label>
+          <input type="text" id="seatName" list="peopleList" placeholder="Escribí o elegí un nombre" autocomplete="off">
+          <datalist id="peopleList"></datalist>
+        </div>
+        <fieldset class="seg">
+          <legend>Viaja en este asiento</legend>
+          <div class="seg-opts">
+            <label><input type="radio" name="legs" value="ambos" id="legsBoth" checked><span>Ida y vuelta</span></label>
+            <label><input type="radio" name="legs" value="ida" id="legsIda"><span>Solo ida</span></label>
+            <label><input type="radio" name="legs" value="vuelta" id="legsVuelta"><span>Solo vuelta</span></label>
+          </div>
+        </fieldset>
+        <label class="check" for="seatConfirm">
+          <input type="checkbox" id="seatConfirm">
+          <span><b>Confirmado</b><small>Está 100% seguro que viaja en este asiento.</small></span>
+        </label>
+        <p class="hint" id="seatHint"></p>
+        <div class="actions">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn danger" id="seatClear">Liberar asiento</button>
+            <button type="button" class="btn" id="seatPass">Boarding pass</button>
+          </div>
+          <div class="right">
+            <button type="button" class="btn ghost" data-close>Cancelar</button>
+            <button type="submit" class="btn primary">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 
-function legStats(leg){
-  let ok=0, held=0;
-  for (const p of S.people){ const s = seatOf(p.id, leg); if (s) (s.confirmed ? ok++ : held++); }
-  let cap=0; for (const c of S.cars) cap += codesOf(c).length - 1;
-  return {ok, held, none:S.people.length-ok-held, cap};
-}
-function renderBoard(){
-  const t = S.trip.title || 'Viaje al cine';
-  const tb = $('#tripTitle'); if (tb) tb.textContent = t;
-  $('#legIda').setAttribute('aria-pressed', S.leg==='ida');
-  $('#legVuelta').setAttribute('aria-pressed', S.leg==='vuelta');
-  $('#carsTitle').textContent = 'Autos · ' + (S.leg==='ida' ? 'Ida' : 'Vuelta');
-  const T = S.trip;
-  $('#tripDate').textContent = T.date ? 'Check-in · ' + fmtDate(T.date) : 'Check-in · salida y regreso';
-  const cell = (lbl, time, place, empty) => `<div class="fi"><span class="lbl">${lbl}</span><span class="t">${esc(time || '--:--')}</span><span class="p ${place?'':'dim'}">${esc(place || empty)}</span></div>`;
-  $('#flight').innerHTML =
-    cell('HORA PARA ESTAR', T.meet, T.from ? 'en ' + T.from : '', 'Lugar sin cargar') +
-    cell('SALIDA', T.depart, T.from, 'Lugar sin cargar') +
-    cell('DESTINO', T.show, T.to ? T.to + (T.show ? ' · función' : '') : '', 'Destino sin cargar') +
-    cell('REGRESO', T.backTime, T.backPlace, 'Lugar sin cargar');
-  const n = S.people.length;
-  $('#stats').innerHTML = ['ida','vuelta'].map(l => {
-    const s = legStats(l);
-    const done = n>0 && s.ok===n;
-    return `<div class="stat"><span class="lbl">${legName(l)} · CONFIRMADOS</span>
+  <div class="overlay" id="carModal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="carModalTitle">
+      <form class="sheet-body" id="carForm">
+        <h3 id="carModalTitle" style="font-family:var(--f-display);font-size:26px;font-weight:600">Agregar auto</h3>
+        <div class="field"><label for="carModel">Modelo</label>
+          <input type="text" id="carModel" list="modelList" placeholder="Ej: Renault Sandero" required
+            autocomplete="off">
+          <datalist id="modelList">
+            <option value="Renault Sandero">
+            <option value="Chrysler Caravan">
+            <option value="Toyota Corolla">
+            <option value="Volkswagen Gol">
+            <option value="Chevrolet Spin">
+            <option value="Toyota SW4">
+          </datalist>
+        </div>
+        <div class="field"><label for="carDriver">Conductor</label>
+          <input type="text" id="carDriver" placeholder="Ej: Pablo" required autocomplete="off">
+        </div>
+        <div class="field"><label for="carLayout">Asientos</label><select id="carLayout"></select></div>
+        <p class="hint" id="carHint"></p>
+        <div class="actions">
+          <button type="button" class="btn danger" id="carDelete">Quitar auto</button>
+          <div class="right">
+            <button type="button" class="btn ghost" data-close>Cancelar</button>
+            <button type="submit" class="btn primary">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="overlay" id="tripModal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tripModalTitle">
+      <form class="sheet-body" id="tripForm">
+        <h3 id="tripModalTitle" style="font-family:var(--f-display);font-size:26px;font-weight:600">Evento</h3>
+        <div class="grid2">
+          <div class="field" style="grid-column:1/-1"><label for="tTitle">Nombre del evento</label><input type="text"
+              id="tTitle" placeholder="Ej: Viaje al templo" required autocomplete="off"></div>
+          <div class="field" style="grid-column:1/-1"><label for="tType">Tipo</label><select id="tType">
+              <option value="Templo">Templo</option>
+              <option value="Estaca">Estaca</option>
+              <option value="Actividad">Actividad</option>
+              <option value="Conferencia">Conferencia</option>
+              <option value="Otro">Otro</option>
+            </select></div>
+          <div class="field"><label for="tDate">Fecha</label><input type="date" id="tDate"></div>
+          <div class="field"><label for="tMeet">Hora para estar</label><input type="time" id="tMeet"></div>
+        </div>
+        <div class="fs-title">Salida</div>
+        <div class="grid2">
+          <div class="field"><label for="tFrom">Lugar de salida</label><input type="text" id="tFrom"
+              placeholder="Ej: la capilla" autocomplete="off"></div>
+          <div class="field"><label for="tDepart">Hora de salida</label><input type="time" id="tDepart"></div>
+        </div>
+        <div class="fs-title">Destino</div>
+        <div class="grid2">
+          <div class="field"><label for="tTo">Destino</label><input type="text" id="tTo"
+              placeholder="Ej: el cine del shopping" autocomplete="off"></div>
+          <div class="field"><label for="tShow">Hora de la función</label><input type="time" id="tShow"></div>
+        </div>
+        <div class="fs-title">Regreso</div>
+        <div class="grid2">
+          <div class="field"><label for="tBackPlace">Lugar de regreso</label><input type="text" id="tBackPlace"
+              placeholder="Dónde los dejamos" autocomplete="off"></div>
+          <div class="field"><label for="tBackTime">Hora de regreso</label><input type="time" id="tBackTime"></div>
+        </div>
+        <div class="actions"><button type="button" class="btn danger" id="tripDelete">Borrar evento</button>
+          <div class="right">
+            <button type="button" class="btn ghost" data-close>Cancelar</button>
+            <button type="submit" class="btn primary">Guardar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="overlay" id="passModal" hidden>
+    <div class="sheet pass-sheet" role="dialog" aria-modal="true" aria-label="Boarding pass">
+      <div class="bp-wrap">
+        <div id="passHolder"></div>
+      </div>
+      <div class="pass-actions">
+        <button type="button" class="btn ghost" data-close>Cerrar</button>
+        <button type="button" class="btn" id="passCopy">Copiar para WhatsApp</button>
+        <button type="button" class="btn primary" id="passSave" hidden>Descargar imagen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    const LAYOUTS = {
+      '5': { label: '5 asientos · auto (2 + 3)', rows: [['A', null, 'C'], ['A', 'B', 'C']] },
+      'mv7': { label: '7 asientos · minivan (2 + 2 + 3)', rows: [['A', null, 'C'], ['A', null, 'C'], ['A', 'B', 'C']] },
+      'suv7': { label: '7 asientos · SUV (2 + 3 + 2)', rows: [['A', null, 'C'], ['A', 'B', 'C'], ['A', null, 'C']] },
+      'v8': { label: '8 asientos · minivan (2 + 3 + 3)', rows: [['A', null, 'C'], ['A', 'B', 'C'], ['A', 'B', 'C']] },
+      '4': { label: '4 asientos · chico (2 + 2)', rows: [['A', null, 'C'], ['A', null, 'C']] },
+    };
+    const WHEEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M3.5 10.5h6M14.5 10.5h6M12 14.5V21"/></svg>';
+    const PENCIL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>';
+
+    const TICKET = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2"/></svg>';
+    const CARICON = '<svg viewBox="0 0 44 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12h30M26 5l8 7-8 7"/><circle cx="40" cy="12" r="2" fill="currentColor"/></svg>';
+    const SUPABASE_URL = 'https://gumfbdcfjfhpqtttlsbw.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_NHMpuCIW7vA2Xi4iIFhirw_-3Eo72E2';
+    const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+    const S = { db: sb, user: null, cars: [], seats: {}, people: [], trip: {}, leg: 'ida', ready: { cars: false, seats: false, people: false, events: false }, editSeat: null, editCar: null, allCars: [], allPeople: [], events: [], ev: null, view: null, filter: 'all' };
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const first = n => String(n || '').trim().split(/\s+/)[0] || '';
+    const seatId = (car, leg, code) => `${car}.${leg}.${code}`;
+    const legName = l => l === 'ida' ? 'IDA' : 'VUELTA';
+    const norm = s => String(s || '').trim().toLowerCase();
+    const rid = p => p + '-' + Math.random().toString(36).slice(2, 9);
+    const person = id => S.people.find(p => p.id === id);
+    const isOwner = ev => !!(S.user && ev && ev.user_id === S.user.id);
+    const userLabel = u => u ? (u.user_metadata?.full_name || u.email || 'Usuario') : '';
+    function seatOf(pid, leg) { for (const [id, s] of Object.entries(S.seats)) if (s.leg === leg && s.personId === pid) return { id, ...s }; return null; }
+    function carOf(id) { return S.cars.find(c => c.id === id); }
+    function codesOf(car) { const L = LAYOUTS[car.layout] || LAYOUTS['5']; const out = []; L.rows.forEach((r, i) => r.forEach(l => { if (l) out.push((i + 1) + l); })); return out; }
+
+    /* Mappers between JS state and Supabase tables */
+    const fromEvRow = r => ({ id: r.id, user_id: r.user_id, owner_name: r.owner_name || '', title: r.title, type: r.type || 'Templo', date: r.date || '', meet: r.meet || '', from: r.from_place || '', depart: r.depart || '', to: r.to_place || '', show: r.show_time || '', backPlace: r.back_place || '', backTime: r.back_time || '', createdAt: r.created_at });
+    const toEvRow = (id, d) => ({ id, user_id: d.user_id || S.user?.id, owner_name: d.owner_name ?? userLabel(S.user), title: d.title, type: d.type || 'Templo', date: d.date || '', meet: d.meet || '', from_place: d.from || '', depart: d.depart || '', to_place: d.to || '', show_time: d.show || '', back_place: d.backPlace || '', back_time: d.backTime || '', created_at: d.createdAt || Date.now() });
+    const fromCarRow = r => ({ id: r.id, event: r.event_id, user_id: r.user_id, model: r.model, driver: r.driver, layout: r.layout || '5', order: r.sort_order ?? 0 });
+    const toCarRow = (id, d) => ({ id, event_id: d.event, user_id: S.user?.id, model: d.model, driver: d.driver, layout: d.layout || '5', sort_order: d.order ?? Date.now() });
+    const fromPersonRow = r => ({ id: r.id, event: r.event_id, user_id: r.user_id, name: r.name, createdAt: r.created_at });
+    const toPersonRow = (id, d) => ({ id, event_id: d.event, user_id: S.user?.id, name: d.name, created_at: d.createdAt || Date.now() });
+    const fromSeatRow = r => ({ id: r.id, event: r.event_id, car: r.car_id, leg: r.leg, code: r.code, personId: r.person_id, name: r.name, confirmed: !!r.confirmed, at: r.updated_at });
+    const toSeatRow = (id, d) => ({ id, event_id: d.event, car_id: d.car, leg: d.leg, code: d.code, person_id: d.personId, name: d.name, confirmed: !!d.confirmed, user_id: S.user?.id, updated_at: d.at || Date.now() });
+
+    let toastT;
+    function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2800); }
+    function arm(btn, label, fn) {
+      if (btn.dataset.armed) { delete btn.dataset.armed; btn.classList.remove('armed'); btn.textContent = btn.dataset.orig; fn(); return; }
+      btn.dataset.orig = btn.textContent; btn.dataset.armed = '1'; btn.classList.add('armed'); btn.textContent = label;
+      setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.classList.remove('armed'); btn.textContent = btn.dataset.orig; } }, 3500);
+    }
+    async function safe(p) {
+      try {
+        const res = await p;
+        if (res && res.error) throw res.error;
+        return true;
+      } catch (e) {
+        console.error(e);
+        toast(e?.message?.includes('row-level security') ? 'No tenés permiso para modificar esto.' : 'No se pudo guardar. Probá de nuevo.');
+        return false;
+      }
+    }
+
+    /* ---------- Render ---------- */
+    function render() { renderBoard(); renderCars(); renderManifest(); }
+
+    function legStats(leg) {
+      let ok = 0, held = 0;
+      for (const p of S.people) { const s = seatOf(p.id, leg); if (s) (s.confirmed ? ok++ : held++); }
+      let cap = 0; for (const c of S.cars) cap += codesOf(c).length - 1;
+      return { ok, held, none: S.people.length - ok - held, cap };
+    }
+    function renderBoard() {
+      const t = S.trip.title || 'Viaje al cine';
+      const tb = $('#tripTitle'); if (tb) tb.textContent = t;
+      $('#legIda').setAttribute('aria-pressed', S.leg === 'ida');
+      $('#legVuelta').setAttribute('aria-pressed', S.leg === 'vuelta');
+      $('#carsTitle').textContent = 'Autos · ' + (S.leg === 'ida' ? 'Ida' : 'Vuelta');
+      const T = S.trip;
+      $('#tripDate').textContent = T.date ? 'Check-in · ' + fmtDate(T.date) : 'Check-in · salida y regreso';
+      const cell = (lbl, time, place, empty) => `<div class="fi"><span class="lbl">${lbl}</span><span class="t">${esc(time || '--:--')}</span><span class="p ${place ? '' : 'dim'}">${esc(place || empty)}</span></div>`;
+      $('#flight').innerHTML =
+        cell('HORA PARA ESTAR', T.meet, T.from ? 'en ' + T.from : '', 'Lugar sin cargar') +
+        cell('SALIDA', T.depart, T.from, 'Lugar sin cargar') +
+        cell('DESTINO', T.show, T.to ? T.to + (T.show ? ' · función' : '') : '', 'Destino sin cargar') +
+        cell('REGRESO', T.backTime, T.backPlace, 'Lugar sin cargar');
+      const n = S.people.length;
+      $('#stats').innerHTML = ['ida', 'vuelta'].map(l => {
+        const s = legStats(l);
+        const done = n > 0 && s.ok === n;
+        return `<div class="stat"><span class="lbl">${legName(l)} · CONFIRMADOS</span>
       <span class="val"><b>${s.ok}</b>/${n} · ${s.held} reserv. · ${s.none} sin asiento</span>
       <span class="lbl">${s.cap} lugares para pasajeros</span>
       ${done ? '<span class="done-flag">CHECK-IN COMPLETO</span>' : ''}</div>`;
-  }).join('');
-  const sI = legStats('ida'), sV = legStats('vuelta');
-  const b = $('#banner');
-  if (n > sI.cap && S.cars.length){ b.hidden=false; b.textContent = `Hay ${n} pasajeros y solo ${sI.cap} lugares. Falta otro auto o sobra alguien.`; }
-  else b.hidden = true;
-}
+      }).join('');
+      const sI = legStats('ida'), sV = legStats('vuelta');
+      const b = $('#banner');
+      if (n > sI.cap && S.cars.length) { b.hidden = false; b.textContent = `Hay ${n} pasajeros y solo ${sI.cap} lugares. Falta otro auto o sobra alguien.`; }
+      else b.hidden = true;
+    }
 
-function renderCars(){
-  const wrap = $('#cars');
-  if (!S.db){ return; }
-  if (!S.ready.cars){ return; }
-  if (!S.cars.length){ wrap.innerHTML = '<div class="empty">Todavía no hay autos. Tocá <b>+ Agregar auto</b> para cargar el primero.</div>'; return; }
-  wrap.innerHTML = S.cars.map(car => {
-    const L = LAYOUTS[car.layout] || LAYOUTS['5'];
-    let free=0, total=0;
-    const rows = L.rows.map((row, ri) => `<div class="row"><span class="row-num">${ri+1}</span>` + row.map(letter => {
-      if (!letter) return '<span class="aisle"></span>';
-      const code = (ri+1) + letter;
-      if (code === '1A') return `<button class="seat driver" disabled aria-label="Conductor: ${esc(car.driver)}">${WHEEL}<span class="nm">${esc(first(car.driver))}</span></button>`;
-      total++;
-      const s = S.seats[seatId(car.id, S.leg, code)];
-      const p = s && person(s.personId);
-      const name = p ? p.name : (s ? s.name : '');
-      if (!s) free++;
-      const cls = !s ? '' : (s.confirmed ? 'ok' : 'held');
-      const sel = S.editSeat && S.editSeat.car===car.id && S.editSeat.code===code ? ' sel' : '';
-      const lab = `Asiento ${code}` + (s ? `, ${name}, ${s.confirmed?'confirmado':'reservado'}` : ', libre');
-      return `<button class="seat ${cls}${sel}" data-car="${esc(car.id)}" data-code="${code}" aria-label="${esc(lab)}"><span class="code">${code}</span>${s?`<span class="nm">${esc(first(name))}</span>`:''}</button>`;
-    }).join('') + '</div>').join('');
-    return `<article class="car-card">
+    function renderCars() {
+      const wrap = $('#cars');
+      if (!S.db) { return; }
+      if (!S.ready.cars) { return; }
+      if (!S.cars.length) { wrap.innerHTML = '<div class="empty">Todavía no hay autos. Tocá <b>+ Agregar auto</b> para cargar el primero.</div>'; return; }
+      wrap.innerHTML = S.cars.map(car => {
+        const L = LAYOUTS[car.layout] || LAYOUTS['5'];
+        let free = 0, total = 0;
+        const rows = L.rows.map((row, ri) => `<div class="row"><span class="row-num">${ri + 1}</span>` + row.map(letter => {
+          if (!letter) return '<span class="aisle"></span>';
+          const code = (ri + 1) + letter;
+          if (code === '1A') return `<button class="seat driver" disabled aria-label="Conductor: ${esc(car.driver)}">${WHEEL}<span class="nm">${esc(first(car.driver))}</span></button>`;
+          total++;
+          const s = S.seats[seatId(car.id, S.leg, code)];
+          const p = s && person(s.personId);
+          const name = p ? p.name : (s ? s.name : '');
+          if (!s) free++;
+          const cls = !s ? '' : (s.confirmed ? 'ok' : 'held');
+          const sel = S.editSeat && S.editSeat.car === car.id && S.editSeat.code === code ? ' sel' : '';
+          const lab = `Asiento ${code}` + (s ? `, ${name}, ${s.confirmed ? 'confirmado' : 'reservado'}` : ', libre');
+          return `<button class="seat ${cls}${sel}" data-car="${esc(car.id)}" data-code="${code}" aria-label="${esc(lab)}"><span class="code">${code}</span>${s ? `<span class="nm">${esc(first(name))}</span>` : ''}</button>`;
+        }).join('') + '</div>').join('');
+        return `<article class="car-card">
       <div class="car-head"><div><h3>${esc(car.model)}</h3><div class="sub">Conduce ${esc(car.driver)}</div></div>
         <div class="car-tools"><button class="icon-btn" data-editcar="${esc(car.id)}" aria-label="Editar ${esc(car.model)}">${PENCIL}</button></div></div>
       <div class="car-body"><span class="front-tag">FRENTE</span>${rows}</div>
-      <div class="car-foot">${legName(S.leg)} · ${total-free}/${total} ocupados · ${free} libres</div>
+      <div class="car-foot">${legName(S.leg)} · ${total - free}/${total} ocupados · ${free} libres</div>
     </article>`;
-  }).join('');
-}
+      }).join('');
+    }
 
-function chip(pid, leg){
-  const s = seatOf(pid, leg);
-  if (!s) return `<button class="chip" data-goleg="${leg}" data-pid="${esc(pid)}" title="Sin asiento">—</button>`;
-  const c = carOf(s.car);
-  const carShort = c ? first(c.model) : '';
-  return `<button class="chip ${s.confirmed?'o':'h'}" data-goleg="${leg}" data-car="${esc(s.car)}" data-code="${esc(s.code)}" title="${esc((c?c.model:'')+' '+s.code+(s.confirmed?' · confirmado':' · falta confirmar'))}">${s.confirmed?'✓ ':''}${esc(s.code)} ${esc(carShort)}</button>`;
-}
-function renderManifest(){
-  if (!S.db) return;
-  const ul = $('#manifest');
-  $('#paxCount').textContent = S.people.length ? `${S.people.length} anotados` : '';
-  if (!S.ready.people){ ul.innerHTML = '<li class="note">Cargando…</li>'; return; }
-  if (!S.people.length){ ul.innerHTML = '<li class="note" style="display:block">Agregá a los jóvenes que van, o escribí el nombre directo al tocar un asiento.</li>'; }
-  else ul.innerHTML = S.people.map(p => `<li><span class="pname">${esc(p.name)}</span>${chip(p.id,'ida')}${chip(p.id,'vuelta')}
-      <button class="pass-btn" data-pass="${esc(p.id)}" aria-label="Boarding pass de ${esc(p.name)}" title="Boarding pass" ${seatOf(p.id,'ida')||seatOf(p.id,'vuelta')?'':'disabled'}>${TICKET}</button>
+    function chip(pid, leg) {
+      const s = seatOf(pid, leg);
+      if (!s) return `<button class="chip" data-goleg="${leg}" data-pid="${esc(pid)}" title="Sin asiento">—</button>`;
+      const c = carOf(s.car);
+      const carShort = c ? first(c.model) : '';
+      return `<button class="chip ${s.confirmed ? 'o' : 'h'}" data-goleg="${leg}" data-car="${esc(s.car)}" data-code="${esc(s.code)}" title="${esc((c ? c.model : '') + ' ' + s.code + (s.confirmed ? ' · confirmado' : ' · falta confirmar'))}">${s.confirmed ? '✓ ' : ''}${esc(s.code)} ${esc(carShort)}</button>`;
+    }
+    function renderManifest() {
+      if (!S.db) return;
+      const ul = $('#manifest');
+      $('#paxCount').textContent = S.people.length ? `${S.people.length} anotados` : '';
+      if (!S.ready.people) { ul.innerHTML = '<li class="note">Cargando…</li>'; return; }
+      if (!S.people.length) { ul.innerHTML = '<li class="note" style="display:block">Agregá a los jóvenes que van, o escribí el nombre directo al tocar un asiento.</li>'; }
+      else ul.innerHTML = S.people.map(p => `<li><span class="pname">${esc(p.name)}</span>${chip(p.id, 'ida')}${chip(p.id, 'vuelta')}
+      <button class="pass-btn" data-pass="${esc(p.id)}" aria-label="Boarding pass de ${esc(p.name)}" title="Boarding pass" ${seatOf(p.id, 'ida') || seatOf(p.id, 'vuelta') ? '' : 'disabled'}>${TICKET}</button>
       <button class="icon-btn" data-delperson="${esc(p.id)}" aria-label="Quitar a ${esc(p.name)}" title="Quitar">✕</button></li>`).join('');
-  $('#peopleList').innerHTML = S.people.map(p => `<option value="${esc(p.name)}">`).join('');
-}
+      $('#peopleList').innerHTML = S.people.map(p => `<option value="${esc(p.name)}">`).join('');
+    }
 
-/* ---------- Seat modal ---------- */
-function openSeat(carId, code){
-  const car = carOf(carId); if (!car) return;
-  S.editSeat = {car:carId, code};
-  const s = S.seats[seatId(carId, S.leg, code)];
-  const p = s && person(s.personId);
-  $('#seatCode').textContent = code;
-  $('#seatCar').innerHTML = `<b>${esc(car.model)}</b> · ${esc(car.driver)}`;
-  $('#seatLeg').textContent = legName(S.leg) + (s ? (s.confirmed ? ' · CONFIRMADO' : ' · RESERVADO') : ' · LIBRE');
-  $('#seatName').value = p ? p.name : (s ? s.name : '');
-  $('#seatConfirm').checked = !!(s && s.confirmed);
-  $('#seatClear').hidden = !s;
-  $('#seatPass').hidden = !s;
-  let mode = 'ambos';
-  if (s){
-    const other = S.leg === 'ida' ? 'vuelta' : 'ida';
-    mode = seatOf(s.personId, other) ? 'ambos' : S.leg;
-  } else {
-    const o = S.seats[seatId(carId, S.leg === 'ida' ? 'vuelta' : 'ida', code)];
-    if (o) mode = S.leg;
-  }
-  document.querySelector(`input[name=legs][value=${mode}]`).checked = true;
-  $('#seatHint').textContent = '';
-  $('#seatModal').hidden = false;
-  renderCars();
-  setTimeout(()=>$('#seatName').focus(), 30);
-}
-function closeModals(){ document.querySelectorAll('.overlay').forEach(o => o.hidden = true); if (S.editSeat){ S.editSeat=null; renderCars(); } }
-
-const legsMode = () => document.querySelector('input[name=legs]:checked').value;
-const legsOf = m => m === 'ambos' ? ['ida','vuelta'] : [m];
-/* Returns {lines:[...], conflict:string|null} describing what saving will do. */
-function plan(){
-  const name = $('#seatName').value.trim();
-  const p = S.people.find(x => norm(x.name) === norm(name));
-  const {car, code} = S.editSeat;
-  const legs = legsOf(legsMode());
-  const lines = []; let conflict = null;
-  if (name && !p) lines.push('Nuevo pasajero: se agrega a la lista.');
-  for (const l of ['ida','vuelta']){
-    const target = seatId(car, l, code);
-    const occ = S.seats[target];
-    const prev = p ? seatOf(p.id, l) : null;
-    if (legs.includes(l)){
-      if (l !== S.leg && occ && (!p || occ.personId !== p.id)){
-        const op = person(occ.personId);
-        conflict = `El ${code} de la ${l} ya es de ${op ? op.name : occ.name}. Elegí "Solo ${S.leg}" o liberá ese asiento primero.`;
+    /* ---------- Seat modal ---------- */
+    function openSeat(carId, code) {
+      const car = carOf(carId); if (!car) return;
+      S.editSeat = { car: carId, code };
+      const s = S.seats[seatId(carId, S.leg, code)];
+      const p = s && person(s.personId);
+      $('#seatCode').textContent = code;
+      $('#seatCar').innerHTML = `<b>${esc(car.model)}</b> · ${esc(car.driver)}`;
+      $('#seatLeg').textContent = legName(S.leg) + (s ? (s.confirmed ? ' · CONFIRMADO' : ' · RESERVADO') : ' · LIBRE');
+      $('#seatName').value = p ? p.name : (s ? s.name : '');
+      $('#seatConfirm').checked = !!(s && s.confirmed);
+      $('#seatClear').hidden = !s;
+      $('#seatPass').hidden = !s;
+      let mode = 'ambos';
+      if (s) {
+        const other = S.leg === 'ida' ? 'vuelta' : 'ida';
+        mode = seatOf(s.personId, other) ? 'ambos' : S.leg;
+      } else {
+        const o = S.seats[seatId(carId, S.leg === 'ida' ? 'vuelta' : 'ida', code)];
+        if (o) mode = S.leg;
       }
-      if (prev && prev.id !== target){ const c = carOf(prev.car); lines.push(`${legName(l)}: se cambia del ${prev.code}${c ? ' ('+c.model+')' : ''} a este asiento.`); }
-    } else if (prev){
-      const c = carOf(prev.car);
-      lines.push(`${legName(l)}: se le quita el ${prev.code}${c ? ' ('+c.model+')' : ''}.`);
+      document.querySelector(`input[name=legs][value=${mode}]`).checked = true;
+      $('#seatHint').textContent = '';
+      $('#seatModal').hidden = false;
+      renderCars();
+      setTimeout(() => $('#seatName').focus(), 30);
     }
-  }
-  return {p, legs, lines, conflict};
-}
-function updateHint(){
-  if (!S.editSeat) return;
-  if (!$('#seatName').value.trim()){ $('#seatHint').textContent=''; return; }
-  const r = plan();
-  $('#seatHint').textContent = r.conflict || r.lines.join(' ');
-}
-$('#seatName').addEventListener('input', updateHint);
-document.querySelectorAll('input[name=legs]').forEach(r => r.addEventListener('change', updateHint));
+    function closeModals() { document.querySelectorAll('.overlay').forEach(o => o.hidden = true); if (S.editSeat) { S.editSeat = null; renderCars(); } }
 
-$('#seatForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!S.db || !S.editSeat) return;
-  const name = $('#seatName').value.trim().replace(/\s+/g,' ');
-  if (!name){ $('#seatHint').textContent = 'Escribí el nombre de quién va en este asiento.'; return; }
-  const r = plan();
-  if (r.conflict){ $('#seatHint').textContent = r.conflict; return; }
-  const {car, code} = S.editSeat;
-  const confirmed = $('#seatConfirm').checked;
-  let p = r.p;
-  if (!p){
-    const id = rid('p');
-    if (!await safe(S.db.collection('people').doc(id).set({name, event:S.ev, createdAt:Date.now()}))) return;
-    p = {id, name}; S.people.push(p);
-  }
-  for (const l of ['ida','vuelta']){
-    const prev = seatOf(p.id, l);
-    const target = seatId(car, l, code);
-    if (r.legs.includes(l)){
-      if (prev && prev.id !== target && !await safe(S.db.collection('seats').doc(prev.id).delete())) return;
-      if (!await safe(S.db.collection('seats').doc(target).set({car, leg:l, code, personId:p.id, name:p.name, confirmed, event:S.ev, at:Date.now()}))) return;
-    } else if (prev){
-      if (!await safe(S.db.collection('seats').doc(prev.id).delete())) return;
+    const legsMode = () => document.querySelector('input[name=legs]:checked').value;
+    const legsOf = m => m === 'ambos' ? ['ida', 'vuelta'] : [m];
+    /* Returns {lines:[...], conflict:string|null} describing what saving will do. */
+    function plan() {
+      const name = $('#seatName').value.trim();
+      const p = S.people.find(x => norm(x.name) === norm(name));
+      const { car, code } = S.editSeat;
+      const legs = legsOf(legsMode());
+      const lines = []; let conflict = null;
+      if (name && !p) lines.push('Nuevo pasajero: se agrega a la lista.');
+      for (const l of ['ida', 'vuelta']) {
+        const target = seatId(car, l, code);
+        const occ = S.seats[target];
+        const prev = p ? seatOf(p.id, l) : null;
+        if (legs.includes(l)) {
+          if (l !== S.leg && occ && (!p || occ.personId !== p.id)) {
+            const op = person(occ.personId);
+            conflict = `El ${code} de la ${l} ya es de ${op ? op.name : occ.name}. Elegí "Solo ${S.leg}" o liberá ese asiento primero.`;
+          }
+          if (prev && prev.id !== target) { const c = carOf(prev.car); lines.push(`${legName(l)}: se cambia del ${prev.code}${c ? ' (' + c.model + ')' : ''} a este asiento.`); }
+        } else if (prev) {
+          const c = carOf(prev.car);
+          lines.push(`${legName(l)}: se le quita el ${prev.code}${c ? ' (' + c.model + ')' : ''}.`);
+        }
+      }
+      return { p, legs, lines, conflict };
     }
-  }
-  closeModals();
-  const which = r.legs.length === 2 ? 'ida y vuelta' : 'solo ' + r.legs[0];
-  toast(`${p.name} · ${code} · ${which} · ${confirmed ? 'confirmado' : 'reservado'}`);
-  if (confirmed) setTimeout(() => openPass(p.id), 250);
-});
-$('#seatPass').addEventListener('click', () => {
-  const s = S.editSeat && S.seats[seatId(S.editSeat.car, S.leg, S.editSeat.code)];
-  if (s) { closeModals(); openPass(s.personId); }
-});
+    function updateHint() {
+      if (!S.editSeat) return;
+      if (!$('#seatName').value.trim()) { $('#seatHint').textContent = ''; return; }
+      const r = plan();
+      $('#seatHint').textContent = r.conflict || r.lines.join(' ');
+    }
+    $('#seatName').addEventListener('input', updateHint);
+    document.querySelectorAll('input[name=legs]').forEach(r => r.addEventListener('change', updateHint));
 
-/* ---------- Trip details ---------- */
-function fmtDate(d){
-  try { return new Date(d + 'T12:00:00').toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}); } catch { return d; }
-}
-const TRIP_FIELDS = {tTitle:'title', tType:'type', tDate:'date', tMeet:'meet', tFrom:'from', tDepart:'depart', tTo:'to', tShow:'show', tBackPlace:'backPlace', tBackTime:'backTime'};
-const evData = ev => { const {id, ...rest} = ev || {}; return rest; };
-let editEv = null;
-function openTrip(evId){
-  if (!S.isAdmin) return;
-  editEv = evId || null;
-  const ev = evId ? (S.events.find(e => e.id === evId) || {}) : {};
-  for (const [id, k] of Object.entries(TRIP_FIELDS)) $('#'+id).value = ev[k] || (k === 'type' ? 'Templo' : '');
-  $('#tripModalTitle').textContent = evId ? 'Editar evento' : 'Nuevo evento';
-  $('#tripDelete').hidden = !evId;
-  $('#tripModal').hidden = false;
-  setTimeout(() => $('#tTitle').focus(), 30);
-}
-$('#editTripBtn').addEventListener('click', () => { if (S.db) openTrip(S.ev); });
-$('#tripForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const old = editEv ? S.events.find(x => x.id === editEv) : null;
-  const data = evData(old);
-  for (const [id, k] of Object.entries(TRIP_FIELDS)) data[k] = $('#'+id).value.trim();
-  if (!data.title) return;
-  if (!old){ data.createdAt = Date.now(); data.ward = S.ward || DEFAULT_WARD; }
-  const id = editEv || rid('ev');
-  if (await safe(S.db.collection('events').doc(id).set(data))){ closeModals(); toast(old ? 'Evento actualizado' : `Evento "${data.title}" creado`); }
-});
-$('#tripDelete').addEventListener('click', e => arm(e.currentTarget, '¿Borrar todo? Tocá de nuevo', async () => {
-  const id = editEv; if (!id) return;
-  const cars = S.allCars.filter(c => evOf(c) === id).map(c => c.id);
-  for (const [sid, s] of Object.entries(S.seats)) if (cars.includes(s.car)) await safe(S.db.collection('seats').doc(sid).delete());
-  for (const c of cars) await safe(S.db.collection('cars').doc(c).delete());
-  for (const p of S.allPeople.filter(p => evOf(p) === id)) await safe(S.db.collection('people').doc(p.id).delete());
-  if (await safe(S.db.collection('events').doc(id).delete())){
-    closeModals(); toast('Evento borrado');
-    if (S.ev === id) location.hash = '';
-  }
-}));
+    $('#seatForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!S.db || !S.editSeat) return;
+      const name = $('#seatName').value.trim().replace(/\s+/g, ' ');
+      if (!name) { $('#seatHint').textContent = 'Escribí el nombre de quién va en este asiento.'; return; }
+      const r = plan();
+      if (r.conflict) { $('#seatHint').textContent = r.conflict; return; }
+      const { car, code } = S.editSeat;
+      const confirmed = $('#seatConfirm').checked;
+      let p = r.p;
+      if (!p) {
+        const id = rid('p');
+        const row = toPersonRow(id, { name, event: S.ev, createdAt: Date.now() });
+        if (!await safe(sb.from('people').upsert(row))) return;
+        p = fromPersonRow(row); S.allPeople.push(p); scope();
+      }
+      for (const l of ['ida', 'vuelta']) {
+        const prev = seatOf(p.id, l);
+        const target = seatId(car, l, code);
+        if (r.legs.includes(l)) {
+          if (prev && prev.id !== target) {
+            if (!await safe(sb.from('seats').delete().eq('id', prev.id))) return;
+            delete S.seats[prev.id];
+          }
+          const sData = { car, leg: l, code, personId: p.id, name: p.name, confirmed, event: S.ev, at: Date.now() };
+          if (!await safe(sb.from('seats').upsert(toSeatRow(target, sData)))) return;
+          S.seats[target] = sData;
+        } else if (prev) {
+          if (!await safe(sb.from('seats').delete().eq('id', prev.id))) return;
+          delete S.seats[prev.id];
+        }
+      }
+      closeModals(); render();
+      const which = r.legs.length === 2 ? 'ida y vuelta' : 'solo ' + r.legs[0];
+      toast(`${p.name} · ${code} · ${which} · ${confirmed ? 'confirmado' : 'reservado'}`);
+      if (confirmed) setTimeout(() => openPass(p.id), 250);
+    });
+    $('#seatPass').addEventListener('click', () => {
+      const s = S.editSeat && S.seats[seatId(S.editSeat.car, S.leg, S.editSeat.code)];
+      if (s) { closeModals(); openPass(s.personId); }
+    });
 
-/* ---------- Home: events list ---------- */
-const evOf = d => d.event || 'cine';
-const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
-function evStats(id){
-  const cars = S.allCars.filter(c => evOf(c) === id);
-  const ids = new Set(cars.map(c => c.id));
-  let cap = 0; cars.forEach(c => cap += codesOf(c).length - 1);
-  let ida = 0, vu = 0;
-  for (const s of Object.values(S.seats)) if (ids.has(s.car)) (s.leg === 'ida' ? ida++ : vu++);
-  return {cars: cars.length, cap, ida, vu, people: S.allPeople.filter(p => evOf(p) === id).length};
-}
-function evCard(ev, past){
-  const st = evStats(ev.id);
-  const free = Math.max(0, st.cap - st.ida);
-  const t = (k, l) => `<div><span class="k">${l}</span><span class="v">${esc(ev[k] || '—')}</span></div>`;
-  return `<article class="ev-card${past ? ' past' : ''}">
+    /* ---------- Trip details ---------- */
+    function fmtDate(d) {
+      try { return new Date(d + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return d; }
+    }
+    const TRIP_FIELDS = { tTitle: 'title', tType: 'type', tDate: 'date', tMeet: 'meet', tFrom: 'from', tDepart: 'depart', tTo: 'to', tShow: 'show', tBackPlace: 'backPlace', tBackTime: 'backTime' };
+    const evData = ev => { const { id, ...rest } = ev || {}; return rest; };
+    let editEv = null;
+    function openTrip(evId) {
+      if (!S.user) return;
+      const existing = evId ? S.events.find(e => e.id === evId) : null;
+      if (existing && !isOwner(existing)) { toast('Solo el creador del evento puede editarlo.'); return; }
+      editEv = evId || null;
+      const ev = existing || {};
+      for (const [id, k] of Object.entries(TRIP_FIELDS)) $('#' + id).value = ev[k] || (k === 'type' ? 'Templo' : '');
+      $('#tripModalTitle').textContent = evId ? 'Editar evento' : 'Nuevo evento';
+      $('#tripDelete').hidden = !evId;
+      $('#tripModal').hidden = false;
+      setTimeout(() => $('#tTitle').focus(), 30);
+    }
+    $('#editTripBtn').addEventListener('click', () => { if (S.db) openTrip(S.ev); });
+    $('#tripForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!S.user) return;
+      const old = editEv ? S.events.find(x => x.id === editEv) : null;
+      const data = evData(old);
+      for (const [id, k] of Object.entries(TRIP_FIELDS)) data[k] = $('#' + id).value.trim();
+      if (!data.title) return;
+      if (!old) { data.createdAt = Date.now(); data.user_id = S.user.id; data.owner_name = userLabel(S.user); }
+      const id = editEv || rid('ev');
+      const row = toEvRow(id, data);
+      if (await safe(sb.from('events').upsert(row))) {
+        const mapped = fromEvRow(row);
+        const idx = S.events.findIndex(x => x.id === id);
+        if (idx >= 0) S.events[idx] = mapped; else S.events.push(mapped);
+        closeModals(); refresh();
+        toast(old ? 'Evento actualizado' : `Evento "${data.title}" creado`);
+      }
+    });
+    $('#tripDelete').addEventListener('click', e => arm(e.currentTarget, '¿Borrar todo? Tocá de nuevo', async () => {
+      const id = editEv; if (!id) return;
+      if (await safe(sb.from('events').delete().eq('id', id))) {
+        S.events = S.events.filter(x => x.id !== id);
+        S.allCars = S.allCars.filter(c => evOf(c) !== id);
+        S.allPeople = S.allPeople.filter(p => evOf(p) !== id);
+        for (const [sid, s] of Object.entries(S.seats)) if (s.event === id) delete S.seats[sid];
+        closeModals(); toast('Evento borrado');
+        if (S.ev === id) location.hash = ''; else refresh();
+      }
+    }));
+
+    /* ---------- Home: events list ---------- */
+    const evOf = d => d.event || 'cine';
+    const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+    function evStats(id) {
+      const cars = S.allCars.filter(c => evOf(c) === id);
+      const ids = new Set(cars.map(c => c.id));
+      let cap = 0; cars.forEach(c => cap += codesOf(c).length - 1);
+      let ida = 0, vu = 0;
+      for (const s of Object.values(S.seats)) if (ids.has(s.car)) (s.leg === 'ida' ? ida++ : vu++);
+      return { cars: cars.length, cap, ida, vu, people: S.allPeople.filter(p => evOf(p) === id).length };
+    }
+    function evCard(ev, past) {
+      const st = evStats(ev.id);
+      const free = Math.max(0, st.cap - st.ida);
+      const t = (k, l) => `<div><span class="k">${l}</span><span class="v">${esc(ev[k] || '—')}</span></div>`;
+      const mine = isOwner(ev);
+      return `<article class="ev-card${past ? ' past' : ''}">
     <div class="ev-top"><span class="ev-type">${esc((ev.type || 'Evento').toUpperCase())}</span><span class="ev-date">${esc(ev.date ? fmtDate(ev.date) : 'Fecha a definir')}</span>
-      <button class="icon-btn admin-only" data-editev="${esc(ev.id)}" aria-label="Editar ${esc(ev.title)}">${PENCIL}</button></div>
+      ${mine ? `<button class="icon-btn" data-editev="${esc(ev.id)}" aria-label="Editar ${esc(ev.title)}">${PENCIL}</button>` : ''}</div>
     <h3 class="ev-title">${esc(ev.title || 'Evento')}</h3>
+    ${ev.owner_name ? `<div class="ev-owner">Organiza: ${esc(ev.owner_name)}${mine ? ' (vos)' : ''}</div>` : ''}
     <div class="ev-route"><span>${esc(ev.from || 'Salida a definir')}</span>${CARICON}<span>${esc(ev.to || 'Destino a definir')}</span></div>
-    <div class="ev-times">${t('meet','Estar')}${t('depart','Sale')}${t('backTime','Regreso')}</div>
+    <div class="ev-times">${t('meet', 'Estar')}${t('depart', 'Sale')}${t('backTime', 'Regreso')}</div>
     <div class="ev-stats"><span><b>${st.cars}</b> ${st.cars === 1 ? 'auto' : 'autos'}</span><span><b>${free}</b> ${free === 1 ? 'lugar libre' : 'lugares libres'}</span><span><b>${st.people}</b> anotados</span></div>
     <div class="ev-actions">
       <button class="btn primary" data-enter="${esc(ev.id)}">${st.cars ? 'Reservar asiento' : 'Ver evento'}</button>
       <button class="btn" data-addcar="${esc(ev.id)}">Registrar mi auto</button>
     </div>
   </article>`;
-}
-function renderHome(){
-  const list = S.events.filter(e => wardOf(e) === S.ward).sort((a,b) => (a.date || '9999').localeCompare(b.date || '9999'));
-  const t = today();
-  const up = list.filter(e => !e.date || e.date >= t), past = list.filter(e => e.date && e.date < t).reverse();
-  $('#pinBanner').hidden = !(S.isAdmin && S.ready.wards && !S.wards.length);
-  const w = wardById(S.ward);
-  $('#homeWard').textContent = w ? `${w.name}${w.chapel ? ' · ' + w.chapel : ''}` : 'Sin barrio';
-  $('#wardSwitch').innerHTML = [...S.wards].sort((a,b) => a.name.localeCompare(b.name, 'es')).map(x => `<option value="${esc(x.id)}"${x.id === S.ward ? ' selected' : ''}>${esc(x.name)}</option>`).join('');
-  $('#wardSwitch').hidden = S.wards.length < 2;
-  const box = $('#evList');
-  if (!S.ready.events){ box.innerHTML = '<div class="empty">Cargando eventos…</div>'; return; }
-  if (!list.length){ box.innerHTML = `<div class="empty">Todavía no hay eventos.${S.isAdmin ? ' Tocá <b>+ Nuevo evento</b> para crear el primero.' : ' Cuando el administrador cree uno, va a aparecer acá.'}</div>`; return; }
-  box.innerHTML = (up.length ? `<div class="ev-grid">${up.map(e => evCard(e, false)).join('')}</div>` : '<div class="empty">No hay eventos próximos.</div>')
-    + (past.length ? `<h2 class="past-h">Eventos pasados</h2><div class="ev-grid">${past.map(e => evCard(e, true)).join('')}</div>` : '');
-}
-$('#evList').addEventListener('click', e => {
-  const ed = e.target.closest('[data-editev]'); if (ed) return openTrip(ed.dataset.editev);
-  const en = e.target.closest('[data-enter]'); if (en){ location.hash = en.dataset.enter; return; }
-  const ac = e.target.closest('[data-addcar]');
-  if (ac){ const id = ac.dataset.addcar; enterEvent(id); history.replaceState(null, '', '#' + id); openCar(null); }
-});
-$('#newEvBtn').addEventListener('click', () => { if (!S.ward){ toast('Primero creá un barrio.'); return; } openTrip(null); });
-$('#backBtn').addEventListener('click', () => { location.hash = ''; });
-
-/* ---------- Views & routing ---------- */
-const DEFAULT_WARD = 'w-main';
-const wardOf = ev => ev.ward || DEFAULT_WARD;
-const wardById = id => S.wards.find(w => w.id === id);
-function showView(v){
-  $('#pinView').hidden = v !== 'pin'; $('#homeView').hidden = v !== 'home'; $('#appView').hidden = v !== 'app';
-  S.view = v;
-}
-function scope(){
-  S.cars = S.allCars.filter(c => evOf(c) === S.ev).sort((a,b) => (a.order ?? 0) - (b.order ?? 0));
-  S.people = S.allPeople.filter(p => evOf(p) === S.ev).sort((a,b) => a.name.localeCompare(b.name, 'es'));
-  S.trip = S.events.find(e => e.id === S.ev) || {};
-}
-function enterEvent(id){
-  if (S.ev !== id){ S.ev = id; S.leg = 'ida'; closeModals(); }
-  scope(); showView('app'); render();
-}
-function unlocked(){
-  if (S.adminIn) return true;
-  const w = S.auth && wardById(S.auth.ward);
-  return !!(w && w.pinHash && w.pinHash === S.auth.hash);
-}
-function route(){
-  if (!S.ready.wards || S.isAdmin === null) return;
-  if (!unlocked()){ if (S.view !== 'pin'){ closeModals(); S.ev = null; showView('pin'); } renderLogin(); return; }
-  if (!S.adminIn) S.ward = S.auth.ward;
-  else if (!wardById(S.ward)) S.ward = S.wards[0]?.id || null;
-  const id = decodeURIComponent(location.hash.replace(/^#/, ''));
-  const ev = id && S.events.find(e => e.id === id);
-  if (ev && (S.adminIn || wardOf(ev) === S.ward)){ if (S.adminIn) S.ward = wardOf(ev); enterEvent(id); }
-  else if (id && !S.ready.events) return;
-  else { if (S.ev){ S.ev = null; closeModals(); } showView('home'); renderHome(); }
-}
-window.addEventListener('hashchange', route);
-function refresh(){ scope(); route(); }
-function saveAuth(){ try { S.auth ? localStorage.setItem('checkinAuth', JSON.stringify(S.auth)) : localStorage.removeItem('checkinAuth'); } catch {} }
-
-/* ---------- Login (barrio + PIN) ---------- */
-let pinBuf = '', pickWard = null;
-async function sha(txt){
-  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('checkin-pin:' + txt));
-  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
-}
-function renderLogin(msg){
-  const ws = [...S.wards].sort((a,b) => a.name.localeCompare(b.name, 'es'));
-  if (ws.length === 1 && !pickWard) pickWard = ws[0].id;
-  if (pickWard && !wardById(pickWard)) pickWard = null;
-  const w = pickWard && wardById(pickWard);
-  $('#stepWard').hidden = !!w; $('#stepPin').hidden = !w;
-  $('#wardList').innerHTML = ws.map(x => `<button data-ward="${esc(x.id)}"><b>${esc(x.name)}</b>${x.chapel ? `<small>${esc(x.chapel)}</small>` : ''}</button>`).join('');
-  if (w){
-    $('#wardChosen').textContent = w.name;
-    $('#wardChosen').disabled = ws.length < 2;
-    $('#pinDots').innerHTML = [0,1,2,3].map(i => `<span class="${i < pinBuf.length ? 'on' : ''}"></span>`).join('');
-  }
-  let m = msg;
-  if (m == null){
-    if (!S.ready.wards) m = 'Cargando…';
-    else if (!ws.length) m = 'Todavía no hay barrios cargados. El administrador tiene que crear el primero.';
-    else if (w && !w.pinHash) m = 'Este barrio todavía no tiene PIN.';
-    else m = w ? 'Pedile el PIN a tu administrador.' : '';
-  }
-  $('#pinMsg').textContent = m;
-  document.querySelectorAll('#keypad button').forEach(b => b.disabled = !(w && w.pinHash));
-}
-$('#wardList').addEventListener('click', e => { const b = e.target.closest('[data-ward]'); if (!b) return; pickWard = b.dataset.ward; pinBuf = ''; renderLogin(); });
-$('#wardChosen').addEventListener('click', () => { pickWard = null; pinBuf = ''; renderLogin(); });
-async function pinKey(k){
-  const w = pickWard && wardById(pickWard);
-  if (S.view !== 'pin' || !w || !w.pinHash) return;
-  if (k === 'del') pinBuf = pinBuf.slice(0, -1);
-  else if (pinBuf.length < 4) pinBuf += k;
-  renderLogin();
-  if (pinBuf.length === 4){
-    const h = await sha(pinBuf);
-    pinBuf = '';
-    if (h === w.pinHash){ S.auth = {ward:w.id, hash:h}; saveAuth(); S.ward = w.id; route(); toast(`Bienvenido · ${w.name}`); }
-    else { const c = $('#pinCard'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); renderLogin('PIN incorrecto. Probá de nuevo.'); }
-  }
-}
-$('#keypad').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (b) pinKey(b.dataset.k); });
-document.addEventListener('keydown', e => {
-  if (S.view !== 'pin' || e.target.closest('input')) return;
-  if (/^[0-9]$/.test(e.key)) pinKey(e.key); else if (e.key === 'Backspace') pinKey('del');
-});
-$('#adminEnter').addEventListener('click', () => { if (!S.isAdmin) return; S.adminIn = true; S.ward = pickWard || S.wards[0]?.id || null; route(); });
-$('#logoutBtn').addEventListener('click', () => {
-  S.auth = null; S.adminIn = false; saveAuth(); pinBuf = ''; pickWard = null;
-  history.replaceState(null, '', location.pathname + location.search); route();
-});
-$('#wardSwitch').addEventListener('change', e => { S.ward = e.target.value; S.adminIn = true; renderHome(); });
-
-/* ---------- Barrios (ABM) ---------- */
-let editWard = null;
-function renderWards(){
-  const ws = [...S.wards].sort((a,b) => a.name.localeCompare(b.name, 'es'));
-  $('#wardRows').innerHTML = ws.length ? ws.map(w => {
-    const n = S.events.filter(e => wardOf(e) === w.id).length;
-    return `<li><span class="wn">${esc(w.name)}<small>${esc(w.chapel || '')}${w.chapel ? ' · ' : ''}${n} ${n === 1 ? 'evento' : 'eventos'}</small></span>
-      <span class="wp" title="PIN">${esc(S.wardPins[w.id] || (w.pinHash ? '••••' : 'sin PIN'))}</span>
-      <button class="icon-btn" data-wedit="${esc(w.id)}" aria-label="Editar ${esc(w.name)}">${PENCIL}</button>
-      <button class="icon-btn" data-wdel="${esc(w.id)}" aria-label="Borrar ${esc(w.name)}">✕</button></li>`;
-  }).join('') : '<li class="note" style="display:block">No hay barrios todavía.</li>';
-}
-function openWards(){ renderWards(); $('#wardsModal').hidden = false; }
-function openWard(id){
-  editWard = id || null;
-  const w = id ? wardById(id) : null;
-  $('#pinModalTitle').textContent = w ? 'Editar barrio' : 'Nuevo barrio';
-  $('#wName').value = w ? w.name : ''; $('#wChapel').value = w ? (w.chapel || '') : ''; $('#newPin').value = '';
-  $('#newPin').placeholder = w ? (S.wardPins[w.id] || '••••') : '0000';
-  $('#pinHint').textContent = w ? 'Dejá el PIN vacío para no cambiarlo. Si lo cambiás, los miembros de este barrio tienen que ingresar el nuevo.' : 'Pasales este PIN a los miembros del barrio.';
-  $('#wardsModal').hidden = true; $('#pinModal').hidden = false;
-  setTimeout(() => $('#wName').focus(), 30);
-}
-$('#wardsBtn').addEventListener('click', openWards);
-$('#pinBannerBtn').addEventListener('click', () => openWard(null));
-$('#wardNewBtn').addEventListener('click', () => openWard(null));
-$('#wardRows').addEventListener('click', e => {
-  const ed = e.target.closest('[data-wedit]'); if (ed) return openWard(ed.dataset.wedit);
-  const del = e.target.closest('[data-wdel]');
-  if (del){
-    const id = del.dataset.wdel, n = S.events.filter(x => wardOf(x) === id).length;
-    if (n){ toast(`Ese barrio tiene ${n} ${n === 1 ? 'evento' : 'eventos'}. Borralos primero.`); return; }
-    arm(del, '?', async () => {
-      await safe(S.db.collection('adminonly').doc('ward-' + id).delete());
-      if (await safe(S.db.collection('wards').doc(id).delete())){ toast('Barrio borrado'); if (S.ward === id) S.ward = null; }
+    }
+    function renderHome() {
+      const base = S.filter === 'mine' ? S.events.filter(isOwner) : S.events;
+      const list = [...base].sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999'));
+      const t = today();
+      const up = list.filter(e => !e.date || e.date >= t), past = list.filter(e => e.date && e.date < t).reverse();
+      $('#homeUser').textContent = S.user ? `${userLabel(S.user)} · ${S.user.email}` : 'Usuario';
+      $('#evFilter').value = S.filter;
+      const box = $('#evList');
+      if (!S.ready.events) { box.innerHTML = '<div class="empty">Cargando eventos…</div>'; return; }
+      if (!list.length) {
+        box.innerHTML = `<div class="empty">${S.filter === 'mine' ? 'Todavía no creaste eventos.' : 'Todavía no hay eventos.'} Tocá <b>+ Nuevo evento</b> para registrar el primero.</div>`;
+        return;
+      }
+      box.innerHTML = (up.length ? `<div class="ev-grid">${up.map(e => evCard(e, false)).join('')}</div>` : '<div class="empty">No hay eventos próximos.</div>')
+        + (past.length ? `<h2 class="past-h">Eventos pasados</h2><div class="ev-grid">${past.map(e => evCard(e, true)).join('')}</div>` : '');
+    }
+    $('#evList').addEventListener('click', e => {
+      const ed = e.target.closest('[data-editev]'); if (ed) return openTrip(ed.dataset.editev);
+      const en = e.target.closest('[data-enter]'); if (en) { location.hash = en.dataset.enter; return; }
+      const ac = e.target.closest('[data-addcar]');
+      if (ac) { const id = ac.dataset.addcar; enterEvent(id); history.replaceState(null, '', '#' + id); openCar(null); }
     });
-  }
-});
-$('#pinForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const name = $('#wName').value.trim(), chapel = $('#wChapel').value.trim(), pin = $('#newPin').value.trim();
-  const old = editWard ? wardById(editWard) : null;
-  if (!name) return;
-  if (!old && !/^\d{4}$/.test(pin)){ $('#pinHint').textContent = 'Poné un PIN de exactamente 4 números.'; return; }
-  if (old && pin && !/^\d{4}$/.test(pin)){ $('#pinHint').textContent = 'El PIN tiene que tener exactamente 4 números.'; return; }
-  const id = editWard || rid('w');
-  const data = {name, chapel, pinHash: pin ? await sha(pin) : (old?.pinHash || ''), updatedAt: Date.now()};
-  if (!old) data.createdAt = Date.now(); else if (old.createdAt) data.createdAt = old.createdAt;
-  if (!await safe(S.db.collection('wards').doc(id).set(data))) return;
-  if (pin) await safe(S.db.collection('adminonly').doc('ward-' + id).set({pin, updatedAt:Date.now()}));
-  if (!S.ward) S.ward = id;
-  closeModals(); openWards();
-  toast(old ? (pin ? `PIN de ${name} cambiado a ${pin}` : 'Barrio actualizado') : `Barrio ${name} creado · PIN ${pin}`);
-});
+    $('#newEvBtn').addEventListener('click', () => openTrip(null));
+    $('#backBtn').addEventListener('click', () => { location.hash = ''; });
+    $('#evFilter').addEventListener('change', e => { S.filter = e.target.value; renderHome(); });
 
-/* ---------- Boarding pass ---------- */
-function code3(place){
-  const w = String(place||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z ]/g,'').split(/\s+/).filter(x => x && !['EL','LA','LOS','LAS','DE','DEL','Y'].includes(x));
-  if (!w.length) return '---';
-  return w.length >= 3 ? w.slice(0,3).map(x=>x[0]).join('') : (w[0] + (w[1]||'')).slice(0,3);
-}
-function hash(s){ let h = 2166136261; for (const ch of s){ h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
-function barcode(seed){
-  let h = hash(seed), x = 0, out = '';
-  while (x < 196){ h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const w = 1 + (h % 3), gap = 1 + ((h >>> 8) % 3); out += `<rect x="${x}" y="0" width="${w}" height="44" fill="currentColor"/>`; x += w + gap; }
-  return `<svg viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true">${out}</svg>`;
-}
-function legInfo(pid, leg){
-  const s = seatOf(pid, leg), T = S.trip;
-  if (!s) return {s:null, car:null};
-  return {s, car: carOf(s.car)};
-}
-function passHTML(p){
-  const T = S.trip;
-  const ida = legInfo(p.id, 'ida'), vu = legInfo(p.id, 'vuelta');
-  const ref = (hash(p.id + (T.date||'')) % 1e6).toString().padStart(6, '0');
-  const row = (leg, x) => {
-    if (!x.s) return `<div class="bp-leg"><span class="lg">${legName(leg)}</span><span class="st" style="color:var(--muted)">—</span><span class="info">No viaja en este tramo</span><span class="badge n">SIN ASIENTO</span></div>`;
-    const where = leg === 'ida'
-      ? `Sale ${T.depart ? '<b>'+esc(T.depart)+'</b> ' : ''}${T.from ? 'de '+esc(T.from) : ''}`
-      : `Regreso ${T.backTime ? '<b>'+esc(T.backTime)+'</b> ' : ''}${T.backPlace ? 'a '+esc(T.backPlace) : ''}`;
-    return `<div class="bp-leg"><span class="lg">${legName(leg)}</span><span class="st">${esc(x.s.code)}</span>
-      <span class="info"><b>${esc(x.car ? x.car.model : 'Auto')}</b>${x.car ? ' · conduce '+esc(x.car.driver) : ''}<br>${where}</span>
+    /* ---------- Views & routing ---------- */
+    function showView(v) {
+      $('#authView').hidden = v !== 'auth'; $('#homeView').hidden = v !== 'home'; $('#appView').hidden = v !== 'app';
+      S.view = v;
+    }
+    function scope() {
+      S.cars = S.allCars.filter(c => evOf(c) === S.ev).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      S.people = S.allPeople.filter(p => evOf(p) === S.ev).sort((a, b) => a.name.localeCompare(b.name, 'es'));
+      S.trip = S.events.find(e => e.id === S.ev) || {};
+      document.body.classList.toggle('is-owner', isOwner(S.trip));
+    }
+    function enterEvent(id) {
+      if (S.ev !== id) { S.ev = id; S.leg = 'ida'; closeModals(); }
+      scope(); showView('app'); render();
+    }
+    function route() {
+      if (!S.user) {
+        if (S.view !== 'auth') { closeModals(); S.ev = null; showView('auth'); }
+        return;
+      }
+      const id = decodeURIComponent(location.hash.replace(/^#/, ''));
+      const ev = id && S.events.find(e => e.id === id);
+      if (ev) { enterEvent(id); }
+      else if (id && !S.ready.events) return;
+      else { if (S.ev) { S.ev = null; closeModals(); } showView('home'); renderHome(); }
+    }
+    window.addEventListener('hashchange', route);
+    function refresh() { scope(); route(); }
+
+    /* ---------- Auth (Supabase Login / Registro) ---------- */
+    let authMode = 'login';
+    function setAuthMode(mode) {
+      authMode = mode;
+      const reg = mode === 'register';
+      $('#tabLogin').setAttribute('aria-selected', String(!reg));
+      $('#tabRegister').setAttribute('aria-selected', String(reg));
+      $('#regNameField').hidden = !reg;
+      $('#authName').required = reg;
+      $('#authPassword').autocomplete = reg ? 'new-password' : 'current-password';
+      $('#authSubmit').textContent = reg ? 'Crear cuenta' : 'Entrar';
+      setAuthMsg('');
+    }
+    function setAuthMsg(msg, cls = '') {
+      const el = $('#authMsg');
+      el.textContent = msg;
+      el.className = 'pin-msg' + (cls ? ' ' + cls : '');
+    }
+    $('#tabLogin').addEventListener('click', () => setAuthMode('login'));
+    $('#tabRegister').addEventListener('click', () => setAuthMode('register'));
+
+    $('#authForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!sb) { setAuthMsg('No se pudo inicializar Supabase.', 'err'); return; }
+      const email = $('#authEmail').value.trim();
+      const password = $('#authPassword').value;
+      const fullName = $('#authName').value.trim();
+      const btn = $('#authSubmit');
+      btn.disabled = true;
+      setAuthMsg(authMode === 'register' ? 'Creando cuenta…' : 'Ingresando…');
+      try {
+        if (authMode === 'register') {
+          const { data, error } = await sb.auth.signUp({
+            email,
+            password,
+            options: { data: { full_name: fullName } }
+          });
+          if (error) throw error;
+          if (data.session) {
+            S.user = data.session.user;
+            await loadAllData();
+            route();
+            toast(`¡Bienvenido, ${userLabel(S.user)}!`);
+          } else {
+            setAuthMsg('Cuenta creada. Revisá tu email para confirmar el registro y luego iniciá sesión.', 'ok');
+            setAuthMode('login');
+            $('#authMsg').className = 'pin-msg ok';
+            $('#authMsg').textContent = 'Cuenta creada. Revisá tu email para confirmar (o iniciá sesión si ya está activa).';
+          }
+        } else {
+          const { data, error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          S.user = data.user;
+          await loadAllData();
+          route();
+          toast(`Bienvenido · ${userLabel(S.user)}`);
+        }
+      } catch (err) {
+        const c = $('#authCard'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+        const msg = err?.message || '';
+        if (msg.includes('Invalid login credentials')) setAuthMsg('Email o contraseña incorrectos.', 'err');
+        else if (msg.includes('User already registered')) setAuthMsg('Ese email ya está registrado. Probá iniciar sesión.', 'err');
+        else if (msg.includes('Email not confirmed')) setAuthMsg('Tenés que confirmar tu email antes de ingresar.', 'err');
+        else setAuthMsg(msg || 'No se pudo autenticar. Probá de nuevo.', 'err');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    $('#logoutBtn').addEventListener('click', async () => {
+      if (sb) await sb.auth.signOut();
+      S.user = null;
+      S.events = []; S.allCars = []; S.allPeople = []; S.seats = {};
+      S.ready = { cars: false, seats: false, people: false, events: false };
+      history.replaceState(null, '', location.pathname + location.search);
+      setAuthMsg('');
+      route();
+    });
+
+    /* ---------- Boarding pass ---------- */
+    function code3(place) {
+      const w = String(place || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z ]/g, '').split(/\s+/).filter(x => x && !['EL', 'LA', 'LOS', 'LAS', 'DE', 'DEL', 'Y'].includes(x));
+      if (!w.length) return '---';
+      return w.length >= 3 ? w.slice(0, 3).map(x => x[0]).join('') : (w[0] + (w[1] || '')).slice(0, 3);
+    }
+    function hash(s) { let h = 2166136261; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+    function barcode(seed) {
+      let h = hash(seed), x = 0, out = '';
+      while (x < 196) { h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const w = 1 + (h % 3), gap = 1 + ((h >>> 8) % 3); out += `<rect x="${x}" y="0" width="${w}" height="44" fill="currentColor"/>`; x += w + gap; }
+      return `<svg viewBox="0 0 200 44" preserveAspectRatio="none" aria-hidden="true">${out}</svg>`;
+    }
+    function legInfo(pid, leg) {
+      const s = seatOf(pid, leg);
+      if (!s) return { s: null, car: null };
+      return { s, car: carOf(s.car) };
+    }
+    function passHTML(p) {
+      const T = S.trip;
+      const ida = legInfo(p.id, 'ida'), vu = legInfo(p.id, 'vuelta');
+      const ref = (hash(p.id + (T.date || '')) % 1e6).toString().padStart(6, '0');
+      const row = (leg, x) => {
+        if (!x.s) return `<div class="bp-leg"><span class="lg">${legName(leg)}</span><span class="st" style="color:var(--muted)">—</span><span class="info">No viaja en este tramo</span><span class="badge n">SIN ASIENTO</span></div>`;
+        const where = leg === 'ida'
+          ? `Sale ${T.depart ? '<b>' + esc(T.depart) + '</b> ' : ''}${T.from ? 'de ' + esc(T.from) : ''}`
+          : `Regreso ${T.backTime ? '<b>' + esc(T.backTime) + '</b> ' : ''}${T.backPlace ? 'a ' + esc(T.backPlace) : ''}`;
+        return `<div class="bp-leg"><span class="lg">${legName(leg)}</span><span class="st">${esc(x.s.code)}</span>
+      <span class="info"><b>${esc(x.car ? x.car.model : 'Auto')}</b>${x.car ? ' · conduce ' + esc(x.car.driver) : ''}<br>${where}</span>
       <span class="badge ${x.s.confirmed ? 'o' : 'h'}">${x.s.confirmed ? 'CONFIRMADO' : 'FALTA CONFIRMAR'}</span></div>`;
-  };
-  return `<div class="bp" id="bpCard">
+      };
+      return `<div class="bp" id="bpCard">
     <div class="bp-head"><span class="brand">BOARDING PASS</span><span class="trip">${esc(T.title || 'Viaje al cine')}</span></div>
     <div class="bp-body">
       <div class="bp-route">
@@ -1016,204 +2436,263 @@ function passHTML(p){
     <div class="bp-tear"></div>
     <div class="bp-foot">${barcode(p.id + p.name)}<div class="ref">REF<br><b style="color:var(--ink);font-size:16px">${ref}</b></div></div>
   </div>`;
-}
-let passPid = null;
-function openPass(pid){
-  const p = person(pid); if (!p) return;
-  passPid = pid;
-  $('#passHolder').innerHTML = passHTML(p);
-  $('#passSave').hidden = !(DL && window.html2canvas);
-  $('#passModal').hidden = false;
-}
-function passText(p){
-  const T = S.trip, out = [`BOARDING PASS · ${T.title || 'Viaje al cine'}`, `Pasajero: ${p.name}`];
-  if (T.date) out.push(`Fecha: ${fmtDate(T.date)}`);
-  if (T.meet || T.from) out.push(`Estar ${T.meet ? 'a las ' + T.meet : ''}${T.from ? ' en ' + T.from : ''}`.replace('Estar  en','Estar en'));
-  for (const l of ['ida','vuelta']){
-    const x = legInfo(p.id, l);
-    if (!x.s){ out.push(`${legName(l)}: no viaja`); continue; }
-    const car = x.car ? `${x.car.model} (conduce ${x.car.driver})` : '';
-    const extra = l === 'ida' ? [T.depart && 'sale ' + T.depart, T.to && 'hacia ' + T.to].filter(Boolean).join(' ') : [T.backTime && 'regreso ' + T.backTime, T.backPlace && 'a ' + T.backPlace].filter(Boolean).join(' ');
-    out.push(`${legName(l)}: asiento ${x.s.code} · ${car}${extra ? ' · ' + extra : ''} · ${x.s.confirmed ? 'CONFIRMADO' : 'falta confirmar'}`);
-  }
-  if (T.show) out.push(`Función: ${T.show}`);
-  return out.join('\n');
-}
-$('#passCopy').addEventListener('click', () => {
-  const p = person(passPid); if (!p) return;
-  const txt = passText(p);
-  try {
-    navigator.clipboard.writeText(txt).then(() => toast('Copiado. Pegalo en WhatsApp.'), () => fallbackCopy(txt));
-  } catch { fallbackCopy(txt); }
-});
-function fallbackCopy(txt){
-  const ta = document.createElement('textarea'); ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); toast('Copiado. Pegalo en WhatsApp.'); } catch { toast('No se pudo copiar.'); }
-  ta.remove();
-}
-$('#passSave').addEventListener('click', async e => {
-  const p = person(passPid); if (!p || !DL || !window.html2canvas) return;
-  const btn = e.currentTarget; btn.disabled = true; btn.textContent = 'Generando…';
-  try {
-    const bg = getComputedStyle(document.body).backgroundColor;
-    const canvas = await html2canvas($('#bpCard'), {scale:2, backgroundColor:bg, useCORS:true, logging:false});
-    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-    const fname = 'boarding-pass-' + p.name.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '.png';
-    await DL.save({filename: fname, data: blob});
-  } catch (err) {
-    if (err?.code !== 'declined') toast('No se pudo descargar la imagen.');
-  } finally { btn.disabled = false; btn.textContent = 'Descargar imagen'; }
-});
-$('#seatClear').addEventListener('click', async () => {
-  if (!S.editSeat) return;
-  const id = seatId(S.editSeat.car, S.leg, S.editSeat.code);
-  if (await safe(S.db.collection('seats').doc(id).delete())){ closeModals(); toast('Asiento liberado'); }
-});
+    }
+    let passPid = null;
+    function openPass(pid) {
+      const p = person(pid); if (!p) return;
+      passPid = pid;
+      $('#passHolder').innerHTML = passHTML(p);
+      $('#passSave').hidden = !window.html2canvas;
+      $('#passModal').hidden = false;
+    }
+    function passText(p) {
+      const T = S.trip, out = [`BOARDING PASS · ${T.title || 'Viaje al cine'}`, `Pasajero: ${p.name}`];
+      if (T.date) out.push(`Fecha: ${fmtDate(T.date)}`);
+      if (T.meet || T.from) out.push(`Estar ${T.meet ? 'a las ' + T.meet : ''}${T.from ? ' en ' + T.from : ''}`.replace('Estar  en', 'Estar en'));
+      for (const l of ['ida', 'vuelta']) {
+        const x = legInfo(p.id, l);
+        if (!x.s) { out.push(`${legName(l)}: no viaja`); continue; }
+        const car = x.car ? `${x.car.model} (conduce ${x.car.driver})` : '';
+        const extra = l === 'ida' ? [T.depart && 'sale ' + T.depart, T.to && 'hacia ' + T.to].filter(Boolean).join(' ') : [T.backTime && 'regreso ' + T.backTime, T.backPlace && 'a ' + T.backPlace].filter(Boolean).join(' ');
+        out.push(`${legName(l)}: asiento ${x.s.code} · ${car}${extra ? ' · ' + extra : ''} · ${x.s.confirmed ? 'CONFIRMADO' : 'falta confirmar'}`);
+      }
+      if (T.show) out.push(`Función: ${T.show}`);
+      return out.join('\n');
+    }
+    $('#passCopy').addEventListener('click', () => {
+      const p = person(passPid); if (!p) return;
+      const txt = passText(p);
+      try {
+        navigator.clipboard.writeText(txt).then(() => toast('Copiado. Pegalo en WhatsApp.'), () => fallbackCopy(txt));
+      } catch { fallbackCopy(txt); }
+    });
+    function fallbackCopy(txt) {
+      const ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast('Copiado. Pegalo en WhatsApp.'); } catch { toast('No se pudo copiar.'); }
+      ta.remove();
+    }
+    $('#passSave').addEventListener('click', async e => {
+      const p = person(passPid); if (!p || !window.html2canvas) return;
+      const btn = e.currentTarget; btn.disabled = true; btn.textContent = 'Generando…';
+      try {
+        const bg = getComputedStyle(document.body).backgroundColor;
+        const canvas = await html2canvas($('#bpCard'), { scale: 2, backgroundColor: bg, useCORS: true, logging: false });
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        const fname = 'boarding-pass-' + p.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.png';
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = fname; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (err) {
+        toast('No se pudo descargar la imagen.');
+      } finally { btn.disabled = false; btn.textContent = 'Descargar imagen'; }
+    });
+    $('#seatClear').addEventListener('click', async () => {
+      if (!S.editSeat) return;
+      const id = seatId(S.editSeat.car, S.leg, S.editSeat.code);
+      if (await safe(sb.from('seats').delete().eq('id', id))) {
+        delete S.seats[id];
+        closeModals(); render(); toast('Asiento liberado');
+      }
+    });
 
-/* ---------- Car modal ---------- */
-$('#carLayout').innerHTML = Object.entries(LAYOUTS).map(([k,v]) => `<option value="${k}">${v.label}</option>`).join('');
-function openCar(id){
-  const car = id ? carOf(id) : null;
-  S.editCar = id || null;
-  $('#carModalTitle').textContent = car ? 'Editar auto' : 'Agregar auto';
-  $('#carModel').value = car ? car.model : '';
-  $('#carDriver').value = car ? car.driver : '';
-  $('#carLayout').value = car ? (car.layout || '5') : '5';
-  $('#carDelete').hidden = !car;
-  $('#carHint').textContent = '';
-  $('#carModal').hidden = false;
-  setTimeout(()=>$('#carModel').focus(), 30);
-}
-$('#carModel').addEventListener('change', () => {
-  if (S.editCar) return;
-  const m = norm($('#carModel').value);
-  if (/caravan|spin|sw4|sharan|odyssey|sienna|town/.test(m)) $('#carLayout').value = /sw4/.test(m) ? 'suv7' : 'mv7';
-});
-$('#carForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!S.db) return;
-  const model = $('#carModel').value.trim(), driver = $('#carDriver').value.trim(), layout = $('#carLayout').value;
-  if (!model || !driver) return;
-  const id = S.editCar || rid('car');
-  const old = carOf(id);
-  const order = old ? (old.order ?? Date.now()) : Date.now();
-  if (!await safe(S.db.collection('cars').doc(id).set({model, driver, layout, order, event:S.ev}))) return;
-  if (old){
-    const valid = new Set(codesOf({layout}));
-    for (const [sid, s] of Object.entries(S.seats)) if (s.car===id && (!valid.has(s.code) || s.code==='1A')) await safe(S.db.collection('seats').doc(sid).delete());
-  }
-  closeModals(); toast(old ? 'Auto actualizado' : `${model} de ${driver} agregado`);
-});
-$('#carDelete').addEventListener('click', e => arm(e.currentTarget, '¿Seguro? Tocá de nuevo', async () => {
-  const id = S.editCar; if (!id) return;
-  for (const [sid, s] of Object.entries(S.seats)) if (s.car===id) await safe(S.db.collection('seats').doc(sid).delete());
-  if (await safe(S.db.collection('cars').doc(id).delete())){ closeModals(); toast('Auto quitado'); }
-}));
+    /* ---------- Car modal ---------- */
+    $('#carLayout').innerHTML = Object.entries(LAYOUTS).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('');
+    function openCar(id) {
+      const car = id ? carOf(id) : null;
+      S.editCar = id || null;
+      $('#carModalTitle').textContent = car ? 'Editar auto' : 'Agregar auto';
+      $('#carModel').value = car ? car.model : '';
+      $('#carDriver').value = car ? car.driver : '';
+      $('#carLayout').value = car ? (car.layout || '5') : '5';
+      $('#carDelete').hidden = !car;
+      $('#carHint').textContent = '';
+      $('#carModal').hidden = false;
+      setTimeout(() => $('#carModel').focus(), 30);
+    }
+    $('#carModel').addEventListener('change', () => {
+      if (S.editCar) return;
+      const m = norm($('#carModel').value);
+      if (/caravan|spin|sw4|sharan|odyssey|sienna|town/.test(m)) $('#carLayout').value = /sw4/.test(m) ? 'suv7' : 'mv7';
+    });
+    $('#carForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!S.db) return;
+      const model = $('#carModel').value.trim(), driver = $('#carDriver').value.trim(), layout = $('#carLayout').value;
+      if (!model || !driver) return;
+      const id = S.editCar || rid('car');
+      const old = carOf(id);
+      const order = old ? (old.order ?? Date.now()) : Date.now();
+      const row = toCarRow(id, { model, driver, layout, order, event: S.ev });
+      if (!await safe(sb.from('cars').upsert(row))) return;
+      const mapped = fromCarRow(row);
+      const idx = S.allCars.findIndex(c => c.id === id);
+      if (idx >= 0) S.allCars[idx] = mapped; else S.allCars.push(mapped);
+      if (old) {
+        const valid = new Set(codesOf({ layout }));
+        for (const [sid, s] of Object.entries(S.seats)) if (s.car === id && (!valid.has(s.code) || s.code === '1A')) {
+          await safe(sb.from('seats').delete().eq('id', sid));
+          delete S.seats[sid];
+        }
+      }
+      closeModals(); scope(); render(); toast(old ? 'Auto actualizado' : `${model} de ${driver} agregado`);
+    });
+    $('#carDelete').addEventListener('click', e => arm(e.currentTarget, '¿Seguro? Tocá de nuevo', async () => {
+      const id = S.editCar; if (!id) return;
+      if (await safe(sb.from('cars').delete().eq('id', id))) {
+        S.allCars = S.allCars.filter(c => c.id !== id);
+        for (const [sid, s] of Object.entries(S.seats)) if (s.car === id) delete S.seats[sid];
+        closeModals(); scope(); render(); toast('Auto quitado');
+      }
+    }));
 
-/* ---------- Events ---------- */
-$('#cars').addEventListener('click', e => {
-  const ed = e.target.closest('[data-editcar]'); if (ed) return openCar(ed.dataset.editcar);
-  const b = e.target.closest('.seat[data-code]'); if (b) openSeat(b.dataset.car, b.dataset.code);
-});
-$('#manifest').addEventListener('click', e => {
-  const pb = e.target.closest('[data-pass]'); if (pb) return openPass(pb.dataset.pass);
-  const del = e.target.closest('[data-delperson]');
-  if (del) return arm(del, '?', async () => {
-    const pid = del.dataset.delperson;
-    for (const [sid, s] of Object.entries(S.seats)) if (s.personId===pid) await safe(S.db.collection('seats').doc(sid).delete());
-    if (await safe(S.db.collection('people').doc(pid).delete())) toast('Pasajero quitado');
-  });
-  const c = e.target.closest('[data-goleg]'); if (!c) return;
-  setLeg(c.dataset.goleg);
-  if (c.dataset.car) openSeat(c.dataset.car, c.dataset.code);
-  else { const p = person(c.dataset.pid); toast(`Elegí un asiento libre para ${p ? p.name : 'este pasajero'} (${legName(S.leg)})`); document.getElementById('cars').scrollIntoView({behavior:'smooth', block:'start'}); }
-});
-$('#addPersonForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const name = $('#newPerson').value.trim().replace(/\s+/g,' ');
-  if (!name || !S.db) return;
-  if (S.people.some(p => norm(p.name)===norm(name))){ toast(`${name} ya está en la lista`); return; }
-  if (await safe(S.db.collection('people').doc(rid('p')).set({name, event:S.ev, createdAt:Date.now()}))) $('#newPerson').value = '';
-});
-function setLeg(l){ S.leg = l; render(); }
-$('#legIda').addEventListener('click', () => setLeg('ida'));
-$('#legVuelta').addEventListener('click', () => setLeg('vuelta'));
-$('#addCarBtn').addEventListener('click', () => openCar(null));
-$('#copyBtn').addEventListener('click', e => arm(e.currentTarget, 'Copiar: tocá de nuevo', async () => {
-  let n = 0;
-  for (const s of Object.values(S.seats)){
-    if (s.leg !== 'ida' || !S.cars.some(c => c.id === s.car)) continue;
-    if (seatOf(s.personId, 'vuelta')) continue;
-    const t = seatId(s.car, 'vuelta', s.code);
-    if (S.seats[t]) continue;
-    if (await safe(S.db.collection('seats').doc(t).set({...s, leg:'vuelta', event:S.ev, confirmed:false, at:Date.now()}))) n++;
-  }
-  toast(n ? `${n} asientos copiados a la vuelta (falta confirmarlos)` : 'No había nada para copiar');
-}));
-document.querySelectorAll('.overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o || e.target.closest('[data-close]')) closeModals(); });
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+    /* ---------- Events ---------- */
+    $('#cars').addEventListener('click', e => {
+      const ed = e.target.closest('[data-editcar]'); if (ed) return openCar(ed.dataset.editcar);
+      const b = e.target.closest('.seat[data-code]'); if (b) openSeat(b.dataset.car, b.dataset.code);
+    });
+    $('#manifest').addEventListener('click', e => {
+      const pb = e.target.closest('[data-pass]'); if (pb) return openPass(pb.dataset.pass);
+      const del = e.target.closest('[data-delperson]');
+      if (del) return arm(del, '?', async () => {
+        const pid = del.dataset.delperson;
+        if (await safe(sb.from('people').delete().eq('id', pid))) {
+          S.allPeople = S.allPeople.filter(p => p.id !== pid);
+          for (const [sid, s] of Object.entries(S.seats)) if (s.personId === pid) delete S.seats[sid];
+          scope(); render(); toast('Pasajero quitado');
+        }
+      });
+      const c = e.target.closest('[data-goleg]'); if (!c) return;
+      setLeg(c.dataset.goleg);
+      if (c.dataset.car) openSeat(c.dataset.car, c.dataset.code);
+      else { const p = person(c.dataset.pid); toast(`Elegí un asiento libre para ${p ? p.name : 'este pasajero'} (${legName(S.leg)})`); document.getElementById('cars').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+    $('#addPersonForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = $('#newPerson').value.trim().replace(/\s+/g, ' ');
+      if (!name || !S.db) return;
+      if (S.people.some(p => norm(p.name) === norm(name))) { toast(`${name} ya está en la lista`); return; }
+      const id = rid('p');
+      const row = toPersonRow(id, { name, event: S.ev, createdAt: Date.now() });
+      if (await safe(sb.from('people').upsert(row))) {
+        S.allPeople.push(fromPersonRow(row));
+        $('#newPerson').value = '';
+        scope(); render();
+      }
+    });
+    function setLeg(l) { S.leg = l; render(); }
+    $('#legIda').addEventListener('click', () => setLeg('ida'));
+    $('#legVuelta').addEventListener('click', () => setLeg('vuelta'));
+    $('#addCarBtn').addEventListener('click', () => openCar(null));
+    $('#copyBtn').addEventListener('click', e => arm(e.currentTarget, 'Copiar: tocá de nuevo', async () => {
+      let n = 0;
+      for (const s of Object.values(S.seats)) {
+        if (s.leg !== 'ida' || !S.cars.some(c => c.id === s.car)) continue;
+        if (seatOf(s.personId, 'vuelta')) continue;
+        const t = seatId(s.car, 'vuelta', s.code);
+        if (S.seats[t]) continue;
+        const nextSeat = { ...s, leg: 'vuelta', event: S.ev, confirmed: false, at: Date.now() };
+        if (await safe(sb.from('seats').upsert(toSeatRow(t, nextSeat)))) {
+          S.seats[t] = nextSeat;
+          n++;
+        }
+      }
+      render();
+      toast(n ? `${n} asientos copiados a la vuelta (falta confirmarlos)` : 'No había nada para copiar');
+    }));
+    document.querySelectorAll('.overlay').forEach(o => {
+      o.addEventListener('click', e => { if (e.target === o || e.target.closest('[data-close]')) closeModals(); });
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
 
-$('#titleBox').addEventListener('click', e => {
-  if (!e.target.closest('#tripTitle') || !S.db || !S.isAdmin) return;
-  const box = $('#titleBox');
-  box.innerHTML = `<input class="trip-input" id="tripInput" aria-label="Nombre del viaje" value="${esc(S.trip.title || 'Viaje al cine')}">`;
-  const inp = $('#tripInput'); inp.focus(); inp.select();
-  let done = false;
-  const finish = async save => {
-    if (done) return; done = true;
-    const v = inp.value.trim();
-    box.innerHTML = '<button class="trip-title" id="tripTitle" title="Cambiar nombre del viaje"></button>';
-    if (save && v && v !== S.trip.title){ S.trip.title = v; await safe(S.db.collection('events').doc(S.ev).set({...evData(S.trip), title:v})); }
-    renderBoard();
-  };
-  inp.addEventListener('keydown', ev => { if (ev.key==='Enter') finish(true); if (ev.key==='Escape') { ev.stopPropagation(); finish(false); } });
-  inp.addEventListener('blur', () => finish(true));
-});
+    $('#titleBox').addEventListener('click', e => {
+      if (!e.target.closest('#tripTitle') || !S.db || !isOwner(S.trip)) return;
+      const box = $('#titleBox');
+      box.innerHTML = `<input class="trip-input" id="tripInput" aria-label="Nombre del viaje" value="${esc(S.trip.title || 'Viaje al cine')}">`;
+      const inp = $('#tripInput'); inp.focus(); inp.select();
+      let done = false;
+      const finish = async save => {
+        if (done) return; done = true;
+        const v = inp.value.trim();
+        box.innerHTML = '<button class="trip-title" id="tripTitle" title="Cambiar nombre del viaje"></button>';
+        if (save && v && v !== S.trip.title) {
+          S.trip.title = v;
+          await safe(sb.from('events').update({ title: v }).eq('id', S.ev));
+        }
+        renderBoard();
+      };
+      inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') finish(true); if (ev.key === 'Escape') { ev.stopPropagation(); finish(false); } });
+      inp.addEventListener('blur', () => finish(true));
+    });
 
-/* ---------- Data ---------- */
-Object.assign(S, {allCars:[], allPeople:[], events:[], wards:[], wardPins:{}, ev:null, view:null, isAdmin:null, adminIn:false, auth:null, ward:null});
-Object.assign(S.ready, {events:false, wards:false});
-try { S.auth = JSON.parse(localStorage.getItem('checkinAuth') || 'null'); } catch {}
-showView('pin'); renderLogin();
-(async () => {
-  let db = null;
-  try { db = await (window.claude?.use?.('db') ?? null); } catch { db = null; }
-  if (!db){
-    $('#pinMsg').textContent = 'No se pueden cargar los datos en esta vista. Abrí la página con tu sesión de claude.ai iniciada.';
-    return;
-  }
-  S.db = db;
-  try { window.claude?.use?.('downloads')?.then(d => { DL = d; }, () => {}); } catch {}
-  let user = null;
-  try { user = await (window.claude?.use?.('user') ?? null); } catch {}
-  try { S.isAdmin = user ? !!(await user.canEdit()) : false; } catch { S.isAdmin = false; }
-  document.body.classList.toggle('is-admin', S.isAdmin);
-  const timer = setTimeout(() => { if (!S.ready.wards) renderLogin('No se puede conectar todavía. Revisá tu conexión; la página sigue intentando.'); }, 10000);
-  const err = e => { console.error(e); toast('Se perdió la conexión con los datos. Recargá la página.'); };
-  db.collection('wards').onSnapshot(snap => {
-    S.wards = snap.docs.map(d => ({id:d.id, ...d.data()})); S.ready.wards = true; clearTimeout(timer);
-    if (!$('#wardsModal').hidden) renderWards();
-    refresh();
-  }, err);
-  if (S.isAdmin) db.collection('adminonly').onSnapshot(snap => {
-    const m = {}; snap.docs.forEach(d => { if (d.id.startsWith('ward-')) m[d.id.slice(5)] = d.data().pin; });
-    S.wardPins = m; if (!$('#wardsModal').hidden) renderWards();
-  }, () => {});
-  db.collection('events').onSnapshot(snap => {
-    S.events = snap.docs.map(d => ({id:d.id, ...d.data()})); S.ready.events = true; refresh();
-  }, err);
-  db.collection('cars').onSnapshot(snap => {
-    S.allCars = snap.docs.map(d => ({id:d.id, ...d.data()})); S.ready.cars = true; refresh();
-  }, err);
-  db.collection('seats').onSnapshot(snap => {
-    const m = {}; snap.docs.forEach(d => m[d.id] = d.data()); S.seats = m; S.ready.seats = true; refresh();
-  }, err);
-  db.collection('people').onSnapshot(snap => {
-    S.allPeople = snap.docs.map(d => ({id:d.id, ...d.data()})); S.ready.people = true; refresh();
-  }, err);
-})();
-</script>
+    /* ---------- Data & Realtime ---------- */
+    let rtChannel = null;
+    async function loadAllData() {
+      if (!sb || !S.user) return;
+      const [evs, cars, ppl, sts] = await Promise.all([
+        sb.from('events').select('*'),
+        sb.from('cars').select('*'),
+        sb.from('people').select('*'),
+        sb.from('seats').select('*')
+      ]);
+      if (evs.error || cars.error || ppl.error || sts.error) {
+        console.error(evs.error || cars.error || ppl.error || sts.error);
+        toast('Error al cargar datos de Supabase. Verificá las tablas SQL.');
+        return;
+      }
+      S.events = (evs.data || []).map(fromEvRow); S.ready.events = true;
+      S.allCars = (cars.data || []).map(fromCarRow); S.ready.cars = true;
+      S.allPeople = (ppl.data || []).map(fromPersonRow); S.ready.people = true;
+      const m = {}; (sts.data || []).forEach(r => { m[r.id] = fromSeatRow(r); });
+      S.seats = m; S.ready.seats = true;
+      subscribeRealtime();
+      refresh();
+    }
+    function subscribeRealtime() {
+      if (rtChannel || !sb) return;
+      rtChannel = sb.channel('checkin-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => loadTable('events'))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'cars' }, () => loadTable('cars'))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'people' }, () => loadTable('people'))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'seats' }, () => loadTable('seats'))
+        .subscribe();
+    }
+    async function loadTable(tbl) {
+      if (!sb || !S.user) return;
+      const { data, error } = await sb.from(tbl).select('*');
+      if (error) return;
+      if (tbl === 'events') { S.events = (data || []).map(fromEvRow); S.ready.events = true; }
+      if (tbl === 'cars') { S.allCars = (data || []).map(fromCarRow); S.ready.cars = true; }
+      if (tbl === 'people') { S.allPeople = (data || []).map(fromPersonRow); S.ready.people = true; }
+      if (tbl === 'seats') { const m = {}; (data || []).forEach(r => m[r.id] = fromSeatRow(r)); S.seats = m; S.ready.seats = true; }
+      refresh();
+    }
 
-</body></html>
+    showView('auth');
+    (async () => {
+      if (!sb) {
+        setAuthMsg('No se pudo cargar la librería de Supabase. Revisá tu conexión.', 'err');
+        return;
+      }
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        S.user = session.user;
+        await loadAllData();
+      }
+      route();
+      sb.auth.onAuthStateChange(async (event, sess) => {
+        if (event === 'SIGNED_OUT') {
+          S.user = null;
+          if (rtChannel) { sb.removeChannel(rtChannel); rtChannel = null; }
+          route();
+        } else if (event === 'SIGNED_IN' && sess?.user && !S.user) {
+          S.user = sess.user;
+          await loadAllData();
+          route();
+        }
+      });
+    })();
+  </script>
+
+</body>
+
+</html>
